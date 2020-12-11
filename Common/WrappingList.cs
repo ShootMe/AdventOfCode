@@ -10,7 +10,7 @@ namespace AdventOfCode.Common {
         public int Count { get; private set; }
         private WrappingNode* current, iterator, head;
         public T CurrentElement {
-            get { return values[current - head]; }
+            get { return Count == 0 ? default : values[current - head]; }
             set {
                 if (Count == 0) { return; }
                 values[current - head] = value;

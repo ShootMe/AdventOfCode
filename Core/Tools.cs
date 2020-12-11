@@ -229,19 +229,19 @@ $@"<head>
                 action(item);
             }
         }
-        public static IEnumerable<T[]> Permute<T>(T[] nums) {
-            return DoPermute(nums, 0, nums.Length - 1);
+        public static IEnumerable<T[]> Permute<T>(T[] items) {
+            return DoPermute(items, 0, items.Length - 1);
         }
-        private static IEnumerable<T[]> DoPermute<T>(T[] nums, int start, int end) {
+        private static IEnumerable<T[]> DoPermute<T>(T[] items, int start, int end) {
             if (start == end) {
-                yield return nums;
+                yield return items;
             } else {
                 for (var i = start; i <= end; i++) {
-                    Swap(ref nums[start], ref nums[i]);
-                    foreach (T[] seq in DoPermute(nums, start + 1, end)) {
+                    Swap(ref items[start], ref items[i]);
+                    foreach (T[] seq in DoPermute(items, start + 1, end)) {
                         yield return seq;
                     }
-                    Swap(ref nums[start], ref nums[i]);
+                    Swap(ref items[start], ref items[i]);
                 }
             }
         }
@@ -249,6 +249,27 @@ $@"<head>
             var temp = a;
             a = b;
             b = temp;
+        }
+        public static IEnumerable<List<T>> Permute<T>(List<T> items) {
+            return DoPermute(items, 0, items.Count - 1);
+        }
+        private static IEnumerable<List<T>> DoPermute<T>(List<T> items, int start, int end) {
+            if (start == end) {
+                yield return items;
+            } else {
+                for (var i = start; i <= end; i++) {
+                    Swap(items, start, i);
+                    foreach (List<T> seq in DoPermute(items, start + 1, end)) {
+                        yield return seq;
+                    }
+                    Swap(items, start, i);
+                }
+            }
+        }
+        private static void Swap<T>(List<T> items, int a, int b) {
+            var temp = items[a];
+            items[a] = items[b];
+            items[b] = temp;
         }
         public static int GCD(int a, int b) {
             if (a == 0 && b == 0) { return 1; }
