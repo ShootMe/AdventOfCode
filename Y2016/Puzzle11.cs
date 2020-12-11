@@ -99,7 +99,7 @@ namespace AdventOfCode.Y2016 {
                 //Console.WriteLine(state);
                 FloorContents last = state.Floors[state.Floors.Length - 1];
                 bool completed = last.Generators == allElements && last.Microchips == allElements;
-                if (completed && state.Steps < bestSteps) {
+                if (completed) {
                     bestSteps = state.Steps;
                     //Console.WriteLine(state);
                     continue;
