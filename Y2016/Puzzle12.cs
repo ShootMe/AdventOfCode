@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace AdventOfCode.Y2016 {
     public class Puzzle12 : ASolver {
         private VM program;
-        public Puzzle12(string input) : base(input) { Name = "Leonardo&apos;s Monorail"; }
+        public Puzzle12(string input) : base(input) { Name = "Leonardo's Monorail"; }
 
         public override void Setup() {
             program = new VM(Input);
@@ -17,7 +17,7 @@ namespace AdventOfCode.Y2016 {
             return $"{program.A.Value}";
         }
 
-        [Description("What is the answer?")]
+        [Description("What value is now left in register a?")]
         public override string SolvePart2() {
             program.ClearRegisters();
             program.C.Value = 1;
@@ -100,7 +100,7 @@ namespace AdventOfCode.Y2016 {
             }
             public void Run() {
                 Pointer = 0;
-                while(Pointer>=0 && Pointer < Instructions.Count) {
+                while (Pointer >= 0 && Pointer < Instructions.Count) {
                     Instruction instruction = Instructions[Pointer];
                     Pointer += instruction.Execute();
                 }
