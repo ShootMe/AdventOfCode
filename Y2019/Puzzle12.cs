@@ -70,7 +70,6 @@ namespace AdventOfCode.Y2019 {
                 step++;
 
                 if (ArrayComparer<Moon>.Comparer.Equals(original, moons)) {
-                    Array.Copy(original, moons, moons.Length);
                     return step;
                 }
             }

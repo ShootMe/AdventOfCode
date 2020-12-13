@@ -2,33 +2,33 @@
 using System.Collections.Generic;
 using System.Text;
 namespace AdventOfCode.Common {
-    public unsafe class WrappingList<T> : IEnumerable<T>, IEnumerator<T> {
-        private static readonly WrappingNode* empty;
+    public class WrappingList<T> : IEnumerable<T> {
+        private static readonly WrappingNode empty;
         private WrappingNode[] storage;
         private T[] values;
         private int storageIndex;
         public int Count { get; private set; }
-        private WrappingNode* current, iterator, head;
-        public T CurrentElement {
-            get { return Count == 0 ? default : values[current - head]; }
+        private WrappingNode current;
+        public T Current {
+            get { return Count == 0 ? default : values[current.Index]; }
             set {
                 if (Count == 0) { return; }
-                values[current - head] = value;
+                values[current.Index] = value;
             }
         }
-        T IEnumerator<T>.Current => Count == 0 || iterator == null ? default : values[iterator - head];
-        object IEnumerator.Current => Count == 0 || iterator == null ? null : values[iterator - head];
+        public T Next {
+            get { return Count == 0 ? default : values[current.Next]; }
+        }
+        public T Previous {
+            get { return Count == 0 ? default : values[current.Previous]; }
+        }
 
         static WrappingList() {
-            WrappingNode node = new WrappingNode(true);
-            empty = &node;
+            empty = new WrappingNode(true);
         }
         public WrappingList() : this(128) { }
         public WrappingList(int initialCapacity) {
             storage = new WrappingNode[initialCapacity];
-            fixed (WrappingNode* ptr = &storage[0]) {
-                head = ptr;
-            }
             values = new T[initialCapacity];
             current = empty;
             storageIndex = 0;
@@ -38,11 +38,11 @@ namespace AdventOfCode.Common {
         public T[] ToArray() {
             T[] result = new T[Count];
             if (Count != 0) {
-                WrappingNode* start = current;
+                WrappingNode start = current;
                 int index = 0;
                 do {
-                    result[index++] = values[start - head];
-                    start = start->Next;
+                    result[index++] = values[start.Index];
+                    start = storage[start.Next];
                 } while (start != current);
             }
             return result;
@@ -50,100 +50,96 @@ namespace AdventOfCode.Common {
         public T[] ToArray(int length) {
             T[] result = new T[length];
             if (Count != 0) {
-                WrappingNode* start = current;
+                WrappingNode start = current;
                 int index = 0;
                 do {
-                    result[index++] = values[start - head];
-                    start = start->Next;
+                    result[index++] = values[start.Index];
+                    start = storage[start.Next];
                 } while (index < length);
             }
             return result;
+        }
+        public void Clear() {
+            Count = 0;
+            storageIndex = 0;
+            current = empty;
         }
         public void ReverseElements(int length) {
             if (length <= 1 || length > Count) { return; }
             length--;
 
+            WrappingNode start = current;
+            WrappingNode end = current;
             for (int i = 0; i < length; i++) {
-                WrappingNode* start = current;
-                current = start->Next;
-                for (int j = i; j < length; j++) {
-                    SwapAhead(start);
-                }
+                end = storage[end.Next];
+            }
+
+            length++;
+            length >>= 1;
+            for (int j = 0; j < length; j++) {
+                Swap(start.Index, end.Index);
+                start = storage[start.Next];
+                end = storage[end.Previous];
             }
         }
-        private void SwapAhead(WrappingNode* node) {
-            WrappingNode* ptrNext = node->Next;
-            if (ptrNext->Next == node) { return; }
+        private void Swap(int left, int right) {
+            if (left == right) { return; }
 
-            WrappingNode* ptrPrevious = node->Previous;
-            node->Next = ptrNext->Next;
-            node->Previous = ptrNext;
-
-            ptrNext->Next = node;
-            ptrNext->Previous = ptrPrevious;
-
-            ptrNext->Previous->Next = ptrNext;
-            node->Next->Previous = node;
-        }
-        public void MoveElementForward() {
-            SwapAhead(current);
-        }
-        public void MoveElementForward(int count) {
-            while (count-- > 0) {
-                SwapAhead(current);
-            }
-        }
-        public void MoveElementBack() {
-            SwapAhead(current->Previous);
-        }
-        public void MoveElementBack(int count) {
-            while (count-- > 0) {
-                SwapAhead(current->Previous);
-            }
+            T value = values[left];
+            values[left] = values[right];
+            values[right] = value;
         }
         public void DecreasePosition() {
-            current = current->Previous;
+            current = storage[current.Previous];
         }
         public void DecreasePosition(int count) {
             if (count <= 0) { return; }
 
-            WrappingNode* ptr = current;
+            WrappingNode ptr = current;
             while (count-- > 0) {
-                ptr = ptr->Previous;
+                ptr = storage[ptr.Previous];
             }
             current = ptr;
         }
         public void IncreasePosition() {
-            current = current->Next;
+            current = storage[current.Next];
         }
         public void IncreasePosition(int count) {
             if (count <= 0) { return; }
 
-            WrappingNode* ptr = current;
+            WrappingNode ptr = current;
             while (count-- > 0) {
-                ptr = ptr->Next;
+                ptr = storage[ptr.Next];
             }
             current = ptr;
         }
-        public T ElementAt(int index) {
-            if (index < 0) { return default; }
-
-            WrappingNode* ptr = current;
-            while (index-- > 0) {
-                ptr = ptr->Next;
+        public T this[int index] {
+            get {
+                WrappingNode ptr = current;
+                while (index-- > 0) {
+                    ptr = storage[ptr.Next];
+                }
+                return values[ptr.Index];
             }
-            return values[ptr - head];
+            set {
+                WrappingNode ptr = current;
+                while (index-- > 0) {
+                    ptr = storage[ptr.Next];
+                }
+                values[ptr.Index] = value;
+            }
         }
         public void AddBefore(T value, bool setCurrentElement = false) {
             if (++Count > storage.Length || storageIndex == storage.Length) {
                 Resize();
             }
 
-            WrappingNode* node = head + storageIndex;
+            ref WrappingNode node = ref storage[storageIndex];
             if (Count == 1) {
-                node->Set(node, node);
+                node.Set(storage, storageIndex, node.Index, node.Index);
             } else {
-                node->Set(current, current->Previous);
+                node.Set(storage, storageIndex, current.Index, current.Previous);
+                current = storage[current.Index];
             }
 
             if (setCurrentElement || current == empty) {
@@ -156,12 +152,12 @@ namespace AdventOfCode.Common {
                 Resize();
             }
 
-            WrappingNode* node = head + storageIndex;
-            values[storageIndex] = value;
+            ref WrappingNode node = ref storage[storageIndex];
             if (Count == 1) {
-                node->Set(node, node);
+                node.Set(storage, storageIndex, node.Index, node.Index);
             } else {
-                node->Set(current->Next, current);
+                node.Set(storage, storageIndex, current.Next, current.Index);
+                current = storage[current.Index];
             }
 
             if (setCurrentElement || current == empty) {
@@ -172,23 +168,37 @@ namespace AdventOfCode.Common {
         public T Remove() {
             if (Count == 0) { return default; }
 
-            current->Next->Previous = current->Previous;
-            current->Previous->Next = current->Next;
+            storage[current.Next].Previous = current.Previous;
+            storage[current.Previous].Next = current.Next;
 
-            long valueIndex = current - head;
-            current->Previous = null;
-            current = --Count != 0 ? current->Next : empty;
-
+            int valueIndex = current.Index;
+            current = --Count != 0 ? storage[current.Next] : empty;
             return values[valueIndex];
+        }
+        public IEnumerable<WrappingList<T>> Permute() {
+            return DoPermute(0, Count - 1);
+        }
+        private IEnumerable<WrappingList<T>> DoPermute(int start, int end) {
+            if (start == end) {
+                yield return this;
+            } else {
+                for (var i = start; i <= end; i++) {
+                    Swap(start, i);
+                    foreach (WrappingList<T> seq in DoPermute(start + 1, end)) {
+                        yield return seq;
+                    }
+                    Swap(start, i);
+                }
+            }
         }
         public override string ToString() {
             if (Count == 0) { return "[]"; }
 
-            StringBuilder list = new StringBuilder($"[{values[current - head]}");
-            WrappingNode* ptr = current->Next;
+            StringBuilder list = new StringBuilder($"[{values[current.Index]}");
+            WrappingNode ptr = storage[current.Next];
             while (current != ptr) {
-                list.Append($", {values[ptr - head]}");
-                ptr = ptr->Next;
+                list.Append($", {values[ptr.Index]}");
+                ptr = storage[ptr.Next];
             }
             list.Append(']');
 
@@ -203,102 +213,92 @@ namespace AdventOfCode.Common {
             WrappingNode[] newStorage = new WrappingNode[(int)(storage.Length * 1.5)];
             T[] newValues = new T[newStorage.Length];
             storageIndex = 0;
-            WrappingNode* node = current;
-            WrappingNode* last = null;
-            WrappingNode* first;
-            fixed (WrappingNode* ptr = &newStorage[0]) {
-                first = ptr;
-            }
+            WrappingNode node = current;
+            WrappingNode first = new WrappingNode() { Index = storageIndex };
 
             do {
-                WrappingNode* newNode = first + storageIndex;
-                newNode->Previous = last;
-                newValues[storageIndex++] = values[node - head];
-                last = newNode;
-                node = node->Next;
+                ref WrappingNode newNode = ref newStorage[storageIndex];
+                newValues[storageIndex] = values[node.Index];
+
+                newNode.Index = storageIndex;
+                newNode.Previous = storageIndex - 1;
+                newNode.Next = ++storageIndex;
+
+                node = storage[node.Next];
             } while (node != current);
 
-            first->Previous = last;
-            current = first;
-            head = current;
-
-            do {
-                last->Next = first;
-                first = last;
-                last = last->Previous;
-            } while (last != current);
-
-            current->Next = first;
-
+            newStorage[0].Previous = storageIndex - 1;
+            newStorage[storageIndex - 1].Next = 0;
+            current = newStorage[0];
             storage = newStorage;
             values = newValues;
         }
         private void Cleanup() {
             storageIndex = 0;
-            WrappingNode* ptr = current;
-            WrappingNode* itr = head;
+            WrappingNode ptr = current;
             do {
-                int offset = (int)(ptr - head);
-                if (offset != storageIndex) {
+                if (ptr.Index != storageIndex) {
                     T value = values[storageIndex];
-                    values[storageIndex] = values[offset];
-                    values[offset] = value;
+                    values[storageIndex] = values[ptr.Index];
+                    values[ptr.Index] = value;
                 }
 
                 storageIndex++;
-                ptr = ptr->Next;
-                itr++;
+                ptr = storage[ptr.Next];
             } while (ptr != current);
 
-            current = head;
-            ptr = current;
-            itr = ptr + storageIndex - 1;
-            for (int i = storageIndex - 1; i > 0; i--) {
-                ptr->Next = ptr + 1;
-                ptr->Previous = itr;
-                itr = ptr++;
+            for (int i = 0; i < storageIndex; i++) {
+                ref WrappingNode node = ref storage[i];
+                node.Index = i;
+                node.Next = i + 1;
+                node.Previous = i - 1;
             }
-            ptr->Next = current;
-            ptr->Previous = itr;
+            storage[0].Previous = storageIndex - 1;
+            storage[storageIndex - 1].Next = 0;
+            current = storage[0];
         }
         public IEnumerator<T> GetEnumerator() {
-            return this;
+            WrappingNode ptr = current;
+            do {
+                yield return values[ptr.Index];
+                ptr = storage[ptr.Next];
+            } while (ptr != current);
         }
         IEnumerator IEnumerable.GetEnumerator() {
-            return this;
-        }
-        public bool MoveNext() {
-            if (iterator == null) {
-                iterator = current;
-                return true;
-            }
-            iterator = iterator->Next;
-            return iterator != current;
-        }
-        public void Reset() {
-            iterator = null;
-        }
-        public void Dispose() {
-            iterator = null;
+            return GetEnumerator();
         }
 
-        internal struct WrappingNode {
-            internal WrappingNode* Next;
-            internal WrappingNode* Previous;
+        private struct WrappingNode {
+            internal int Index;
+            internal int Next;
+            internal int Previous;
 
             internal WrappingNode(bool empty) {
-                fixed (WrappingNode* ptr = &this) {
-                    Next = ptr;
-                    Previous = ptr;
-                }
+                Index = -1;
+                Next = -1;
+                Previous = -1;
             }
-            internal void Set(WrappingNode* next, WrappingNode* previous) {
-                fixed (WrappingNode* ptr = &this) {
-                    Next = next;
-                    Previous = previous;
-                    Next->Previous = ptr;
-                    Previous->Next = ptr;
-                }
+            internal void Set(WrappingNode[] data, int index, int next, int previous) {
+                Index = index;
+                Next = next;
+                Previous = previous;
+                data[Next].Previous = Index;
+                data[Previous].Next = Index;
+            }
+            public static bool operator ==(WrappingNode left, WrappingNode right) {
+                return left.Index == right.Index;
+            }
+            public static bool operator !=(WrappingNode left, WrappingNode right) {
+                return left.Index != right.Index;
+            }
+            public override bool Equals(object obj) {
+                return obj is WrappingNode node && node.Index == Index;
+            }
+            public override int GetHashCode() {
+                return Index;
+            }
+            public override string ToString() {
+                return $"({Previous}, {Index}, {Next})";
             }
         }
     }

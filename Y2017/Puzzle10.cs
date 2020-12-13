@@ -26,8 +26,8 @@ namespace AdventOfCode.Y2017 {
             }
 
             list.DecreasePosition(movesAhead % list.Count);
-            int value1 = list.CurrentElement;
-            int value2 = list.ElementAt(1);
+            int value1 = list.Current;
+            int value2 = list.Next;
             return $"{value1 * value2}";
         }
 
@@ -68,7 +68,7 @@ namespace AdventOfCode.Y2017 {
                 for (int j = 0; j < 15; j++) {
                     value ^= list.Remove();
                 }
-                list.CurrentElement ^= value;
+                list.Current ^= value;
                 list.IncreasePosition();
             }
 
