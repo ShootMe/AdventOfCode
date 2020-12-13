@@ -53,17 +53,9 @@ namespace AdventOfCode.Y2019 {
         private int CalculateSteps(int axis) {
             Moon[] original = new Moon[moons.Length];
             Array.Copy(moons, original, moons.Length);
-            HashSet<Moon[]> states = new HashSet<Moon[]>(ArrayComparer<Moon>.Comparer);
 
             int step = 0;
             while (true) {
-                Moon[] temp = new Moon[moons.Length];
-                Array.Copy(moons, temp, moons.Length);
-                if (!states.Add(temp)) {
-                    Array.Copy(original, moons, moons.Length);
-                    return step;
-                }
-
                 for (int j = 0; j < moons.Length; j++) {
                     ref Moon moon = ref moons[j];
                     for (int k = j + 1; k < moons.Length; k++) {
@@ -76,6 +68,11 @@ namespace AdventOfCode.Y2019 {
                 }
 
                 step++;
+
+                if (ArrayComparer<Moon>.Comparer.Equals(original, moons)) {
+                    Array.Copy(original, moons, moons.Length);
+                    return step;
+                }
             }
         }
 
