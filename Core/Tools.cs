@@ -293,5 +293,27 @@ $@"<head>
                 b = r;
             }
         }
+        public static long GCD(long a, long b) {
+            if (a == 0 && b == 0) { return 1; }
+            a = a < 0 ? -a : a;
+            b = b < 0 ? -b : b;
+            if (a == 0) { return b; }
+            if (b == 0) { return a; }
+
+            long r;
+            if (b > a) {
+                r = b % a;
+                if (r == 0) { return a; }
+                if (r == 1) { return 1; }
+                b = r;
+            }
+            while (true) {
+                r = a % b;
+                if (r == 0) { return b; }
+                if (r == 1) { return 1; }
+                a = b;
+                b = r;
+            }
+        }
     }
 }
