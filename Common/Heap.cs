@@ -5,6 +5,7 @@ namespace AdventOfCode.Common {
         private int size;
         private T[] nodes;
 
+        public Heap() : this(1000) { }
         public Heap(int maxNodes) {
             size = 0;
             nodes = new T[maxNodes];
@@ -18,7 +19,9 @@ namespace AdventOfCode.Common {
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Enqueue(T node) {
-            if (size == nodes.Length) { return; }
+            if (size == nodes.Length) {
+                Resize();
+            }
 
             int current = size;
             nodes[size++] = node;
@@ -57,6 +60,13 @@ namespace AdventOfCode.Common {
             } while (true);
 
             return result;
+        }
+        private void Resize() {
+            T[] newNodes = new T[(int)(nodes.Length * 1.5)];
+            for (int i = 0; i < nodes.Length; i++) {
+                newNodes[i] = nodes[i];
+            }
+            nodes = newNodes;
         }
 
         public override string ToString() {
