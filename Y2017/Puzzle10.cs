@@ -33,27 +33,38 @@ namespace AdventOfCode.Y2017 {
 
         [Description("What is the Knot Hash of your puzzle input?")]
         public override string SolvePart2() {
-            int[] numbers = new int[Input.Length + 5];
-            for (int i = 0; i < Input.Length; i++) {
-                numbers[i] = Input[i];
-            }
-            numbers[Input.Length] = 17;
-            numbers[Input.Length + 1] = 31;
-            numbers[Input.Length + 2] = 73;
-            numbers[Input.Length + 3] = 47;
-            numbers[Input.Length + 4] = 23;
+            WrappingList<byte> list = KnotHash.Calculate(Input);
 
-            WrappingList<int> list = new WrappingList<int>(256);
+            StringBuilder result = new StringBuilder(32);
+            foreach (int value in list) {
+                result.Append(value.ToString("x2"));
+            }
+            return result.ToString();
+        }
+    }
+    public static class KnotHash {
+        public static WrappingList<byte> Calculate(string key) {
+            byte[] values = new byte[key.Length + 5];
+            for (int i = 0; i < key.Length; i++) {
+                values[i] = (byte)key[i];
+            }
+            values[key.Length] = 17;
+            values[key.Length + 1] = 31;
+            values[key.Length + 2] = 73;
+            values[key.Length + 3] = 47;
+            values[key.Length + 4] = 23;
+
+            WrappingList<byte> list = new WrappingList<byte>(256);
 
             for (int i = 0; i < 256; i++) {
-                list.AddBefore(i);
+                list.AddBefore((byte)i);
             }
 
             int skipSize = 0;
             int movesAhead = 0;
             for (int j = 0; j < 64; j++) {
-                for (int i = 0; i < numbers.Length; i++) {
-                    int value = numbers[i];
+                for (int i = 0; i < values.Length; i++) {
+                    int value = values[i];
                     list.ReverseElements(value);
                     movesAhead += value + skipSize;
                     list.IncreasePosition(value + skipSize);
@@ -64,7 +75,7 @@ namespace AdventOfCode.Y2017 {
             list.DecreasePosition(movesAhead % list.Count);
 
             for (int i = 0; i < 16; i++) {
-                int value = 0;
+                byte value = 0;
                 for (int j = 0; j < 15; j++) {
                     value ^= list.Remove();
                 }
@@ -72,11 +83,7 @@ namespace AdventOfCode.Y2017 {
                 list.IncreasePosition();
             }
 
-            StringBuilder result = new StringBuilder(32);
-            foreach (int value in list) {
-                result.Append(value.ToString("x2"));
-            }
-            return result.ToString();
+            return list;
         }
     }
 }
