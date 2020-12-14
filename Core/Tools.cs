@@ -144,68 +144,45 @@ $@"<head>
             return numbers.ToArray();
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static long ParseLong(string number) {
-            if (string.IsNullOrEmpty(number)) { return 0; }
-
-            int i = 0;
-            while (i < number.Length && !char.IsDigit(number[i])) {
-                i++;
-            }
-
-            bool isNegative = i > 0 ? number[i - 1] == '-' : false;
-            long result = 0;
-            while (i < number.Length) {
-                byte value = (byte)number[i];
-                if (value >= 0x30 && value <= 0x39) {
-                    result = result * 10 + value - 0x30;
-                }
-                i++;
-            }
-            return isNegative ? -result : result;
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ParseInt(string number) {
-            if (string.IsNullOrEmpty(number)) { return 0; }
-
-            int i = 0;
-            while (i < number.Length && !char.IsDigit(number[i])) {
-                i++;
-            }
-
-            bool isNegative = i > 0 ? number[i - 1] == '-' : false;
-            int result = 0;
-            while (i < number.Length) {
-                byte value = (byte)number[i];
-                if (value >= 0x30 && value <= 0x39) {
-                    result = result * 10 + value - 0x30;
-                }
-                i++;
-            }
-            return isNegative ? -result : result;
+            return (int)ParseLong(number, 0, number.Length);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ParseInt(string number, int startIndex) {
-            int length = number.Length - startIndex;
-            if (length <= 0) { return 0; }
-
-            int i = 0;
-            while (i < length && !char.IsDigit(number[i + startIndex])) {
-                i++;
-            }
-
-            bool isNegative = i > 0 ? number[i + startIndex - 1] == '-' : false;
-            int result = 0;
-            while (i < length) {
-                byte value = (byte)number[i + startIndex];
-                if (value >= 0x30 && value <= 0x39) {
-                    result = result * 10 + value - 0x30;
-                }
-                i++;
-            }
-            return isNegative ? -result : result;
+            return (int)ParseLong(number, startIndex, number.Length - startIndex);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ParseInt(string number, int startIndex, int length) {
+            return (int)ParseLong(number, startIndex, length);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int ParseInt(string number, string startFrom, int startIndex = 0) {
+            return (int)ParseLong(number, startFrom, startIndex);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int ParseInt(string number, string startFrom, string endOn, int startIndex = 0) {
+            return (int)ParseLong(number, startFrom, endOn, startIndex);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long ParseLong(string number) {
+            return ParseLong(number, 0, number.Length);
+        }
+        public static long ParseLong(string number, string startFrom, int startIndex = 0) {
+            int index1 = number.IndexOf(startFrom, startIndex);
+            if (index1 < 0) { return 0; }
+
+            return ParseLong(number, index1 + startFrom.Length, number.Length - index1 - startFrom.Length);
+        }
+        public static long ParseLong(string number, string startFrom, string endOn, int startIndex = 0) {
+            int index1 = number.IndexOf(startFrom, startIndex);
+            if (index1 < 0) { return 0; }
+
+            int index2 = number.IndexOf(endOn, index1 + startFrom.Length);
+            if (index2 < 0) { index2 = number.Length; }
+
+            return ParseLong(number, index1 + startFrom.Length, index2 - index1 - startFrom.Length);
+        }
+        public static long ParseLong(string number, int startIndex, int length) {
             if (length <= 0) { return 0; }
 
             int i = 0;
@@ -214,7 +191,7 @@ $@"<head>
             }
 
             bool isNegative = i > 0 ? number[i + startIndex - 1] == '-' : false;
-            int result = 0;
+            long result = 0;
             while (i < length) {
                 byte value = (byte)number[i + startIndex];
                 if (value >= 0x30 && value <= 0x39) {
