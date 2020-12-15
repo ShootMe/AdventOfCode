@@ -1,5 +1,5 @@
 using AdventOfCode.Core;
-using System.Collections.Generic;
+using System;
 using System.ComponentModel;
 namespace AdventOfCode.Y2020 {
     public class Puzzle15 : ASolver {
@@ -16,28 +16,24 @@ namespace AdventOfCode.Y2020 {
         }
 
         private int GetLastSpoken(int amount) {
-            Dictionary<int, int> said = new Dictionary<int, int>();
+            int[] said = new int[amount];
+            Array.Fill(said, -1);
+
             string[] numbers = Input.Split(',');
 
             int last = 0;
             for (int i = 0; i < numbers.Length; i++) {
                 last = Tools.ParseInt(numbers[i]);
                 if (i + 1 < numbers.Length) {
-                    said.Add(last, i + 1);
+                    said[last] = i + 1;
                 }
             }
 
             int turn = numbers.Length;
-            int lastZero = -1;
             while (turn < amount) {
-                int lastUsed;
-                if (!said.TryGetValue(last, out lastUsed)) {
-                    said.Add(last, turn);
-                    last = 0;
-                } else {
-                    said[last] = turn;
-                    last = turn - lastUsed;
-                }
+                int lastUsed = said[last];
+                said[last] = turn;
+                last = lastUsed < 0 ? 0 : turn - lastUsed;
                 turn++;
             }
             return last;
