@@ -8,6 +8,7 @@ namespace AdventOfCode.Y2019 {
         private long relativeBase;
         private Dictionary<long, long> memory;
         public long Output { get; private set; }
+        public bool InputRequired { get; private set; }
 
         public IntCode(int[] programToRun) {
             program = new long[programToRun.Length];
@@ -34,7 +35,11 @@ namespace AdventOfCode.Y2019 {
             relativeBase = 0;
             memory.Clear();
         }
-        public bool Run(long inputValue = 0) {
+        public bool Run() {
+            return Run(0, false);
+        }
+        public bool Run(long inputValue, bool useInput = true) {
+            InputRequired = false;
             long code = state[instruction];
             bool inputUsed = false;
 
@@ -54,7 +59,7 @@ namespace AdventOfCode.Y2019 {
                 switch (opcode) {
                     case 1: SetValue(index3, value1 + value2); instruction += 4; break;
                     case 2: SetValue(index3, value1 * value2); instruction += 4; break;
-                    case 3: if (inputUsed) { return true; } SetValue(index1, inputValue); instruction += 2; inputUsed = true; break;
+                    case 3: if (inputUsed || !useInput) { InputRequired = true; return true; } SetValue(index1, inputValue); instruction += 2; inputUsed = true; break;
                     case 4: Output = mode1 == 1 ? index1 : value1; instruction += 2; return true;
                     case 5: instruction = value1 != 0 ? value2 : instruction + 3; break;
                     case 6: instruction = value1 == 0 ? value2 : instruction + 3; break;
