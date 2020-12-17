@@ -25,6 +25,17 @@ namespace AdventOfCode.Y2019 {
             memory = new Dictionary<long, long>();
             Reset();
         }
+        public IntCode Clone() {
+            IntCode result = new IntCode(program);
+            for (int i = 0; i < program.Length; i++) {
+                result.state[i] = state[i];
+            }
+            result.instruction = instruction;
+            result.relativeBase = relativeBase;
+            result.Output = Output;
+            result.InputRequired = InputRequired;
+            return result;
+        }
         public long this[int index] {
             get { return state[index]; }
             set { state[index] = value; }
