@@ -87,7 +87,7 @@ namespace AdventOfCode.Y2019 {
                             maze[wall] = 1;
                             robots.RemoveAt(i);
                             if (robots.Count == 0) {
-                                return robot.Steps;
+                                return maxSteps;
                             }
                             continue;
                         case 1:
@@ -136,18 +136,10 @@ namespace AdventOfCode.Y2019 {
             Point max = new Point() { X = int.MinValue, Y = int.MinValue };
             foreach (KeyValuePair<Point, int> pair in maze) {
                 Point point = pair.Key;
-                if (point.X < min.X) {
-                    min.X = point.X;
-                }
-                if (point.Y < min.Y) {
-                    min.Y = point.Y;
-                }
-                if (point.X > max.X) {
-                    max.X = point.X;
-                }
-                if (point.Y > max.Y) {
-                    max.Y = point.Y;
-                }
+                if (point.X < min.X) { min.X = point.X; }
+                if (point.Y < min.Y) { min.Y = point.Y; }
+                if (point.X > max.X) { max.X = point.X; }
+                if (point.Y > max.Y) { max.Y = point.Y; }
             }
 
             int width = max.X - min.X + 1;

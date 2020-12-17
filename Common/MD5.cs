@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 namespace AdventOfCode.Common {
-    public class MD5 {
+	public class MD5 {
         public static byte[] Compute(byte[] data, int lengthToUse = 0) {
             lengthToUse = lengthToUse == 0 ? data.Length : lengthToUse;
             ulong bits = (ulong)lengthToUse << 3;
@@ -51,7 +51,7 @@ namespace AdventOfCode.Common {
             public void Transform(byte[] data, int startIndex) {
                 fixed (uint* ptrHash = Calc) {
                     fixed (byte* ptrData = data) {
-                        Buffer.MemoryCopy(ptrData, ptrHash, 64, 64);
+                        Buffer.MemoryCopy(ptrData + startIndex, ptrHash, 64, 64);
                     }
                 }
 
@@ -65,7 +65,9 @@ namespace AdventOfCode.Common {
 
                         uint padding = 128u << ((length & 3) << 3);
                         calc[length >> 2] |= padding;
-                        Buffer.MemoryCopy(ptrData + startIndex, ptrCalc, length, length);
+                        if (length > 0) {
+                            Buffer.MemoryCopy(ptrData + startIndex, ptrCalc, length, length);
+                        }
 
                         if (length >= 56) {
                             Update();

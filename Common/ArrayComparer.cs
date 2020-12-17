@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 namespace AdventOfCode.Common {
     public class ArrayComparer<T> : IEqualityComparer<T[]> where T : IEquatable<T> {
         public static ArrayComparer<T> Comparer { get; } = new ArrayComparer<T>();
@@ -15,6 +16,16 @@ namespace AdventOfCode.Common {
                 hash = (hash * 31) + obj[i].GetHashCode();
             }
             return hash;
+        }
+        public string ToString(T[] obj) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < obj.Length; i++) {
+                sb.Append(obj[i]).Append(", ");
+            }
+            if (obj.Length > 0) {
+                sb.Length -= 2;
+            }
+            return sb.ToString();
         }
     }
 }
