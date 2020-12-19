@@ -39,14 +39,14 @@ namespace AdventOfCode.Y2020 {
 
             public Cube(string input, bool is3d = true) {
                 List<string> items = Tools.GetLines(input);
-                Width = (items[0].Length + 17);
-                Height = items.Count + 17;
-                Depth = Width;
-                Hyper = is3d ? 1 : Width;
+                Width = items[0].Length + 12;
+                Height = items.Count + 12;
+                Depth = 13;
+                Hyper = is3d ? 1 : 13;
                 Grid = new bool[Width * Height * Depth * Hyper];
                 State = new bool[Grid.Length];
-                int x = Width / 2;
-                int y = Height / 2;
+                int x = Width / 2 - items[0].Length / 2;
+                int y = Height / 2 - items.Count / 2;
                 int z = (Depth / 2) * Height * Width;
                 int w = (Hyper / 2) * Depth * Height * Width;
 
@@ -58,7 +58,7 @@ namespace AdventOfCode.Y2020 {
                         x++;
                     }
                     y++;
-                    x = Width / 2;
+                    x = Width / 2 - item.Length / 2;
                 }
             }
 
@@ -79,7 +79,7 @@ namespace AdventOfCode.Y2020 {
                 for (int i = 0; i < Grid.Length; i++) {
                     bool active = Grid[i];
 
-                    int count = CountNeighbors(x, y, z, w);
+                    int count = CountNeighbors(x, y, z, w) - (active ? 1 : 0);
 
                     if (active && (count < 2 || count > 3)) {
                         State[i] = false;
@@ -109,35 +109,29 @@ namespace AdventOfCode.Y2020 {
                 State = temp;
             }
             private int CountNeighbors(int x, int y, int z, int w) {
-                int xe = x + 2;
-                int ye = y + 2;
-                int ze = z + 2;
-                int we = w + 2;
-                int ws = w - 1;
+                int xe = x + 1 >= Width ? x + 1 : x + 2;
+                int ye = y + 1 >= Height ? y + 1 : y + 2;
+                int ze = z + 1 >= Depth ? z + 1 : z + 2;
+                int we = w + 1 >= Hyper ? w + 1 : w + 2;
+                int xi = x == 0 ? x : x - 1;
+                int yi = y == 0 ? y : y - 1;
+                int zi = z == 0 ? z : z - 1;
+                int ws = w == 0 ? w : w - 1;
                 int count = 0;
                 while (ws < we) {
-                    if (ws < 0 || ws >= Hyper) { ws++; continue; }
                     int wo = ws * Depth * Height * Width;
-                    int zs = z - 1;
+                    int zs = zi;
 
                     while (zs < ze) {
-                        if (zs < 0 || zs >= Depth) { zs++; continue; }
                         int zo = zs * Height * Width;
-                        int ys = y - 1;
+                        int ys = yi;
 
                         while (ys < ye) {
-                            if (ys < 0 || ys >= Height) { ys++; continue; }
-                            int yo = ys * Height;
-                            int xs = x - 1;
-
-                            while (xs < xe) {
-                                if (xs < 0 || xs >= Width) { xs++; continue; }
-                                if (ws == w && zs == z && ys == y && xs == x) { xs++; continue; }
-
-                                count += Grid[wo + zo + yo + xs] ? 1 : 0;
-                                xs++;
-                            }
-
+                            int index = ys * Height + wo + zo;
+                            int xs = xi;
+                            count += Grid[index + xs++] ? 1 : 0;
+                            count += xs < xe && Grid[index + xs++] ? 1 : 0;
+                            count += xs < xe && Grid[index + xs] ? 1 : 0;
                             ys++;
                         }
 
