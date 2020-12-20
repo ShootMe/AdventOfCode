@@ -19,12 +19,12 @@ namespace AdventOfCode.Y2020 {
                 int id = Tools.ParseInt(lines[0], 5, 4);
 
                 Tile tile = new Tile() { ID = id, Size = lines[1].Length, Variation = 0 };
-                tile.Ordering = new bool[tile.Size * tile.Size];
+                tile.Data = new bool[tile.Size * tile.Size];
                 int index = 0;
                 for (int j = 1; j < lines.Length; j++) {
                     string row = lines[j];
                     for (int k = 0; k < row.Length; k++) {
-                        tile.Ordering[index++] = row[k] == '#';
+                        tile.Data[index++] = row[k] == '#';
                     }
                 }
 
@@ -37,8 +37,8 @@ namespace AdventOfCode.Y2020 {
         [Description("What do you get if you multiply together the IDs of the four corner tiles?")]
         public override string SolvePart1() {
             image = new Tile[imageSize * imageSize];
-            List<Tile> choices = new List<Tile>(tiles);
-            FindTiling(choices, image, 0);
+            Tile[] choices = tiles.ToArray();
+            FindTiling(choices, image);
             return $"{(long)image[0].ID * image[imageSize - 1].ID * image[(imageSize - 1) * imageSize].ID * image[image.Length - 1].ID}";
         }
 
@@ -46,7 +46,7 @@ namespace AdventOfCode.Y2020 {
         public override string SolvePart2() {
             int tileSize = image[0].Size - 2;
             Tile sea = new Tile() { ID = 0, Size = tileSize * imageSize, Variation = 0 };
-            sea.Ordering = new bool[sea.Size * sea.Size];
+            sea.Data = new bool[sea.Size * sea.Size];
 
             int index = 0;
             int x = 0;
@@ -88,8 +88,8 @@ namespace AdventOfCode.Y2020 {
 
                 if (monsters > 0) {
                     int waters = 0;
-                    for (j = 0; j < sea.Ordering.Length; j++) {
-                        if (sea.Ordering[j]) {
+                    for (j = 0; j < sea.Data.Length; j++) {
+                        if (sea.Data[j]) {
                             waters++;
                         }
                     }
@@ -99,28 +99,60 @@ namespace AdventOfCode.Y2020 {
             return string.Empty;
         }
 
-        private bool FindTiling(List<Tile> choices, Tile[] image, int index) {
-            int x = index % imageSize;
-            int y = index / imageSize;
-            Tile left = x > 0 ? image[index - 1] : null;
-            Tile top = y > 0 ? image[index - imageSize] : null;
+        private bool FindTiling(Tile[] choices, Tile[] image) {
+            int x = 0;
+            int y = 0;
+            int index = 0;
+            int[] indexes = new int[image.Length];
 
-            for (int i = 0; i < choices.Count; i++) {
-                Tile choice = choices[i];
+            while (true) {
+                Tile left = x > 0 ? image[index - 1] : null;
+                Tile top = y > 0 ? image[index - imageSize] : null;
 
-                for (int j = 0; j < 8; j++) {
-                    choice.Variation = j;
-                    if ((left == null || choice.ValidLeft(left)) && (top == null || choice.ValidTop(top))) {
-                        choices.RemoveAt(i);
-                        image[index] = choice;
+                ref int i = ref indexes[index];
+                while (i < choices.Length) {
+                    Tile choice = choices[i];
 
-                        if (index + 1 == image.Length || FindTiling(choices, image, index + 1)) {
-                            return true;
+                    if (choice != null) {
+                        for (int j = 0; j < 8; j++) {
+                            choice.Variation = j;
+                            if (choice.ValidLeft(left) && choice.ValidTop(top)) {
+                                choices[i] = null;
+                                image[index] = choice;
+                                choice.SetRight();
+                                choice.SetBottom();
+
+                                if (index + 1 == image.Length) {
+                                    return true;
+                                }
+                                goto NextTile;
+                            }
                         }
-
-                        image[index] = null;
-                        choices.Insert(i, choice);
                     }
+
+                    i++;
+                }
+
+                i = 0;
+                index--;
+                if (index < 0) { break; }
+
+                i = ref indexes[index];
+                choices[i] = image[index];
+                i++;
+                x--;
+                if (x < 0) {
+                    x = imageSize - 1;
+                    y--;
+                }
+                continue;
+
+            NextTile:
+                index++;
+                x++;
+                if (x == imageSize) {
+                    x = 0;
+                    y++;
                 }
             }
 
@@ -131,17 +163,21 @@ namespace AdventOfCode.Y2020 {
             public int ID;
             public int Size;
             public int Variation;
-            public bool[] Ordering;
+            public bool[] Data;
+            private bool[] Right;
+            private bool[] Bottom;
 
             public bool ValidLeft(Tile tile) {
-                bool[] left = GetLeft();
-                bool[] right = tile.GetRight();
-                return ArrayComparer<bool>.Comparer.Equals(right, left);
+                return tile == null || ArrayComparer<bool>.Comparer.Equals(GetLeft(), tile.Right);
+            }
+            public void SetRight() {
+                Right = GetRight();
+            }
+            public void SetBottom() {
+                Bottom = GetBottom();
             }
             public bool ValidTop(Tile tile) {
-                bool[] top = GetTop();
-                bool[] bottom = tile.GetBottom();
-                return ArrayComparer<bool>.Comparer.Equals(top, bottom);
+                return tile == null || ArrayComparer<bool>.Comparer.Equals(GetTop(), tile.Bottom);
             }
             public override string ToString() {
                 return $"{ID} {Variation}";
@@ -153,7 +189,7 @@ namespace AdventOfCode.Y2020 {
                 for (int i = 1; i + 1 < Size; i++) {
                     bool[] row = GetTop(i);
                     for (int j = 1; j + 1 < row.Length; j++) {
-                        tile.Ordering[index++] = row[j];
+                        tile.Data[index++] = row[j];
                     }
                     index += tile.Size - row.Length + 2;
                 }
@@ -165,49 +201,49 @@ namespace AdventOfCode.Y2020 {
                     case 0:
                         offset = Size - column - 1;
                         for (int i = 0; i < Size; i++) {
-                            result[i] = Ordering[offset + i * Size];
+                            result[i] = Data[offset + i * Size];
                         }
                         break;
                     case 1:
                         offset = Size * Size - column - 1;
                         for (int i = 0; i < Size; i++) {
-                            result[i] = Ordering[offset - i * Size];
+                            result[i] = Data[offset - i * Size];
                         }
                         break;
                     case 2:
                         offset = Size * (Size - column) - 1;
                         for (int i = 0; i < Size; i++) {
-                            result[i] = Ordering[offset - i];
+                            result[i] = Data[offset - i];
                         }
                         break;
                     case 3:
                         offset = Size * (Size - column - 1);
                         for (int i = 0; i < Size; i++) {
-                            result[i] = Ordering[offset + i];
+                            result[i] = Data[offset + i];
                         }
                         break;
                     case 4:
                         offset = column;
                         for (int i = 0; i < Size; i++) {
-                            result[i] = Ordering[offset + i * Size];
+                            result[i] = Data[offset + i * Size];
                         }
                         break;
                     case 5:
                         offset = Size * (Size - 1) + column;
                         for (int i = 0; i < Size; i++) {
-                            result[i] = Ordering[offset - i * Size];
+                            result[i] = Data[offset - i * Size];
                         }
                         break;
                     case 6:
                         offset = (Size * (column + 1)) - 1;
                         for (int i = 0; i < Size; i++) {
-                            result[i] = Ordering[offset - i];
+                            result[i] = Data[offset - i];
                         }
                         break;
                     case 7:
                         offset = Size * column;
                         for (int i = 0; i < Size; i++) {
-                            result[i] = Ordering[offset + i];
+                            result[i] = Data[offset + i];
                         }
                         break;
                 }
