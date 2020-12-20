@@ -115,21 +115,21 @@ namespace AdventOfCode.Y2020 {
                 return false;
             }
             private IEnumerable<int> Match(Dictionary<int, Rule> rules, string message, int index) {
-                if (index <= message.Length) {
+                if (index < message.Length) {
                     if (Rules1.Count > 0) {
-                        foreach (int matched in Match(Rules1, rules, 0, message, index)) {
+                        foreach (int matched in Match(rules, Rules1, 0, message, index)) {
                             yield return matched;
                         }
                     }
 
                     if (Rules2.Count > 0) {
-                        foreach (int matched in Match(Rules2, rules, 0, message, index)) {
+                        foreach (int matched in Match(rules, Rules2, 0, message, index)) {
                             yield return matched;
                         }
                     }
                 }
             }
-            private IEnumerable<int> Match(List<int> ruleIDs, Dictionary<int, Rule> rules, int ruleIndex, string message, int index) {
+            private IEnumerable<int> Match(Dictionary<int, Rule> rules, List<int> ruleIDs, int ruleIndex, string message, int index) {
                 if (index < message.Length) {
                     int id = ruleIDs[ruleIndex];
                     Rule rule = rules[id];
@@ -138,7 +138,7 @@ namespace AdventOfCode.Y2020 {
                         if (message[index] == rule.Value) {
                             index++;
                             if (ruleIndex + 1 < ruleIDs.Count) {
-                                foreach (int matched in Match(ruleIDs, rules, ruleIndex + 1, message, index)) {
+                                foreach (int matched in Match(rules, ruleIDs, ruleIndex + 1, message, index)) {
                                     yield return matched;
                                 }
                             } else {
@@ -147,9 +147,9 @@ namespace AdventOfCode.Y2020 {
                         }
                     } else {
                         foreach (int matched in rule.Match(rules, message, index)) {
-                            if (matched <= message.Length && matched >= 0) {
+                            if (matched <= message.Length) {
                                 if (ruleIndex + 1 < ruleIDs.Count) {
-                                    foreach (int matched2 in Match(ruleIDs, rules, ruleIndex + 1, message, matched)) {
+                                    foreach (int matched2 in Match(rules, ruleIDs, ruleIndex + 1, message, matched)) {
                                         yield return matched2;
                                     }
                                 } else {
