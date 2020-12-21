@@ -72,13 +72,9 @@ namespace AdventOfCode.Y2019 {
 
         [Description("What is the answer?")]
         public override string SolvePart2() {
-            HashSet<State> closed1 = new HashSet<State>(600000);
-            HashSet<State> closed2 = new HashSet<State>(600000);
-            HashSet<State> closed3 = new HashSet<State>(600000);
-            HashSet<State> closed4 = new HashSet<State>(600000);
-            Heap<State> open = new Heap<State>(10000);
+            HashSet<State> closed = new HashSet<State>(2000000);
+            Heap<State> open = new Heap<State>(5000);
 
-            vault[start] = 255;
             vault[start - width] = 255;
             vault[start + width] = 255;
             vault[start - 1] = 255;
@@ -88,22 +84,9 @@ namespace AdventOfCode.Y2019 {
             int start2 = start - width + 1;
             int start3 = start + width - 1;
             int start4 = start + width + 1;
-            vault[start1] = 254;
-            vault[start2] = 254;
-            vault[start3] = 254;
-            vault[start4] = 254;
 
             State current = new State() { Position = start1, Position1 = start1, Position2 = start2, Position3 = start3, Position4 = start4, Robot = 0, Keys = 0, Steps = 0 };
-            closed1.Add(current);
-            open.Enqueue(current);
-            current = new State() { Position = start2, Position1 = start1, Position2 = start2, Position3 = start3, Position4 = start4, Robot = 1, Keys = 0, Steps = 0 };
-            closed2.Add(current);
-            open.Enqueue(current);
-            current = new State() { Position = start3, Position1 = start1, Position2 = start2, Position3 = start3, Position4 = start4, Robot = 2, Keys = 0, Steps = 0 };
-            closed3.Add(current);
-            open.Enqueue(current);
-            current = new State() { Position = start4, Position1 = start1, Position2 = start2, Position3 = start3, Position4 = start4, Robot = 3, Keys = 0, Steps = 0 };
-            closed4.Add(current);
+            closed.Add(current);
             open.Enqueue(current);
 
             while (open.Count > 0) {
@@ -121,16 +104,16 @@ namespace AdventOfCode.Y2019 {
 
                 current.Position = current.Position1;
                 current.Robot = 0;
-                UpdateMoves(current, nextKeys, closed1, open);
+                UpdateMoves(current, nextKeys, closed, open);
                 current.Position = current.Position2;
                 current.Robot = 1;
-                UpdateMoves(current, nextKeys, closed2, open);
+                UpdateMoves(current, nextKeys, closed, open);
                 current.Position = current.Position3;
                 current.Robot = 2;
-                UpdateMoves(current, nextKeys, closed3, open);
+                UpdateMoves(current, nextKeys, closed, open);
                 current.Position = current.Position4;
                 current.Robot = 3;
-                UpdateMoves(current, nextKeys, closed4, open);
+                UpdateMoves(current, nextKeys, closed, open);
             }
 
             return string.Empty;
