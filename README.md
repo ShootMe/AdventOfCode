@@ -4,9 +4,9 @@ Solutions to the Advent of Code programming puzzles in C# .NET5
 https://adventofcode.com/
 
 ### Puzzles Completed
-  - 2015: 1-18
-  - 2016: 1-18
-  - 2017: 1-18
-  - 2018: 1-14 & 16-18
+  - 2015: 1-19
+  - 2016: 1-19
+  - 2017: 1-19
+  - 2018: 1-14 & 16-19
   - 2019: 1-18
   - 2020: 1-20
