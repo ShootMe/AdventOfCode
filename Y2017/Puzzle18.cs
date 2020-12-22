@@ -3,32 +3,32 @@ using System.Collections.Generic;
 using System.ComponentModel;
 namespace AdventOfCode.Y2017 {
     public class Puzzle18 : ASolver {
-        private VM program1, program2;
+        private VM program0, program1;
         public Puzzle18(string input) : base(input) { Name = "Duet"; }
 
         public override void Setup() {
-            program1 = new VM(Input, 0);
-            program2 = new VM(Input, 1);
+            program0 = new VM(Input, 0);
+            program1 = new VM(Input, 1);
         }
 
         [Description("What is the value of the recovered frequency?")]
         public override string SolvePart1() {
-            program1.Run();
-            return $"{program1.OutPort.Value}";
+            program0.Run();
+            return $"{program0.OutPort.Value}";
         }
 
         [Description("How many times did program 1 send a value?")]
         public override string SolvePart2() {
-            program1.Reset();
-            program1.InPort = program2.OutPort;
-            program2.InPort = program1.OutPort;
+            program0.Reset();
+            program0.InPort = program1.OutPort;
+            program1.InPort = program0.OutPort;
 
-            while (program1.Run()) {
-                bool sentData = program1.OutPort.HasData;
-                program2.Run();
-                if (!sentData && !program2.OutPort.HasData) { break; }
+            while (program0.Run()) {
+                bool sentData = program0.OutPort.HasData;
+                program1.Run();
+                if (!sentData && !program1.OutPort.HasData) { break; }
             }
-            return $"{program1.Received}";
+            return $"{program1.Sent}";
         }
 
         private class VM {
