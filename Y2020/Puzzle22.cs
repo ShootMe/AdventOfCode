@@ -30,7 +30,7 @@ namespace AdventOfCode.Y2020 {
             }
         }
 
-        [Description("What is the answer?")]
+        [Description("What is the winning player's score?")]
         public override string SolvePart1() {
             List<int> p1 = new List<int>(player1);
             List<int> p2 = new List<int>(player2);
@@ -53,7 +53,7 @@ namespace AdventOfCode.Y2020 {
             return $"{CalculateScore(p1.Count > 0 ? p1 : p2)}";
         }
 
-        [Description("What is the answer?")]
+        [Description("What is the winning player's score?")]
         public override string SolvePart2() {
             List<int> p1 = new List<int>(player1);
             List<int> p2 = new List<int>(player2);

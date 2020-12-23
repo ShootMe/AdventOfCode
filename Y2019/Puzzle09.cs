@@ -14,14 +14,14 @@ namespace AdventOfCode.Y2019 {
             program = new IntCode(code);
         }
 
-        [Description("What is the answer?")]
+        [Description("What BOOST keycode does it produce?")]
         public override string SolvePart1() {
             program.Reset();
             program.Run(1);
             return $"{program.Output}";
         }
 
-        [Description("What is the answer?")]
+        [Description("What are the coordinates of the distress signal?")]
         public override string SolvePart2() {
             program.Reset();
             program.Run(2);

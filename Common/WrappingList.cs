@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 namespace AdventOfCode.Common {
@@ -29,6 +30,7 @@ namespace AdventOfCode.Common {
         public WrappingList() : this(128) { }
         public WrappingList(int initialCapacity) {
             storage = new WrappingNode[initialCapacity];
+            Array.Fill(storage, empty);
             values = new T[initialCapacity];
             current = empty;
             storageIndex = 0;
@@ -136,7 +138,7 @@ namespace AdventOfCode.Common {
 
             ref WrappingNode node = ref storage[storageIndex];
             if (Count == 1) {
-                node.Set(storage, storageIndex, node.Index, node.Index);
+                node.Set(storage, storageIndex, storageIndex, storageIndex);
             } else {
                 node.Set(storage, storageIndex, current.Index, current.Previous);
                 current = storage[current.Index];
@@ -172,6 +174,7 @@ namespace AdventOfCode.Common {
             storage[current.Previous].Next = current.Next;
 
             int valueIndex = current.Index;
+            storage[current.Index] = empty;
             current = --Count != 0 ? storage[current.Next] : empty;
             return values[valueIndex];
         }
@@ -234,28 +237,39 @@ namespace AdventOfCode.Common {
             values = newValues;
         }
         private void Cleanup() {
-            storageIndex = 0;
-            WrappingNode ptr = current;
-            do {
-                if (ptr.Index != storageIndex) {
-                    T value = values[storageIndex];
-                    values[storageIndex] = values[ptr.Index];
-                    values[ptr.Index] = value;
+            int emptyIndex = -1;
+            for (int i = 0; i < storage.Length; i++) {
+                if (storage[i] == empty) {
+                    emptyIndex = i;
+                    break;
                 }
-
-                storageIndex++;
-                ptr = storage[ptr.Next];
-            } while (ptr != current);
-
-            for (int i = 0; i < storageIndex; i++) {
-                ref WrappingNode node = ref storage[i];
-                node.Index = i;
-                node.Next = i + 1;
-                node.Previous = i - 1;
             }
-            storage[0].Previous = storageIndex - 1;
-            storage[storageIndex - 1].Next = 0;
-            current = storage[0];
+
+            int currentIndex = current.Index;
+            int nextEmptyIndex = -1;
+            for (int i = emptyIndex + 1; i < storage.Length; i++) {
+                if (storage[i] == empty) {
+                    if (nextEmptyIndex < 0) {
+                        nextEmptyIndex = i;
+                    }
+                } else {
+                    values[emptyIndex] = values[i];
+                    ref WrappingNode node = ref storage[emptyIndex];
+                    node = storage[i];
+                    node.Index = emptyIndex;
+                    storage[node.Previous].Next = emptyIndex;
+                    storage[node.Next].Previous = emptyIndex;
+                    storage[i] = empty;
+                    if (i == currentIndex) {
+                        currentIndex = emptyIndex;
+                    }
+                    emptyIndex = nextEmptyIndex > 0 ? nextEmptyIndex : i;
+                    nextEmptyIndex = -1;
+                    i = emptyIndex;
+                }
+            }
+            storageIndex = emptyIndex;
+            current = storage[currentIndex];
         }
         public IEnumerator<T> GetEnumerator() {
             WrappingNode ptr = current;

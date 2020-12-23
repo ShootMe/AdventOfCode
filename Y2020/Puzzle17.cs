@@ -5,7 +5,7 @@ namespace AdventOfCode.Y2020 {
     public class Puzzle17 : ASolver {
         public Puzzle17(string input) : base(input) { Name = "Conway Cubes"; }
 
-        [Description("What is the answer?")]
+        [Description("How many cubes are left in the active state after the sixth cycle?")]
         public override string SolvePart1() {
             Cube cube = new Cube(Input);
             cube.Cycle();
@@ -17,7 +17,7 @@ namespace AdventOfCode.Y2020 {
             return $"{cube.ActiveCount()}";
         }
 
-        [Description("What is the answer?")]
+        [Description("How many cubes are left in the active state after the sixth cycle?")]
         public override string SolvePart2() {
             Cube cube = new Cube(Input, false);
             cube.Cycle();

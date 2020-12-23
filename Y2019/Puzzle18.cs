@@ -70,7 +70,7 @@ namespace AdventOfCode.Y2019 {
             return string.Empty;
         }
 
-        [Description("What is the answer?")]
+        [Description("What is the fewest steps necessary to collect all of the keys?")]
         public override string SolvePart2() {
             HashSet<State> closed = new HashSet<State>(2000000);
             Heap<State> open = new Heap<State>(5000);
