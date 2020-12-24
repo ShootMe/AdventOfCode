@@ -144,6 +144,26 @@ $@"<head>
             return numbers.ToArray();
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint ParseUInt(string number) {
+            return (uint)ParseLong(number, 0, number.Length);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint ParseUInt(string number, int startIndex) {
+            return (uint)ParseLong(number, startIndex, number.Length - startIndex);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint ParseUInt(string number, int startIndex, int length) {
+            return (uint)ParseLong(number, startIndex, length);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint ParseUInt(string number, string startFrom, int startIndex = 0) {
+            return (uint)ParseLong(number, startFrom, startIndex);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint ParseUInt(string number, string startFrom, string endOn, int startIndex = 0) {
+            return (uint)ParseLong(number, startFrom, endOn, startIndex);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ParseInt(string number) {
             return (int)ParseLong(number, 0, number.Length);
         }
