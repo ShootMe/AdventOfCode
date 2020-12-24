@@ -1,6 +1,4 @@
-using AdventOfCode.Common;
 using AdventOfCode.Core;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 namespace AdventOfCode.Y2017 {
@@ -30,7 +28,7 @@ namespace AdventOfCode.Y2017 {
             return $"{count}";
         }
 
-        [Description("What is the answer?")]
+        [Description("After 5 million pairs, what is the judge's final count?")]
         public override string SolvePart2() {
             long genA = generatorA;
             long genB = generatorB;

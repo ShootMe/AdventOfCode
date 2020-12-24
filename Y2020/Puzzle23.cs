@@ -65,14 +65,12 @@ namespace AdventOfCode.Y2020 {
             int val3 = cups[val2];
             cups[current] = cups[val3];
 
-            while (true) {
+            do {
                 current--;
-                if (current != val1 && current != val2 && current != val3 && current != 0) {
-                    break;
-                } else if (current == 0) {
-                    current = cups.Length;
+                if (current == 0) {
+                    current = cups.Length - 1;
                 }
-            }
+            } while (current == val1 || current == val2 || current == val3);
 
             cups[val3] = cups[current];
             cups[current] = val1;

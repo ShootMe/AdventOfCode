@@ -156,7 +156,7 @@ namespace AdventOfCode.Common {
 
             ref WrappingNode node = ref storage[storageIndex];
             if (Count == 1) {
-                node.Set(storage, storageIndex, node.Index, node.Index);
+                node.Set(storage, storageIndex, storageIndex, storageIndex);
             } else {
                 node.Set(storage, storageIndex, current.Next, current.Index);
                 current = storage[current.Index];
