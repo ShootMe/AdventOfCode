@@ -3,6 +3,10 @@ using AdventOfCode.Core;
 namespace AdventOfCode.Common {
     public struct Point : IEquatable<Point> {
         public static Point ZERO { get; } = default;
+        public static Point NORTH { get; } = new Point() { X = 0, Y = -1 };
+        public static Point SOUTH { get; } = new Point() { X = 0, Y = 1 };
+        public static Point EAST { get; } = new Point() { X = 1, Y = 0 };
+        public static Point WEST { get; } = new Point() { X = -1, Y = 0 };
         public int X;
         public int Y;
 

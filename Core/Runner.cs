@@ -89,34 +89,38 @@ namespace AdventOfCode.Core {
             Write($"  ({inputName})", ConsoleColor.Yellow);
             WriteLine();
 
+            Stopwatch sw = new Stopwatch();
+
             string description = GetDescription($"{puzzle.GetType().FullName}.SolvePart1");
             if (!string.IsNullOrEmpty(description)) {
                 Write("    ");
                 WriteLine(description, ConsoleColor.Blue);
+
+                Write("    ");
+                sw.Start();
+                string answer = puzzle.SolvePart1();
+                sw.Stop();
+
+                Write(string.IsNullOrEmpty(answer) ? "N/A" : answer, string.IsNullOrEmpty(answer) || (!string.IsNullOrEmpty(answer1) && !answer.Equals(answer1, StringComparison.OrdinalIgnoreCase)) ? ConsoleColor.Red : string.IsNullOrEmpty(answer1) ? ConsoleColor.Yellow : ConsoleColor.Cyan);
+                WriteTime(sw.ElapsedTicks / 1000 + constructorMS);
             }
 
-            Write("    ");
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-            string answer = puzzle.SolvePart1();
-            sw.Stop();
-
-            Write(string.IsNullOrEmpty(answer) ? "N/A" : answer, string.IsNullOrEmpty(answer) || (!string.IsNullOrEmpty(answer1) && !answer.Equals(answer1, StringComparison.OrdinalIgnoreCase)) ? ConsoleColor.Red : string.IsNullOrEmpty(answer1) ? ConsoleColor.Yellow : ConsoleColor.Cyan);
-            WriteTime(sw.ElapsedTicks / 1000 + constructorMS);
+            
 
             description = GetDescription($"{puzzle.GetType().FullName}.SolvePart2");
             if (!string.IsNullOrEmpty(description)) {
                 Write("    ");
                 WriteLine(description, ConsoleColor.Blue);
+
+                Write("    ");
+                sw.Restart();
+                string answer = puzzle.SolvePart2();
+                sw.Stop();
+
+                Write(string.IsNullOrEmpty(answer) ? "N/A" : answer, string.IsNullOrEmpty(answer) || (!string.IsNullOrEmpty(answer2) && !answer.Equals(answer2, StringComparison.OrdinalIgnoreCase)) ? ConsoleColor.Red : string.IsNullOrEmpty(answer2) ? ConsoleColor.Yellow : ConsoleColor.Cyan);
+                WriteTime(sw.ElapsedTicks / 1000 + constructorMS);
             }
-
-            Write("    ");
-            sw.Restart();
-            answer = puzzle.SolvePart2();
-            sw.Stop();
-
-            Write(string.IsNullOrEmpty(answer) ? "N/A" : answer, string.IsNullOrEmpty(answer) || (!string.IsNullOrEmpty(answer2) && !answer.Equals(answer2, StringComparison.OrdinalIgnoreCase)) ? ConsoleColor.Red : string.IsNullOrEmpty(answer2) ? ConsoleColor.Yellow : ConsoleColor.Cyan);
-            WriteTime(sw.ElapsedTicks / 1000 + constructorMS);
+            
             WriteLine();
         }
         private static void WriteTime(long time) {
