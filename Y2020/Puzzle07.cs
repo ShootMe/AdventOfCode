@@ -35,7 +35,7 @@ namespace AdventOfCode.Y2020 {
                         } else {
                             bags.Add(sub);
                         }
-                        int amount = Tools.ParseInt(item.Substring(index1 + 2, index2 - index1 - 2));
+                        int amount = Tools.ParseInt(item, index1 + 2, index2 - index1 - 2);
                         bag.CanHold.Add(sub, amount);
                     }
 
