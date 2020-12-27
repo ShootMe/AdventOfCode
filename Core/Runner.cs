@@ -23,17 +23,25 @@ namespace AdventOfCode.Core {
                 return left.FullName.CompareTo(right.FullName);
             });
 
+            long totalTime = 0;
             for (int i = 0; i < puzzles.Count; i++) {
                 Type puzzle = puzzles[i];
                 int day = Tools.ParseInt(puzzle.FullName, puzzle.FullName.Length - 2);
                 int pYear = Tools.ParseInt(puzzle.FullName, puzzle.FullName.Length - 13, 4);
 
                 if (pYear != year) {
+                    if (totalTime > 0) {
+                        Write($"--- Total Time:");
+                        WriteTime(totalTime);
+                        WriteLine();
+                    }
+
                     Write($"--- Puzzles");
                     Write($" {pYear}", ConsoleColor.Yellow);
                     WriteLine($" ---");
                     WriteLine();
                     year = pYear;
+                    totalTime = 0;
                 }
 
                 if (dayToRun == 0 || dayToRun == day) {
@@ -77,20 +85,22 @@ namespace AdventOfCode.Core {
                         solver.Setup();
                         sw.Stop();
 
-                        AdventDay(day, solver, sw.ElapsedTicks / 1000, inputName, answer1, answer2);
+                        totalTime += sw.ElapsedTicks / 1000;
+                        totalTime += AdventDay(day, solver, sw.ElapsedTicks / 1000, inputName, answer1, answer2);
                     }
-
                 }
             }
+            Write($"--- Total Time:");
+            WriteTime(totalTime);
         }
-        private static void AdventDay(int day, ASolver puzzle, long constructorMS, string inputName, string answer1, string answer2) {
+        private static long AdventDay(int day, ASolver puzzle, long constructorMS, string inputName, string answer1, string answer2) {
             Write($"Day {day}", ConsoleColor.Yellow);
             if (!string.IsNullOrEmpty(puzzle.Name)) { Write($": {puzzle.Name}"); }
             Write($"  ({inputName})", ConsoleColor.Yellow);
             WriteLine();
 
             Stopwatch sw = new Stopwatch();
-
+            long timeTaken = 0;
             string description = GetDescription($"{puzzle.GetType().FullName}.SolvePart1");
             if (!string.IsNullOrEmpty(description)) {
                 Write("    ");
@@ -103,9 +113,8 @@ namespace AdventOfCode.Core {
 
                 Write(string.IsNullOrEmpty(answer) ? "N/A" : answer, string.IsNullOrEmpty(answer) || (!string.IsNullOrEmpty(answer1) && !answer.Equals(answer1, StringComparison.OrdinalIgnoreCase)) ? ConsoleColor.Red : string.IsNullOrEmpty(answer1) ? ConsoleColor.Yellow : ConsoleColor.Cyan);
                 WriteTime(sw.ElapsedTicks / 1000 + constructorMS);
+                timeTaken += sw.ElapsedTicks / 1000;
             }
-
-            
 
             description = GetDescription($"{puzzle.GetType().FullName}.SolvePart2");
             if (!string.IsNullOrEmpty(description)) {
@@ -119,9 +128,11 @@ namespace AdventOfCode.Core {
 
                 Write(string.IsNullOrEmpty(answer) ? "N/A" : answer, string.IsNullOrEmpty(answer) || (!string.IsNullOrEmpty(answer2) && !answer.Equals(answer2, StringComparison.OrdinalIgnoreCase)) ? ConsoleColor.Red : string.IsNullOrEmpty(answer2) ? ConsoleColor.Yellow : ConsoleColor.Cyan);
                 WriteTime(sw.ElapsedTicks / 1000 + constructorMS);
+                timeTaken += sw.ElapsedTicks / 1000;
             }
-            
+
             WriteLine();
+            return timeTaken;
         }
         private static void WriteTime(long time) {
             WriteLine($" ({(double)time / 10:0.0} ms)", time > 10000 ? ConsoleColor.Red : time > 5000 ? ConsoleColor.Yellow : time > 1000 ? ConsoleColor.Cyan : ConsoleColor.Green);

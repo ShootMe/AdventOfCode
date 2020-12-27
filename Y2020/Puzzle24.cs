@@ -1,6 +1,5 @@
 using AdventOfCode.Common;
 using AdventOfCode.Core;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 namespace AdventOfCode.Y2020 {
@@ -32,7 +31,7 @@ namespace AdventOfCode.Y2020 {
             return $"{count}";
         }
 
-        [Description("What is the answer?")]
+        [Description("How many tiles will be black after 100 days?")]
         public override string SolvePart2() {
             state = new Dictionary<Point, bool>(tiles.Count);
             for (int i = 0; i < 100; i++) {
