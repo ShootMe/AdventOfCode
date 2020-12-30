@@ -29,4 +29,10 @@
         </None>
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="Synacor\challenge.bin">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
