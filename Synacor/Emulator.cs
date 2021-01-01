@@ -44,6 +44,13 @@ namespace AdventOfCode.Synacor {
             uint[] backup = new uint[memory.Length];
             uint[] backupStack = null;
 
+            memory[5451] = (uint)OpCode.JumpTrue; //change jf to jt to change default tele operation
+            memory[5485] = 6; // change set [0] 4 to set [0] 6
+            memory[5487] = REGISTER_0 + 7; //change set [1] 1 to set [7] 25734
+            memory[5488] = 25734;
+            memory[5489] = (uint)OpCode.NoOperation; //change call 6027 to noop
+            memory[5490] = (uint)OpCode.NoOperation;
+
             byte[] solution = Encoding.ASCII.GetBytes(
 @"take tablet
 use tablet
@@ -239,12 +246,6 @@ use mirror
                         if (operand1 > MAX_NUM) {
                             if (solutionIndex < solution.Length) {
                                 memory[operand1] = solution[solutionIndex++];
-                                if (solutionIndex == 552) {
-                                    memory[32768 + 7] = 25734;
-                                    memory[5485] = 6;
-                                    memory[5489] = 21;
-                                    memory[5490] = 21;
-                                }
                             } else {
                                 ConsoleKeyInfo key = Console.ReadKey();
                                 if (key.KeyChar == '\r') {
