@@ -54,81 +54,81 @@ namespace AdventOfCode.Synacor {
             byte[] solution = Encoding.ASCII.GetBytes(
 @"take tablet
 use tablet
-go doorway
-go north
-go north
-go bridge
-go continue
-go down
-go east
+doorway
+north
+north
+bridge
+continue
+down
+east
 take empty lantern
-go west
-go west
-go passage
-go ladder
-go west
-go south
-go north
+west
+west
+passage
+ladder
+west
+south
+north
 take can
 use can
 use lantern
-go west
-go ladder
-go darkness
-go continue
-go west
-go west
-go west
-go west
-go north
+west
+ladder
+darkness
+continue
+west
+west
+west
+west
+north
 take red coin
-go north
-go east
+north
+east
 take concave coin
-go down
+down
 take corroded coin
-go up
-go west
-go west
+up
+west
+west
 take blue coin
-go up
+up
 take shiny coin
-go down
-go east
+down
+east
 use blue coin
 use red coin
 use shiny coin
 use concave coin
 use corroded coin
-go north
+north
 take teleporter
 use teleporter
-go north
-go north
-go north
-go north
-go north
-go north
-go north
-go east
+north
+north
+north
+north
+north
+north
+north
+east
 take journal
-go west
-go north
-go north
+west
+north
+north
 take orb
-go north
-go east
-go east
-go north
-go west
-go south
-go east
-go east
-go west
-go north
-go north
-go east
-go vault
+north
+east
+east
+north
+west
+south
+east
+east
+west
+north
+north
+east
+vault
 take mirror
 use mirror
 ".Replace("\r", ""));
