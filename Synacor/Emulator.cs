@@ -560,17 +560,17 @@ use mirror
                 return r;
             }
             public static uint Calculate(uint m, uint n, uint k) {
-                if (m == 0) { return (n + 1) & 32767; }
-                if (m == 1) { return (n + k + 1) & 32767; }
-                if (m == 2) { return (n * (k + 1) + 2 * k + 1) & 32767; }
-                if (m == 3) {
-                    return (ModPow(k + 1, n) * (k * (k + 3) + 1) + (2 * k + 1) * PowAdd(k + 1, n)) & 32767;
+                switch (m) {
+                    case 0: return (n + 1) & 32767;
+                    case 1: return (n + k + 1) & 32767;
+                    case 2: return (n * (k + 1) + 2 * k + 1) & 32767;
+                    case 3: return (PowAdd(k + 1, n + 3) - 2) & 32767;
+                    default:
+                        if (n > 0) {
+                            return Calculate(m - 1, Calculate(m, n - 1, k), k);
+                        }
+                        return Calculate(m - 1, k, k);
                 }
-
-                if (n > 0) {
-                    return Calculate(m - 1, Calculate(m, n - 1, k), k);
-                }
-                return Calculate(m - 1, k, k);
             }
         }
     }
