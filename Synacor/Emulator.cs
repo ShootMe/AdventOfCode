@@ -131,7 +131,7 @@ east
 vault
 take mirror
 use mirror
-".Replace("\r", ""));
+");
             int solutionIndex = 0;
 
         StartWhile:
@@ -245,7 +245,12 @@ use mirror
                         operand1 = memory[instruction++];
                         if (operand1 > MAX_NUM) {
                             if (solutionIndex < solution.Length) {
-                                memory[operand1] = solution[solutionIndex++];
+                                byte c = solution[solutionIndex++];
+                                if (c != 13) {
+                                    memory[operand1] = c;
+                                } else {
+                                    instruction -= 2;
+                                }
                             } else {
                                 ConsoleKeyInfo key = Console.ReadKey();
                                 if (key.KeyChar == '\r') {
@@ -526,10 +531,8 @@ use mirror
             }
         }
         private class Ackermann {
-            private static readonly uint[] Calculated = new uint[32768];
             public static int FindValue() {
                 for (uint i = 0; i < 32768; i++) {
-                    Reset(i);
                     uint value = Calculate(4, 1, i);
                     if (value == 6) {
                         return (int)i;
@@ -537,30 +540,37 @@ use mirror
                 }
                 return 0;
             }
-            public static void Reset(uint k) {
-                Array.Fill(Calculated, 32768u);
-                for (uint i = 0; i < 32768; i++) {
-                    Calculate(3, i, k);
+            public static uint ModPow(uint n, uint p) {
+                uint r = 1;
+                while (p != 0) {
+                    if ((p & 1) != 0) { r *= n; }
+                    n *= n;
+                    p >>= 1;
                 }
+                return r;
+            }
+            public static uint PowAdd(uint n, uint p) {
+                uint r = 0;
+                uint k = 1;
+                while (p != 0) {
+                    r += k;
+                    k *= n;
+                    p--;
+                }
+                return r;
             }
             public static uint Calculate(uint m, uint n, uint k) {
                 if (m == 0) { return (n + 1) & 32767; }
                 if (m == 1) { return (n + k + 1) & 32767; }
                 if (m == 2) { return (n * (k + 1) + 2 * k + 1) & 32767; }
-
-                uint value = Calculated[n];
-                if (m == 3 && value < 32768) {
-                    return value;
-                }
-                if (n > 0) {
-                    value = Calculate(m - 1, Calculate(m, n - 1, k), k);
-                } else {
-                    value = Calculate(m - 1, k, k);
-                }
                 if (m == 3) {
-                    Calculated[n] = value;
+                    return (ModPow(k + 1, n) * (k * (k + 3) + 1) + (2 * k + 1) * PowAdd(k + 1, n)) & 32767;
                 }
-                return value;
+
+                if (n > 0) {
+                    return Calculate(m - 1, Calculate(m, n - 1, k), k);
+                }
+                return Calculate(m - 1, k, k);
             }
         }
     }
