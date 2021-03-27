@@ -21,7 +21,7 @@ namespace AdventOfCode.Y2020 {
                 string item = items[i];
                 for (int j = 0; j < item.Length; j++) {
                     char s = item[j];
-                    grid[index++] = s == '.' ? 0 : s == 'L' ? 2 : 1;
+                    grid[index++] = s == '.' ? (byte)0 : s == 'L' ? (byte)2 : (byte)1;
                 }
             }
             Array.Copy(grid, tempState, grid.Length);

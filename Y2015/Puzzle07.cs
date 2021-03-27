@@ -176,7 +176,7 @@ namespace AdventOfCode.Y2015 {
                 ICircuit circuit = GetExistingCircuit(Name);
                 ushort? value = GetValue(circuit);
                 if (!value.HasValue) {
-                    value = circuit == null ? 0 : circuit.Evaluate();
+                    value = circuit == null ? (ushort)0 : circuit.Evaluate();
                     AddValue(circuit, value.Value);
                 }
                 return value.Value;

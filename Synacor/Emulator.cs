@@ -158,13 +158,13 @@ use mirror
                         operand1 = memory[instruction++];
                         operand2 = GetValue(memory[instruction++]);
                         operand3 = GetValue(memory[instruction++]);
-                        SetValue(operand1, operand2 == operand3 ? 1 : 0);
+                        SetValue(operand1, operand2 == operand3 ? 1u : 0);
                         break;
                     case OpCode.GreaterThan:
                         operand1 = memory[instruction++];
                         operand2 = GetValue(memory[instruction++]);
                         operand3 = GetValue(memory[instruction++]);
-                        SetValue(operand1, operand2 > operand3 ? 1 : 0);
+                        SetValue(operand1, operand2 > operand3 ? 1u : 0);
                         break;
                     case OpCode.Jump:
                         instruction = GetValue(memory[instruction]);

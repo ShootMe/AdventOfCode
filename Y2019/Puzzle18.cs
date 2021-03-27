@@ -131,7 +131,7 @@ namespace AdventOfCode.Y2019 {
             Validate(right, right.Position, closed, open);
         }
         private void Validate(State state, int position, HashSet<State> closed, Heap<State> open) {
-            byte value = position < 0 || position >= vault.Length ? 255 : vault[position];
+            byte value = position < 0 || position >= vault.Length ? (byte)255 : vault[position];
             bool valid = value != 255 && (value == 254 || value == 253 || value < 26 || (state.Keys & (1u << (value - 26))) != 0);
             if (valid && !closed.Contains(state)) {
                 closed.Add(state);

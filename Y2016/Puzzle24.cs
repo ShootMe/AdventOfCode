@@ -108,7 +108,7 @@ namespace AdventOfCode.Y2016 {
             Validate(right, right.Position, closed, open);
         }
         private void Validate(State state, int position, HashSet<State> closed, Heap<State> open) {
-            byte value = position < 0 || position >= ducting.Length ? 255 : ducting[position];
+            byte value = position < 0 || position >= ducting.Length ? (byte)255 : ducting[position];
             bool valid = value != 255 && (value == 254 || value == 253 || value < 26);
             if (valid && !closed.Contains(state)) {
                 closed.Add(state);

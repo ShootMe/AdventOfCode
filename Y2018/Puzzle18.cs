@@ -20,7 +20,7 @@ namespace AdventOfCode.Y2018 {
                 string item = items[i];
 
                 for (int j = 0; j < item.Length; j++) {
-                    lumberArea[index++] = item[j] == '#' ? 16 : item[j] == '|' ? 1 : 0;
+                    lumberArea[index++] = item[j] == '#' ? (byte)16 : item[j] == '|' ? (byte)1 : (byte)0;
                 }
             }
 

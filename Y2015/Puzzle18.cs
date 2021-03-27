@@ -16,7 +16,7 @@ namespace AdventOfCode.Y2015 {
                 string item = items[i];
 
                 for (int j = 0; j < item.Length; j++) {
-                    lights[index++] = item[j] == '#' ? 1 : 0;
+                    lights[index++] = item[j] == '#' ? (byte)1 : (byte)0;
                 }
             }
 

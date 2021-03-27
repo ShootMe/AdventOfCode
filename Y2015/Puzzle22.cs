@@ -107,7 +107,7 @@ namespace AdventOfCode.Y2015 {
                         if (closed.Add(missile)) { open.Enqueue(missile); }
                     }
                 } else {
-                    next.PlayerHP -= next.Shield > 0 ? 1 : 8;
+                    next.PlayerHP -= next.Shield > 0 ? (short)1 : (short)8;
 
                     if (next.PlayerHP > 0 && closed.Add(next)) {
                         open.Enqueue(next);
