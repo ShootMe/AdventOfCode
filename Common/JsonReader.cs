@@ -33,9 +33,21 @@ namespace AdventOfCode.Common {
                     index = i;
                     break;
                 } else if (c != ',') {
-                    Objects.Add(new JsonItem(this, json, ref i));
+                    Objects.Add(new JsonItem(this, json, false, ref i));
                 }
             }
+        }
+        public JsonClass Find(string key, string value) {
+            for (int i = 0; i < Objects.Count; i++) {
+                JsonClass obj = Objects[i] as JsonClass;
+                if (obj != null) {
+                    JsonObject item = obj[key];
+                    if (item != null && item.ToString().Equals(value, System.StringComparison.OrdinalIgnoreCase)) {
+                        return obj;
+                    }
+                }
+            }
+            return null;
         }
         public override string Value() { return ToString(); }
         public override string ToString() { return ToString(0); }
@@ -90,7 +102,7 @@ namespace AdventOfCode.Common {
                     } else if (c == '[') {
                         Values.Add(new JsonArray(this, json, ref i));
                     } else {
-                        Values.Add(new JsonItem(this, json, ref i));
+                        Values.Add(new JsonItem(this, json, c == '"', ref i));
                     }
                 } else if (c == '}') {
                     index = i;
@@ -106,6 +118,16 @@ namespace AdventOfCode.Common {
                 c = json[++index];
             } while (c != '"' || last == '\\');
             return json.Substring(start + 1, index - start - 1);
+        }
+        public JsonObject this[string key] {
+            get {
+                for (int i = 0; i < Fields.Count; i++) {
+                    if (Fields[i].Equals(key, System.StringComparison.OrdinalIgnoreCase)) {
+                        return Values[i];
+                    }
+                }
+                return null;
+            }
         }
         public override string Value() { return ToString(); }
         public override string ToString() { return ToString(0); }
@@ -137,12 +159,12 @@ namespace AdventOfCode.Common {
     public class JsonItem : JsonObject {
         public string Item { get; set; }
 
-        internal JsonItem(JsonObject parent, string json, ref int index) {
+        internal JsonItem(JsonObject parent, string json, bool requireEndQuote, ref int index) {
             Parent = parent;
             char last = '\0';
             for (int i = index + 1; i < json.Length; i++) {
                 char c = json[i];
-                if (c == ']' || c == '}' || (c == '"' && last != '\\') || c == ',') {
+                if ((requireEndQuote && c == '"' && last != '\\') || (!requireEndQuote && (c == ']' || c == '}' || (c == '"' && last != '\\') || c == ','))) {
                     Item = c == '"' ? json.Substring(index + 1, i - index - 1) : json.Substring(index, i - index).Trim();
                     if (c == '"') {
                         do {
