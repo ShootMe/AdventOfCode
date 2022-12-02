@@ -9,7 +9,9 @@ namespace AdventOfCode.Y2015 {
         private List<LightAction> actions = new();
 
         public override void Setup() {
-            Input.Slice('\n', item => actions.Add(item));
+            foreach (string item in Input.Split('\n')) {
+                actions.Add(item);
+            }
         }
 
         [Description("How many lights are lit?")]

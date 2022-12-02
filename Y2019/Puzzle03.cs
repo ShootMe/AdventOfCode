@@ -20,7 +20,7 @@ namespace AdventOfCode.Y2019 {
             for (int i = 0; i < directions.Length; i++) {
                 string code = directions[i];
                 char dir = code[0];
-                int length = Tools.ParseInt(code.Substring(1));
+                int length = code.Substring(1).ToInt();
 
                 int xAdd = 0;
                 int yAdd = 0;
@@ -46,7 +46,7 @@ namespace AdventOfCode.Y2019 {
             for (int i = 0; i < directions.Length; i++) {
                 string code = directions[i];
                 char dir = code[0];
-                int length = Tools.ParseInt(code.Substring(1));
+                int length = code.Substring(1).ToInt();
 
                 int xAdd = 0;
                 int yAdd = 0;

@@ -12,7 +12,7 @@ namespace AdventOfCode.Y2017 {
             string[] items = Input.Split('\t');
             buckets = new int[items.Length];
             for (int i = 0; i < items.Length; i++) {
-                buckets[i] = Tools.ParseInt(items[i]);
+                buckets[i] = items[i].ToInt();
             }
         }
 

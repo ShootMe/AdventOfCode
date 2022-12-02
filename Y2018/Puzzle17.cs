@@ -19,10 +19,10 @@ namespace AdventOfCode.Y2018 {
                 string item = items[i];
 
                 int index1 = item.IndexOf(',');
-                int value1 = Tools.ParseInt(item, 2, index1 - 2);
+                int value1 = item.Substring(2, index1 - 2).ToInt();
                 int index2 = item.IndexOf('.');
-                int value2 = Tools.ParseInt(item, index1 + 4, index2 - index1 - 4);
-                int value3 = Tools.ParseInt(item, index2 + 2);
+                int value2 = item.Substring(index1 + 4, index2 - index1 - 4).ToInt();
+                int value3 = item.Substring(index2 + 2).ToInt();
 
                 Line line = new Line();
                 if (item[0] == 'x') {

@@ -13,7 +13,7 @@ namespace AdventOfCode.Y2017 {
             for (int i = 0; i < items.Count; i++) {
                 string item = items[i];
                 int index = item.IndexOf(' ');
-                int program = Tools.ParseInt(item, 0, index);
+                int program = item.Substring(0, index).ToInt();
                 programs.Add(program, item.Substring(index + 5).Split(", "));
             }
         }
@@ -49,7 +49,7 @@ namespace AdventOfCode.Y2017 {
                 programs.Remove(program);
 
                 for (int i = 0; i < pipes.Length; i++) {
-                    int value = Tools.ParseInt(pipes[i]);
+                    int value = pipes[i].ToInt();
                     if (seen.Add(value)) {
                         toEvaluate.Enqueue(value);
                     }

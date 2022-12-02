@@ -1,25 +1,38 @@
-﻿using AdventOfCode.Common;
-using AdventOfCode.Core;
+﻿using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 namespace AdventOfCode.Y2015 {
     [Description("Doesn't He Have Intern-Elves For This?")]
     public class Puzzle05 : ASolver {
         [Description("How many strings are nice?")]
         public override string SolvePart1() {
-            int count = Input.Slice('\n').Count(item => Has3Vowels(item) && HasDouble(item) && !HasInvalid(item));
+            int count = 0;
+            foreach (string item in Input.Split('\n')) {
+                if (Has3Vowels(item) && HasDouble(item) && !HasInvalid(item)) {
+                    count++;
+                }
+            }
             return $"{count}";
         }
 
         [Description("How many strings are nice under these new rules?")]
         public override string SolvePart2() {
-            int count = Input.Slice('\n').Count(item => HasPair(item) && HasRepeat(item));
+            int count = 0;
+            foreach (string item in Input.Split('\n')) {
+                if (HasPair(item) && HasRepeat(item)) {
+                    count++;
+                }
+            }
             return $"{count}";
         }
 
         public bool Has3Vowels(string item) {
-            int count = item.Count(c => c switch { 'a' or 'e' or 'i' or 'o' or 'u' => true, _ => false });
+            int count = 0;
+            foreach (char c in item) {
+                if (c switch { 'a' or 'e' or 'i' or 'o' or 'u' => true, _ => false }) {
+                    count++;
+                }
+            }
             return count >= 3;
         }
         public bool HasDouble(string item) {

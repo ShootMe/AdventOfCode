@@ -25,11 +25,11 @@ namespace AdventOfCode.Y2018 {
 
                 int index2 = item.IndexOf(' ', index1 + 1);
                 string value1 = item.Substring(index1 + 1, index2 - index1 - 1);
-                int val1 = Tools.ParseInt(value1);
+                int val1 = value1.ToInt();
 
                 int index3 = item.IndexOf(' ', index2 + 1);
                 string value2 = item.Substring(index2 + 1, index3 - index2 - 1);
-                int val2 = Tools.ParseInt(value2);
+                int val2 = value2.ToInt();
                 string value3 = item.Substring(index3 + 1);
 
                 switch (type) {

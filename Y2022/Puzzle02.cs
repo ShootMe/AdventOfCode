@@ -1,4 +1,3 @@
-using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,9 +13,9 @@ namespace AdventOfCode.Y2022 {
             };
 
             int total = 0;
-            Input.Slice('\n', line => {
+            foreach (string line in Input.Split('\n')) {
                 total += score[line];
-            });
+            }
 
             return $"{total}";
         }
@@ -30,9 +29,9 @@ namespace AdventOfCode.Y2022 {
             };
 
             int total = 0;
-            Input.Slice('\n', line => {
+            foreach (string line in Input.Split('\n')) {
                 total += score[line];
-            });
+            }
 
             return $"{total}";
         }

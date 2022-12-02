@@ -9,12 +9,12 @@ namespace AdventOfCode.Y2016 {
 
         public override void Setup() {
             int id = 1;
-            Input.Slice('\n', item => {
+            foreach (string item in Input.Split('\n')) {
                 string[] splits = item.SplitOn(" has ", " positions;", " at position ");
                 int positions = splits[1].ToInt();
                 int current = splits[3].ToInt();
                 discs.Add(new Disc() { ID = id++, CurrentPosition = current, TotalPositions = positions });
-            });
+            }
             discs.Add(new Disc() { ID = id, CurrentPosition = 0, TotalPositions = 11 });
         }
 

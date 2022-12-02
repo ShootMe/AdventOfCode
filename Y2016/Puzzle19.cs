@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.ComponentModel;
 namespace AdventOfCode.Y2016 {
@@ -5,7 +6,7 @@ namespace AdventOfCode.Y2016 {
     public class Puzzle19 : ASolver {
         [Description("Which Elf gets all the presents?")]
         public override string SolvePart1() {
-            int amount = Tools.ParseInt(Input);
+            int amount = Input.ToInt();
             int powOf2 = 2;
             while (powOf2 < amount) {
                 powOf2 <<= 1;
@@ -30,7 +31,7 @@ namespace AdventOfCode.Y2016 {
 
         [Description("Which Elf now gets all the presents?")]
         public override string SolvePart2() {
-            int amount = Tools.ParseInt(Input);
+            int amount = Input.ToInt();
             int nextPowOf3 = 1;
             while (nextPowOf3 < amount) {
                 nextPowOf3 *= 3;

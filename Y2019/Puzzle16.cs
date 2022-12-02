@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.ComponentModel;
@@ -43,7 +44,7 @@ namespace AdventOfCode.Y2019 {
 
         [Description("What is the eight-digit message embedded in the final output list?")]
         public override string SolvePart2() {
-            int offset = Tools.ParseInt(Input, 0, 7);
+            int offset = Input.Substring(0, 7).ToInt();
             int needed = 10000 - offset / Input.Length;
             offset = offset % Input.Length;
 

@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
@@ -42,12 +43,12 @@ namespace AdventOfCode.Y2017 {
             for (int i = 0; i < actions.Length; i++) {
                 string dance = actions[i];
                 if (dance[0] == 's') {
-                    int value = Tools.ParseInt(dance, 1);
+                    int value = dance.Substring(1).ToInt();
                     Spin(arrangement, value);
                 } else if (dance[0] == 'x') {
                     int index = dance.IndexOf('/');
-                    int value1 = Tools.ParseInt(dance, 1, index - 1);
-                    int value2 = Tools.ParseInt(dance, index + 1);
+                    int value1 = dance.Substring(1, index - 1).ToInt();
+                    int value2 = dance.Substring(index + 1).ToInt();
                     Exchange(arrangement, value1, value2);
                 } else {
                     Partner(arrangement, dance[1], dance[3]);

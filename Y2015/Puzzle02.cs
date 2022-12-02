@@ -3,24 +3,33 @@ using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 namespace AdventOfCode.Y2015 {
     [Description("I Was Told There Would Be No Math")]
     public class Puzzle02 : ASolver {
         private List<Present> boxes = new();
 
         public override void Setup() {
-            Input.Slice('\n', line => boxes.Add(line));
+            foreach (string line in Input.Split('\n')) {
+                boxes.Add(line);
+            }
         }
 
         [Description("How many total square feet of wrapping paper should they order?")]
         public override string SolvePart1() {
-            return $"{boxes.Sum(box => box.AreaNeeded())}";
+            int total = 0;
+            for (int i = 0; i < boxes.Count; i++) {
+                total += boxes[i].AreaNeeded();
+            }
+            return $"{total}";
         }
 
         [Description("How many total feet of ribbon should they order?")]
         public override string SolvePart2() {
-            return $"{boxes.Sum(box => box.RibbonNeeded())}";
+            int total = 0;
+            for (int i = 0; i < boxes.Count; i++) {
+                total += boxes[i].RibbonNeeded();
+            }
+            return $"{total}";
         }
 
         private class Present {

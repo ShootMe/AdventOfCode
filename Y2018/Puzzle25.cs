@@ -56,12 +56,12 @@ namespace AdventOfCode.Y2018 {
 
             public SpacePoint(string input) {
                 int index = input.IndexOf(',');
-                X = Tools.ParseInt(input, 0, index);
+                X = input.Substring(0, index).ToInt();
                 int endIndex = input.IndexOf(',', index + 1);
-                Y = Tools.ParseInt(input, index + 1, endIndex - index - 1);
+                Y = input.Substring(index + 1, endIndex - index - 1).ToInt();
                 index = input.IndexOf(',', endIndex + 1);
-                Z = Tools.ParseInt(input, endIndex + 1, index - endIndex - 1);
-                T = Tools.ParseInt(input, index + 1);
+                Z = input.Substring(endIndex + 1, index - endIndex - 1).ToInt();
+                T = input.Substring(index + 1).ToInt();
                 Parent = this;
             }
             public bool Connects(SpacePoint p) {

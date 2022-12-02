@@ -26,7 +26,7 @@ namespace AdventOfCode.Y2017 {
 
                 ProgramInfo info = new ProgramInfo();
                 info.Name = item.Substring(0, index1 - 1);
-                info.Weight = Tools.ParseInt(item.Substring(index1 + 1, index2 - index1 - 1));
+                info.Weight = item.Substring(index1 + 1, index2 - index1 - 1).ToInt();
 
                 ProgramInfo temp;
                 if (!programs.TryGetValue(info, out temp)) {

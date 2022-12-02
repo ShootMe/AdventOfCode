@@ -66,7 +66,7 @@ namespace AdventOfCode.Y2021 {
                     if (i - start > 0) {
                         nodes[index] = new SnailfishNode() {
                             Level = level,
-                            Value = (byte)Tools.ParseInt(input, start, i - start)
+                            Value = (byte)input.Substring(start, i - start).ToInt()
                         };
                     }
 

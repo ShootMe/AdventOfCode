@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,8 +15,8 @@ namespace AdventOfCode.Y2018 {
         }
 
         private void ParseNode(string[] items, ref int index, Node node) {
-            int nodeCount = Tools.ParseInt(items[index++]);
-            int metaDataCount = Tools.ParseInt(items[index++]);
+            int nodeCount = items[index++].ToInt();
+            int metaDataCount = items[index++].ToInt();
 
             for (int j = 0; j < nodeCount; j++) {
                 Node newNode = new Node();
@@ -24,7 +25,7 @@ namespace AdventOfCode.Y2018 {
             }
 
             for (int j = 0; j < metaDataCount; j++) {
-                int value = Tools.ParseInt(items[index++]);
+                int value = items[index++].ToInt();
                 node.Metadata.Add(value);
             }
         }

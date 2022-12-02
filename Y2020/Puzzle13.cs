@@ -10,12 +10,12 @@ namespace AdventOfCode.Y2020 {
 
         public override void Setup() {
             List<string> items = Input.Lines();
-            timestamp = Tools.ParseInt(items[0]);
+            timestamp = items[0].ToInt();
             string[] ids = items[1].Split(',');
             busIDs = new int[ids.Length];
             for (int i = 0; i < ids.Length; i++) {
                 if (ids[i] != "x") {
-                    busIDs[i] = Tools.ParseInt(ids[i]);
+                    busIDs[i] = ids[i].ToInt();
                 } else {
                     busIDs[i] = 0;
                 }

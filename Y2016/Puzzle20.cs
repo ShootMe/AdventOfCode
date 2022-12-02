@@ -9,10 +9,10 @@ namespace AdventOfCode.Y2016 {
         private List<BlockedRange> blocked = new();
 
         public override void Setup() {
-            Input.Slice('\n', item => {
+            foreach (string item in Input.Split('\n')) {
                 int index = item.IndexOf('-');
                 blocked.Add(new BlockedRange() { Start = item.Substring(0, index).ToUInt(), End = item.Substring(index + 1).ToUInt() });
-            });
+            }
             blocked.Sort();
         }
 

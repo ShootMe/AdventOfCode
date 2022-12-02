@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Core;
+﻿using AdventOfCode.Common;
+using AdventOfCode.Core;
 using System;
 using System.ComponentModel;
 namespace AdventOfCode.Y2017 {
@@ -6,7 +7,7 @@ namespace AdventOfCode.Y2017 {
     public class Puzzle03 : ASolver {
         [Description("How many steps are required to carry the data to the access port?")]
         public override string SolvePart1() {
-            int number = Tools.ParseInt(Input);
+            int number = Input.ToInt();
             int x = 0;
             int y = 0;
             int pos = 1;
@@ -62,7 +63,7 @@ namespace AdventOfCode.Y2017 {
         [Description("What is the first value written that is larger than your puzzle input?")]
         public override string SolvePart2() {
             int[] grid = new int[256];
-            int number = Tools.ParseInt(Input);
+            int number = Input.ToInt();
             int x = 8;
             int y = 8;
             grid[y * 16 + x] = 1;

@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.ComponentModel;
@@ -22,7 +23,7 @@ namespace AdventOfCode.Y2020 {
 
             int last = 0;
             for (int i = 0; i < numbers.Length; i++) {
-                last = Tools.ParseInt(numbers[i]);
+                last = numbers[i].ToInt();
                 if (i + 1 < numbers.Length) {
                     said[last] = i + 1;
                 }

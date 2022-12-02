@@ -22,7 +22,7 @@ namespace AdventOfCode.Y2020 {
             for (int i = 0; i < items.Count; i++) {
                 string item = items[i];
 
-                int amount = Tools.ParseInt(item, 1);
+                int amount = item.Substring(1).ToInt();
                 switch (item[0]) {
                     case 'N': y -= amount; break;
                     case 'S': y += amount; break;
@@ -60,7 +60,7 @@ namespace AdventOfCode.Y2020 {
             for (int i = 0; i < items.Count; i++) {
                 string item = items[i];
 
-                int amount = Tools.ParseInt(item, 1);
+                int amount = item.Substring(1).ToInt();
                 int lastDirection = direction;
                 switch (item[0]) {
                     case 'N': wy -= amount; break;

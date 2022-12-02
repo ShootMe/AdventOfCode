@@ -22,7 +22,7 @@ namespace AdventOfCode.Y2020 {
                 string item = program[i];
                 int index1 = item.IndexOf(' ');
                 string type = item.Substring(0, index1);
-                int value = Tools.ParseInt(item, index1 + 1);
+                int value = item.Substring(index1 + 1).ToInt();
                 if (type == "jmp") {
                     program[i] = $"nop {value}";
                     var result = Run();
@@ -53,7 +53,7 @@ namespace AdventOfCode.Y2020 {
                 string item = program[pointer];
                 int index1 = item.IndexOf(' ');
                 string type = item.Substring(0, index1);
-                int value = Tools.ParseInt(item, index1 + 1);
+                int value = item.Substring(index1 + 1).ToInt();
                 switch (type) {
                     case "acc": acc += value; pointer++; break;
                     case "jmp": pointer += value; break;

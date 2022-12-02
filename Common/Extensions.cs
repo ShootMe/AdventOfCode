@@ -77,47 +77,6 @@ internal static class Extensions {
 
         return lines;
     }
-    public static void Slice(this string input, char splitOn, Action<string> action) {
-        foreach (string value in input.Slice(splitOn)) {
-            action(value);
-        }
-    }
-    public static IEnumerable<string> Slice(this string input, char splitOn) {
-        int start = 0;
-        int end = input.IndexOf(splitOn);
-        while (end > 0) {
-            yield return input[start..end];
-
-            start = end + 1;
-            end = input.IndexOf(splitOn, start);
-        }
-        if (start < input.Length) {
-            yield return input[start..];
-        }
-    }
-    public static void Slice(this string input, string splitOn, Action<string> action) {
-        foreach (string value in input.Slice(splitOn)) {
-            action(value);
-        }
-    }
-    public static IEnumerable<string> Slice(this string input, string splitOn) {
-        int start = 0;
-        int end = input.IndexOf(splitOn);
-        while (end > 0) {
-            yield return input[start..end];
-
-            start = end + splitOn.Length;
-            end = input.IndexOf(splitOn, start);
-        }
-        if (start < input.Length) {
-            yield return input[start..];
-        }
-    }
-    public static void Sections(this string input, Action<string> action) {
-        foreach (string value in input.Sections()) {
-            action(value);
-        }
-    }
     public static IEnumerable<string> Sections(this string input) {
         char last = '\0';
         int start = 0;

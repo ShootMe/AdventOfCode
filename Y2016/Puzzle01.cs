@@ -15,7 +15,7 @@ namespace AdventOfCode.Y2016 {
             for (int i = 0; i < directions.Length; i++) {
                 string dir = directions[i];
                 char d = dir[0];
-                int length = Tools.ParseInt(dir.Substring(1));
+                int length = dir.Substring(1).ToInt();
                 switch (d) {
                     case 'L': angle -= 90; break;
                     case 'R': angle += 90; break;
@@ -45,7 +45,7 @@ namespace AdventOfCode.Y2016 {
             for (int i = 0; i < directions.Length; i++) {
                 string dir = directions[i];
                 char d = dir[0];
-                int length = Tools.ParseInt(dir.Substring(1));
+                int length = dir.Substring(1).ToInt();
                 switch (d) {
                     case 'L': angle -= 90; break;
                     case 'R': angle += 90; break;

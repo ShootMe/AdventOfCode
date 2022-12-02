@@ -16,13 +16,13 @@ namespace AdventOfCode.Y2015 {
             for (int i = 0; i < items.Count; i++) {
                 string item = items[i];
                 int index = item.IndexOf(':');
-                int id = Tools.ParseInt(item, 4, index - 4);
+                int id = item.Substring(4, index - 4).ToInt();
                 string[] things = item.Substring(index + 2).Split(", ");
                 Aunt sue = new Aunt() { ID = id };
                 for (int j = 0; j < things.Length; j++) {
                     string thing = things[j];
                     index = thing.IndexOf(':');
-                    int amount = Tools.ParseInt(thing, index + 2);
+                    int amount = thing.Substring(index + 2).ToInt();
                     sue.Items.Add(new Item() { Name = thing.Substring(0, index), Amount = amount });
                 }
                 aunts.Add(sue);

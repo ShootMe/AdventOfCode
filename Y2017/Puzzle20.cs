@@ -97,17 +97,17 @@ namespace AdventOfCode.Y2017 {
 
             public Particle(string value) {
                 string[] results = value.SplitOn("<", ",", ",", ">", "<", ",", ",", ">", "<", ",", ",", ">");
-                X = Tools.ParseInt(results[1]);
-                Y = Tools.ParseInt(results[2]);
-                Z = Tools.ParseInt(results[3]);
+                X = results[1].ToInt();
+                Y = results[2].ToInt();
+                Z = results[3].ToInt();
 
-                VX = Tools.ParseInt(results[5]);
-                VY = Tools.ParseInt(results[6]);
-                VZ = Tools.ParseInt(results[7]);
+                VX = results[5].ToInt();
+                VY = results[6].ToInt();
+                VZ = results[7].ToInt();
 
-                AX = Tools.ParseInt(results[9]);
-                AY = Tools.ParseInt(results[10]);
-                AZ = Tools.ParseInt(results[11]);
+                AX = results[9].ToInt();
+                AY = results[10].ToInt();
+                AZ = results[11].ToInt();
             }
             public bool Step() {
                 VX += AX;

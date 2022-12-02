@@ -16,8 +16,8 @@ namespace AdventOfCode.Y2018 {
                 string item = items[i];
                 int comma = item.IndexOf(',');
                 points[i] = new Point() {
-                    X = Tools.ParseInt(item.Substring(0, comma)),
-                    Y = Tools.ParseInt(item.Substring(comma + 1))
+                    X = item.Substring(0, comma).ToInt(),
+                    Y = item.Substring(comma + 1).ToInt()
                 };
             }
 

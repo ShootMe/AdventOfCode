@@ -18,7 +18,7 @@ namespace AdventOfCode.Y2020 {
                 string item = items[i++];
                 if (string.IsNullOrEmpty(item)) { break; }
 
-                player1.Add(Tools.ParseInt(item));
+                player1.Add(item.ToInt());
             }
 
             i++;
@@ -26,7 +26,7 @@ namespace AdventOfCode.Y2020 {
                 string item = items[i++];
                 if (string.IsNullOrEmpty(item)) { break; }
 
-                player2.Add(Tools.ParseInt(item));
+                player2.Add(item.ToInt());
             }
         }
 

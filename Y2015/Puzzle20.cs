@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.ComponentModel;
@@ -10,7 +11,7 @@ namespace AdventOfCode.Y2015 {
             int[] counts = new int[] { 0, 0, 0, 0, 0, 0, 0 };
             int current = 1;
 
-            int presents = Tools.ParseInt(Input);
+            int presents = Input.ToInt();
             int maxValue = presents / 10;
 
             while (true) {
@@ -32,7 +33,7 @@ namespace AdventOfCode.Y2015 {
             int[] counts = new int[] { 0, 0, 0, 0, 0, 0, 0 };
             int current = 1;
 
-            int presents = Tools.ParseInt(Input);
+            int presents = Input.ToInt();
             int maxValue = presents / 10;
 
             while (true) {

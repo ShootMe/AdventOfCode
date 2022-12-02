@@ -10,13 +10,12 @@ namespace AdventOfCode.Y2020 {
         [Description("In your batch file, how many passports are valid?")]
         public override string SolvePart1() {
             int validCount = 0;
-            Input.Sections(passport => {
+            foreach (string passport in Input.Sections()) {
                 int count = 0;
 
-                passport.Replace('\n',' ').Slice(' ', field => {
+                foreach (string field in passport.Replace('\n', ' ').Split(' ')) {
                     int index = field.IndexOf(':');
-                    field = field.Substring(0, index);
-                    switch (field) {
+                    switch (field.Substring(0, index)) {
                         case "byr":
                         case "iyr":
                         case "eyr":
@@ -27,12 +26,12 @@ namespace AdventOfCode.Y2020 {
                             count++;
                             break;
                     }
-                });
+                }
 
                 if (count == 7) {
                     validCount++;
                 }
-            });
+            }
             return $"{validCount}";
         }
 
@@ -52,10 +51,10 @@ namespace AdventOfCode.Y2020 {
             };
 
             int validCount = 0;
-            Input.Sections(passport => {
+            foreach (string passport in Input.Sections()) {
                 int count = 0;
 
-                passport.Replace('\n', ' ').Slice(' ', field => {
+                foreach (string field in passport.Replace('\n', ' ').Split(' ')) {
                     int index = field.IndexOf(':');
                     string type = field.Substring(0, index);
                     string value = field.Substring(index + 1);
@@ -63,12 +62,12 @@ namespace AdventOfCode.Y2020 {
                     if (validations.TryGetValue(type, out Func<string, bool> validation) && validation(value)) {
                         count++;
                     }
-                });
+                }
 
                 if (count == 7) {
                     validCount++;
                 }
-            });
+            }
             return $"{validCount}";
         }
     }

@@ -19,12 +19,12 @@ namespace AdventOfCode.Y2021 {
                 if (string.IsNullOrEmpty(item)) { break; }
 
                 string[] values = item.Split(',');
-                dots.Add((Tools.ParseInt(values[0]), Tools.ParseInt(values[1])));
+                dots.Add((values[0].ToInt(), values[1].ToInt()));
             }
 
             while (i < items.Count) {
                 string item = items[i++];
-                folds.Add((item[11] == 'x' ? 1 : -1) * Tools.ParseInt(item, 13));
+                folds.Add((item[11] == 'x' ? 1 : -1) * item.Substring(13).ToInt());
             }
         }
 

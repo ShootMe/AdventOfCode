@@ -1,5 +1,4 @@
-﻿using AdventOfCode.Common;
-using AdventOfCode.Core;
+﻿using AdventOfCode.Core;
 using System.ComponentModel;
 namespace AdventOfCode.Y2015 {
     [Description("Matchsticks")]
@@ -7,22 +6,22 @@ namespace AdventOfCode.Y2015 {
         [Description("What is the number of characters of code minus the number of characters in memory?")]
         public override string SolvePart1() {
             int count = 0;
-            Input.Slice('\n', item => {
+            foreach (string item in Input.Split('\n')) {
                 count += item.Length + 2;
                 int j = 0;
                 while (ParseString(item, ref j)) {
                     count--;
                 }
-            });
+            }
             return $"{count}";
         }
 
         [Description("What is the number of characters to represent the newly encoded strings minus the characters of code?")]
         public override string SolvePart2() {
             int count = 0;
-            Input.Slice('\n', item => {
+            foreach (string item in Input.Split('\n')) {
                 count += EncodedLength(item) - item.Length;
-            });
+            }
             return $"{count}";
         }
 

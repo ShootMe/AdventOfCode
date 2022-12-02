@@ -19,14 +19,14 @@ namespace AdventOfCode.Y2019 {
                 int index1 = last.IndexOf(" => ");
                 int index2 = last.IndexOf(' ', index1 + 4);
                 string name = last.Substring(index2 + 1);
-                int amount = Tools.ParseInt(last, index1 + 4, index2 - index1 - 4);
+                int amount = last.Substring(index1 + 4, index2 - index1 - 4).ToInt();
                 Reaction reaction = new Reaction() { Name = name, Amount = amount };
                 components[^1] = last.Substring(0, index1);
 
                 for (int j = 0; j < components.Length; j++) {
                     string component = components[j];
                     index1 = component.IndexOf(' ');
-                    amount = Tools.ParseInt(component, 0, index1);
+                    amount = component.Substring(0, index1).ToInt();
                     name = component.Substring(index1 + 1);
                     reaction.Components.Add(name, amount);
                 }

@@ -9,7 +9,7 @@ namespace AdventOfCode.Y2015 {
 
         public override void Setup() {
             Person person = null;
-            Input.Slice('\n', item => {
+            foreach (string item in Input.Split('\n')) {
                 string[] splits = item.SplitOn(" would ", " happiness ", " next to ", ".");
                 string name = splits[0];
 
@@ -24,7 +24,7 @@ namespace AdventOfCode.Y2015 {
                 string otherName = splits[3];
 
                 person.Happiness.Add(otherName, amount);
-            });
+            }
         }
 
         [Description("What is the total happiness for the optimal seating arrangement?")]

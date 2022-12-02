@@ -16,38 +16,38 @@ namespace AdventOfCode.Y2018 {
         [Description("How many samples in your puzzle input behave like three or more opcodes?")]
         public override string SolvePart1() {
             int total = 0;
-            foreach(string section in Input.Sections()) {
+            foreach (string section in Input.Sections()) {
                 if (string.IsNullOrEmpty(section)) { break; }
 
                 string[] rows = section.Split('\n');
                 string item = rows[0];
 
                 int index1 = item.IndexOf(',');
-                int a = Tools.ParseInt(item, 9, index1 - 9);
+                int a = item.Substring(9, index1 - 9).ToInt();
                 int index2 = item.IndexOf(',', index1 + 1);
-                int b = Tools.ParseInt(item, index1 + 2, index2 - index1 - 2);
+                int b = item.Substring(index1 + 2, index2 - index1 - 2).ToInt();
                 index1 = item.IndexOf(',', index2 + 1);
-                int c = Tools.ParseInt(item, index2 + 2, index1 - index2 - 2);
+                int c = item.Substring(index2 + 2, index1 - index2 - 2).ToInt();
                 index2 = item.IndexOf(',', index1 + 1);
-                int d = Tools.ParseInt(item, index1 + 2, item.Length - index1 - 3);
+                int d = item.Substring(index1 + 2, item.Length - index1 - 3).ToInt();
 
                 item = rows[1];
                 index1 = item.IndexOf(' ');
-                int v0 = Tools.ParseInt(item, 0, index1);
+                int v0 = item.Substring(0, index1).ToInt();
                 index2 = item.IndexOf(' ', index1 + 1);
-                int v1 = Tools.ParseInt(item, index1 + 1, index2 - index1 - 1);
+                int v1 = item.Substring(index1 + 1, index2 - index1 - 1).ToInt();
                 index1 = item.IndexOf(' ', index2 + 1);
-                int v2 = Tools.ParseInt(item, index2 + 1, index1 - index2 - 1);
-                int v3 = Tools.ParseInt(item, index1 + 1);
+                int v2 = item.Substring(index2 + 1, index1 - index2 - 1).ToInt();
+                int v3 = item.Substring(index1 + 1).ToInt();
 
                 item = rows[2];
                 index1 = item.IndexOf(',');
-                int a2 = Tools.ParseInt(item, 9, index1 - 9);
+                int a2 = item.Substring(9, index1 - 9).ToInt();
                 index2 = item.IndexOf(',', index1 + 1);
-                int b2 = Tools.ParseInt(item, index1 + 2, index2 - index1 - 2);
+                int b2 = item.Substring(index1 + 2, index2 - index1 - 2).ToInt();
                 index1 = item.IndexOf(',', index2 + 1);
-                int c2 = Tools.ParseInt(item, index2 + 2, index1 - index2 - 2);
-                int d2 = Tools.ParseInt(item, index1 + 2, item.Length - index1 - 3);
+                int c2 = item.Substring(index2 + 2, index1 - index2 - 2).ToInt();
+                int d2 = item.Substring(index1 + 2, item.Length - index1 - 3).ToInt();
 
                 int r1 = v1 == 0 ? a : v1 == 1 ? b : v1 == 2 ? c : d;
                 int r2 = v2 == 0 ? a : v2 == 1 ? b : v2 == 2 ? c : d;
@@ -109,14 +109,14 @@ namespace AdventOfCode.Y2018 {
             bool doCode = false;
             foreach (string section in Input.Sections()) {
                 if (doCode) {
-                    section.Slice('\n', item => {
+                    foreach (string item in section.Split('\n')) {
                         int index1 = item.IndexOf(' ');
-                        int v0 = Tools.ParseInt(item, 0, index1);
+                        int v0 = item.Substring(0, index1).ToInt();
                         int index2 = item.IndexOf(' ', index1 + 1);
-                        int v1 = Tools.ParseInt(item, index1 + 1, index2 - index1 - 1);
+                        int v1 = item.Substring(index1 + 1, index2 - index1 - 1).ToInt();
                         index1 = item.IndexOf(' ', index2 + 1);
-                        int v2 = Tools.ParseInt(item, index2 + 1, index1 - index2 - 1);
-                        int v3 = Tools.ParseInt(item, index1 + 1);
+                        int v2 = item.Substring(index2 + 1, index1 - index2 - 1).ToInt();
+                        int v3 = item.Substring(index1 + 1).ToInt();
 
                         int r1 = v1 == 0 ? a : v1 == 1 ? b : v1 == 2 ? c : d;
                         int r2 = v2 == 0 ? a : v2 == 1 ? b : v2 == 2 ? c : d;
@@ -131,7 +131,7 @@ namespace AdventOfCode.Y2018 {
                         } else {
                             d = result;
                         }
-                    });
+                    }
                     break;
                 }
 

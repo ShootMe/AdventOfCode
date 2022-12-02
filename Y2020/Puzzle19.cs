@@ -70,7 +70,7 @@ namespace AdventOfCode.Y2020 {
 
             public Rule(string rules) {
                 int index1 = rules.IndexOf(':');
-                ID = Tools.ParseInt(rules, 0, index1);
+                ID = rules.Substring(0, index1).ToInt();
 
                 Rules1 = new List<int>();
                 Rules2 = new List<int>();
@@ -89,7 +89,7 @@ namespace AdventOfCode.Y2020 {
                     if (index3 < 0) { index3 = rules.Length; }
 
                     if (index3 <= index2) {
-                        Rules1.Add(Tools.ParseInt(rules, index1 + 1, index3 - index1 - 1));
+                        Rules1.Add(rules.Substring(index1 + 1, index3 - index1 - 1).ToInt());
                     }
                     index1 = index3;
                 }
@@ -101,7 +101,7 @@ namespace AdventOfCode.Y2020 {
                     if (index3 < 0) { index3 = rules.Length; }
 
                     if (index3 <= index2) {
-                        Rules2.Add(Tools.ParseInt(rules, index1 + 1, index3 - index1 - 1));
+                        Rules2.Add(rules.Substring(index1 + 1, index3 - index1 - 1).ToInt());
                     }
                     index1 = index3;
                 }

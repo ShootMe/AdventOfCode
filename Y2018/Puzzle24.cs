@@ -142,11 +142,11 @@ namespace AdventOfCode.Y2018 {
 
             public Group(string input) {
                 int index = input.IndexOf(" units ");
-                Units = Tools.ParseInt(input, 0, index);
+                Units = input.Substring(0, index).ToInt();
 
                 index = input.IndexOf(" with ", index);
                 int endIndex = input.IndexOf(" hit ", index);
-                Health = Tools.ParseInt(input, index + 6, endIndex - index - 6);
+                Health = input.Substring(index + 6, endIndex - index - 6).ToInt();
 
                 index = input.IndexOf('(', endIndex);
                 if (index > 0) {
@@ -158,13 +158,13 @@ namespace AdventOfCode.Y2018 {
 
                 index = input.IndexOf(" does ", endIndex);
                 endIndex = input.IndexOf(' ', index + 6);
-                Damage = Tools.ParseInt(input, index + 6, endIndex - index - 6);
+                Damage = input.Substring(index + 6, endIndex - index - 6).ToInt();
 
                 index = input.IndexOf(' ', endIndex + 1);
                 DamageType = input.Substring(endIndex + 1, index - endIndex - 1);
 
                 index = input.IndexOf("initiative", index);
-                Initiative = Tools.ParseInt(input, index + 11);
+                Initiative = input.Substring(index + 11).ToInt();
             }
             private void EnumerateTypes(string input, string type, ref int index) {
                 int endIndex = input.IndexOfAny(new char[] { ',', ';', ')' }, index);

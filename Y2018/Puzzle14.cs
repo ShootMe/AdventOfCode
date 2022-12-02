@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,7 +7,7 @@ namespace AdventOfCode.Y2018 {
     public class Puzzle14 : ASolver {
         [Description("What are the scores of the ten recipes after your number of recipes?")]
         public override string SolvePart1() {
-            int total = Tools.ParseInt(Input) + 10;
+            int total = Input.ToInt() + 10;
 
             List<int> recipes = new List<int>();
             recipes.Add(3);

@@ -4,7 +4,6 @@ using System.Configuration;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 namespace AdventOfCode.Core {
     public static class Tools {
@@ -104,9 +103,9 @@ namespace AdventOfCode.Y{year} {{
         private List<int> numbers = new();
 
         public override void Setup() {{
-            Input.Slice('\n', line => {{
+            foreach (string line in Input.Split('\n')) {{
                 numbers.Add(line.ToInt());
-            }});
+            }}
         }}
 
         [Description(""{part1Question}"")]
@@ -159,37 +158,6 @@ namespace AdventOfCode.Y{year} {{
                 return $"Correct";
             }
             return "Unknown";
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int ParseInt(string number) {
-            return (int)ParseLong(number, 0, number.Length);
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int ParseInt(string number, int startIndex) {
-            return (int)ParseLong(number, startIndex, number.Length - startIndex);
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int ParseInt(string number, int startIndex, int length) {
-            return (int)ParseLong(number, startIndex, length);
-        }
-        public static long ParseLong(string number, int startIndex, int length) {
-            if (length <= 0) { return 0; }
-
-            int i = 0;
-            while (i < length && !char.IsDigit(number[i + startIndex])) {
-                i++;
-            }
-
-            bool isNegative = i > 0 ? number[i + startIndex - 1] == '-' : false;
-            long result = 0;
-            while (i < length) {
-                byte value = (byte)number[i + startIndex];
-                if (value >= 0x30 && value <= 0x39) {
-                    result = result * 10 + value - 0x30;
-                }
-                i++;
-            }
-            return isNegative ? -result : result;
         }
     }
 }

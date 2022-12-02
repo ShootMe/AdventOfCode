@@ -14,8 +14,8 @@ namespace AdventOfCode.Y2017 {
             for (int i = 0; i < items.Count; i++) {
                 string item = items[i];
                 int index = item.IndexOf(": ");
-                int depth = Tools.ParseInt(item, 0, index);
-                int range = Tools.ParseInt(item, index + 2);
+                int depth = item.Substring(0, index).ToInt();
+                int range = item.Substring(index + 2).ToInt();
                 seen.Add(depth);
                 scanners.Add(new Scanner() { Depth = depth, Range = range, Length = range == 1 ? 1 : (range - 1) * 2 });
             }

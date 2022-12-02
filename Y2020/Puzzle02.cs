@@ -50,8 +50,8 @@ namespace AdventOfCode.Y2020 {
                 int index2 = line.IndexOf(' ');
                 int index3 = line.IndexOf(':');
                 PasswordEntry entry = new PasswordEntry();
-                entry.Low = Tools.ParseInt(line, 0, index1);
-                entry.High = Tools.ParseInt(line, index1 + 1, index2 - index1 - 1);
+                entry.Low = line.Substring(0, index1).ToInt();
+                entry.High = line.Substring(index1 + 1, index2 - index1 - 1).ToInt();
                 entry.Char = line[index2 + 1];
                 entry.Entry = line.Substring(index3 + 2);
                 return entry;

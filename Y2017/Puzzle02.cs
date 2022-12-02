@@ -20,7 +20,7 @@ namespace AdventOfCode.Y2017 {
                 int min = int.MaxValue;
                 int max = 0;
                 for (int j = 0; j < numbers.Length; j++) {
-                    int number = Tools.ParseInt(numbers[j]);
+                    int number = numbers[j].ToInt();
 
                     if (number > max) {
                         max = number;
@@ -43,12 +43,12 @@ namespace AdventOfCode.Y2017 {
                 string[] numbers = row.Split('\t', System.StringSplitOptions.RemoveEmptyEntries);
 
                 for (int j = 0; j < numbers.Length; j++) {
-                    int number1 = Tools.ParseInt(numbers[j]);
+                    int number1 = numbers[j].ToInt();
 
                     for (int k = 0; k < numbers.Length; k++) {
                         if (j == k) { continue; }
 
-                        int number2 = Tools.ParseInt(numbers[k]);
+                        int number2 = numbers[k].ToInt();
 
                         if (number2 != 0 && number1 != 0 && (number1 % number2) == 0) {
                             sum += number1 / number2;

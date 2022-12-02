@@ -1,5 +1,4 @@
-﻿using AdventOfCode.Common;
-using AdventOfCode.Core;
+﻿using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,7 +6,9 @@ namespace AdventOfCode.Y2015 {
     [Description("Some Assembly Required")]
     public class Puzzle07 : ASolver {
         public override void Setup() {
-            Input.Slice('\n', AddCircuit);
+            foreach (string item in Input.Split('\n')) {
+                AddCircuit(item);
+            }
         }
 
         [Description("What signal is ultimately provided to wire a?")]

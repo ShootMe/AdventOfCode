@@ -18,8 +18,8 @@ namespace AdventOfCode.Y2016 {
                 string item = items[i];
                 if (item.IndexOf("rect", StringComparison.OrdinalIgnoreCase) == 0) {
                     int index = item.IndexOf('x');
-                    int w = Tools.ParseInt(item.Substring(5, index - 5));
-                    int h = Tools.ParseInt(item.Substring(index + 1));
+                    int w = item.Substring(5, index - 5).ToInt();
+                    int h = item.Substring(index + 1).ToInt();
                     for (int j = 0; j < h; j++) {
                         index = j * 50;
                         for (int k = 0; k < w; k++) {
@@ -28,9 +28,9 @@ namespace AdventOfCode.Y2016 {
                     }
                 } else if (item.IndexOf(" column ", StringComparison.OrdinalIgnoreCase) > 0) {
                     int index = item.IndexOf(' ', 16);
-                    int x = Tools.ParseInt(item.Substring(16, index - 16)) + 250;
+                    int x = item.Substring(16, index - 16).ToInt() + 250;
                     index = item.IndexOf("by", index);
-                    int amount = 6 - (Tools.ParseInt(item.Substring(index + 3)) % 6);
+                    int amount = 6 - (item.Substring(index + 3).ToInt() % 6);
 
                     for (int j = 5; j >= 0; j--) {
                         index = ((j + amount) % 6) * 50 + x - 250;
@@ -43,9 +43,9 @@ namespace AdventOfCode.Y2016 {
                     }
                 } else if (item.IndexOf(" row ", StringComparison.OrdinalIgnoreCase) > 0) {
                     int index = item.IndexOf(' ', 13);
-                    int y = Tools.ParseInt(item.Substring(13, index - 13)) * 50 + 49;
+                    int y = item.Substring(13, index - 13).ToInt() * 50 + 49;
                     index = item.IndexOf("by", index);
-                    int amount = 50 - (Tools.ParseInt(item.Substring(index + 3)) % 50);
+                    int amount = 50 - (item.Substring(index + 3).ToInt() % 50);
 
                     for (int j = 49; j >= 0; j--) {
                         index = ((j + amount) % 50) + y - 49;

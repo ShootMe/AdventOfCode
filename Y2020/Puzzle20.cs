@@ -11,9 +11,9 @@ namespace AdventOfCode.Y2020 {
         private Tile[] image;
 
         public override void Setup() {
-            Input.Sections(items => {
+            foreach (string items in Input.Sections()) {
                 string[] lines = items.Split('\n');
-                int id = Tools.ParseInt(lines[0], 5, 4);
+                int id = lines[0].Substring(5, 4).ToInt();
 
                 Tile tile = new Tile() { ID = id, Size = lines[1].Length, Variation = 0 };
                 tile.Data = new bool[tile.Size * tile.Size];
@@ -26,7 +26,7 @@ namespace AdventOfCode.Y2020 {
                 }
 
                 tiles.Add(tile);
-            });
+            }
 
             imageSize = (int)Math.Sqrt(tiles.Count);
         }

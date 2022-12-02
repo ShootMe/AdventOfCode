@@ -8,11 +8,13 @@ namespace AdventOfCode.Y2022 {
         private List<int> elves = new List<int>();
 
         public override void Setup() {
-            Input.Sections(value => {
+            foreach (string value in Input.Sections()) {
                 int total = 0;
-                value.Slice('\n', calories => total += calories.ToInt());
+                foreach (string calories in value.Split('\n')) {
+                    total += calories.ToInt();
+                }
                 elves.Add(total);
-            });
+            }
 
             elves.Sort((left, right) => { return right.CompareTo(left); });
         }

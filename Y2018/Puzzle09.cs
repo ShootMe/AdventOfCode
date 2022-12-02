@@ -7,11 +7,11 @@ namespace AdventOfCode.Y2018 {
         [Description("What is the winning Elf's score?")]
         public override string SolvePart1() {
             int index1 = Input.IndexOf(' ');
-            int players = Tools.ParseInt(Input, 0, index1);
+            int players = Input.Substring(0, index1).ToInt();
 
             index1 = Input.IndexOf("worth");
             int index2 = Input.IndexOf(" points");
-            int lastMarble = Tools.ParseInt(Input, index1 + 6, index2 - index1 - 6);
+            int lastMarble = Input.Substring(index1 + 6, index2 - index1 - 6).ToInt();
 
             return $"{GetBestScore(lastMarble, players)}";
         }
@@ -19,11 +19,11 @@ namespace AdventOfCode.Y2018 {
         [Description("What would the winning Elf's score be if the last marble were 100 times larger?")]
         public override string SolvePart2() {
             int index1 = Input.IndexOf(' ');
-            int players = Tools.ParseInt(Input, 0, index1);
+            int players = Input.Substring(0, index1).ToInt();
 
             index1 = Input.IndexOf("worth");
             int index2 = Input.IndexOf(" points");
-            int lastMarble = Tools.ParseInt(Input, index1 + 6, index2 - index1 - 6);
+            int lastMarble = Input.Substring(index1 + 6, index2 - index1 - 6).ToInt();
 
             return $"{GetBestScore(lastMarble * 100, players)}";
         }

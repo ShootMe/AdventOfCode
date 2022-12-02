@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.ComponentModel;
 namespace AdventOfCode.Y2019 {
@@ -5,8 +6,8 @@ namespace AdventOfCode.Y2019 {
     public class Puzzle04 : ASolver {
         [Description("How many different passwords in the range given meet these criteria?")]
         public override string SolvePart1() {
-            int start = Tools.ParseInt(Input.Substring(0, 6));
-            int end = Tools.ParseInt(Input.Substring(7, 6));
+            int start = Input.Substring(0, 6).ToInt();
+            int end = Input.Substring(7, 6).ToInt();
             int count = 0;
 
             for (int i = start; i <= end; i++) {
@@ -19,8 +20,8 @@ namespace AdventOfCode.Y2019 {
 
         [Description("How many different passwords in the range meet all of the criteria?")]
         public override string SolvePart2() {
-            int start = Tools.ParseInt(Input.Substring(0, 6));
-            int end = Tools.ParseInt(Input.Substring(7, 6));
+            int start = Input.Substring(0, 6).ToInt();
+            int end = Input.Substring(7, 6).ToInt();
             int count = 0;
 
             for (int i = start; i <= end; i++) {

@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,11 +11,11 @@ namespace AdventOfCode.Y2018 {
         public override void Setup() {
             int indexDepth = Input.IndexOf("depth: ");
             int indexTarget = Input.IndexOf("target: ");
-            depth = Tools.ParseInt(Input, indexDepth + 7, indexTarget - indexDepth - 7);
+            depth = Input.Substring(indexDepth + 7, indexTarget - indexDepth - 7).ToInt();
 
             int indexY = Input.IndexOf(',', indexTarget);
-            targetX = Tools.ParseInt(Input, indexTarget + 8, indexY - indexTarget - 8);
-            targetY = Tools.ParseInt(Input, indexY + 1);
+            targetX = Input.Substring(indexTarget + 8, indexY - indexTarget - 8).ToInt();
+            targetY = Input.Substring(indexY + 1).ToInt();
         }
 
         private int ErosionLevel(int x, int y) {

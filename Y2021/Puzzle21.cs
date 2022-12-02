@@ -9,8 +9,8 @@ namespace AdventOfCode.Y2021 {
         private int P1, P2;
         public override void Setup() {
             List<string> items = Input.Lines();
-            P1 = Tools.ParseInt(items[0], 28);
-            P2 = Tools.ParseInt(items[1], 28);
+            P1 = items[0].Substring(28).ToInt();
+            P2 = items[1].Substring(28).ToInt();
         }
 
         [Description("What do you get if you multiply the score of the losing player by the rolls of the die?")]

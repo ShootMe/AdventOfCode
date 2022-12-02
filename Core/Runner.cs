@@ -51,38 +51,21 @@ namespace AdventOfCode.Core {
                     for (int j = 0; j < files.Length; j++) {
                         string filePath = files[j];
                         string input = File.ReadAllText(filePath);
-                        if (input.IndexOf("\r") >= 0) {
+                        if (input.IndexOf('\r') >= 0) {
                             input = input.Replace("\r", string.Empty);
                             File.WriteAllText(filePath, input);
                         }
 
                         int dotIndex = filePath.LastIndexOf('.');
-                        int index1 = filePath.IndexOf($"puzzle{day:00}");
-                        int index2 = filePath.IndexOf('-', index1);
-                        int index3 = filePath.IndexOf('-', index2 + 1);
-                        int index4 = filePath.IndexOf('-', index3 + 1);
+                        int indexPart1 = filePath.IndexOf('-');
+                        int indexPart2 = filePath.IndexOf('-', indexPart1 + 1);
+                        indexPart2 = indexPart2 < 0 ? dotIndex : indexPart2;
+                        int indexDesc = filePath.IndexOf('-', indexPart2 + 1);
+                        indexDesc = indexDesc < 0 ? dotIndex : indexDesc;
 
-                        if (index3 < 0) {
-                            index3 = dotIndex;
-                        }
-                        if (index4 < 0) {
-                            index4 = dotIndex;
-                        }
-
-                        string answer1 = string.Empty;
-                        if (index2 > 0) {
-                            answer1 = filePath.Substring(index2 + 1, index3 - index2 - 1);
-                        }
-
-                        string answer2 = string.Empty;
-                        if (index3 < index4) {
-                            answer2 = filePath.Substring(index3 + 1, index4 - index3 - 1);
-                        }
-
-                        string inputName = "Given";
-                        if (index4 < dotIndex) {
-                            inputName = filePath.Substring(index4 + 1, dotIndex - index4 - 1);
-                        }
+                        string answer1 = indexPart1 > 0 ? filePath.Substring(indexPart1 + 1, indexPart2 - indexPart1 - 1) : string.Empty;
+                        string answer2 = indexPart2 < indexDesc ? filePath.Substring(indexPart2 + 1, indexDesc - indexPart2 - 1) : string.Empty;
+                        string inputName = indexDesc >= dotIndex ? "Given" : filePath.Substring(indexDesc + 1, dotIndex - indexDesc - 1);
 
                         string onlyRunInput = GetInputName(puzzle);
                         if (string.IsNullOrEmpty(onlyRunInput) || onlyRunInput == inputName) {
@@ -94,8 +77,8 @@ namespace AdventOfCode.Core {
                             solver.Setup();
                             sw.Stop();
 
-                            totalTime += sw.ElapsedTicks / 1000;
-                            totalTime += AdventDay(pYear, day, solver, sw.ElapsedTicks / 1000, inputName, answer1, answer2);
+                            totalTime += sw.ElapsedTicks / 100;
+                            totalTime += AdventDay(pYear, day, solver, sw.ElapsedTicks / 100, inputName, answer1, answer2);
                         }
                     }
                 }
@@ -110,7 +93,7 @@ namespace AdventOfCode.Core {
             string puzzleName = GetDescription(puzzleType);
             if (!string.IsNullOrEmpty(puzzleName)) { Write($": {puzzleName}"); }
             Write($"  ({inputName})", ConsoleColor.Yellow);
-            Write($" (Setup {(double)constructorMS / 10:0.0} ms)", ConsoleColor.Gray);
+            Write($" (Setup {(double)constructorMS / 100:0.00} ms)", ConsoleColor.Gray);
             WriteLine();
 
             Stopwatch sw = new Stopwatch();
@@ -126,8 +109,8 @@ namespace AdventOfCode.Core {
                 sw.Stop();
 
                 Write(string.IsNullOrEmpty(answer) ? "N/A" : answer, string.IsNullOrEmpty(answer) || (!string.IsNullOrEmpty(answer1) && !answer.Equals(answer1, StringComparison.OrdinalIgnoreCase)) ? ConsoleColor.Red : string.IsNullOrEmpty(answer1) ? ConsoleColor.Yellow : ConsoleColor.Cyan);
-                WriteTime(sw.ElapsedTicks / 1000);
-                timeTaken += sw.ElapsedTicks / 1000;
+                WriteTime(sw.ElapsedTicks / 100);
+                timeTaken += sw.ElapsedTicks / 100;
 
                 if (inputName == "Given" && string.IsNullOrEmpty(answer1) && !string.IsNullOrEmpty(answer) && ShouldSubmit(puzzleType, "SolvePart1")) {
                     WriteSolutionResult(year, day, 1, answer);
@@ -145,8 +128,8 @@ namespace AdventOfCode.Core {
                 sw.Stop();
 
                 Write(string.IsNullOrEmpty(answer) ? "N/A" : answer, string.IsNullOrEmpty(answer) || (!string.IsNullOrEmpty(answer2) && !answer.Equals(answer2, StringComparison.OrdinalIgnoreCase)) ? ConsoleColor.Red : string.IsNullOrEmpty(answer2) ? ConsoleColor.Yellow : ConsoleColor.Cyan);
-                WriteTime(sw.ElapsedTicks / 1000);
-                timeTaken += sw.ElapsedTicks / 1000;
+                WriteTime(sw.ElapsedTicks / 100);
+                timeTaken += sw.ElapsedTicks / 100;
 
                 if (inputName == "Given" && string.IsNullOrEmpty(answer2) && !string.IsNullOrEmpty(answer) && ShouldSubmit(puzzleType, "SolvePart2")) {
                     WriteSolutionResult(year, day, 2, answer);
@@ -163,18 +146,18 @@ namespace AdventOfCode.Core {
         }
         private static void WriteTime(long time) {
             Color cc;
-            if (time >= 20000) {
+            if (time >= 200000) {
                 cc = Color.FromArgb(255, 0, 0);
-            } else if (time >= 5000) {
-                int green = -(int)(255d * (time - 5000) / 15000d);
+            } else if (time >= 50000) {
+                int green = -(int)(255d * (time - 50000) / 150000d);
                 cc = Color.FromArgb(255, 255 + green, 0);
             } else {
-                int red = (int)(255d * time / 5000d);
+                int red = (int)(255d * time / 50000d);
                 cc = Color.FromArgb(red, 255, 0);
             }
 
             bool bold = false;
-            Console.WriteLine($"\x1b[38;2;{cc.R};{cc.G};{cc.B}{(bold ? ";1" : "")}m{$" ({(double)time / 10:0.0} ms)"}\x1b[0m");
+            Console.WriteLine($"\x1b[38;2;{cc.R};{cc.G};{cc.B}{(bold ? ";1" : "")}m{$" ({(double)time / 100:0.00} ms)"}\x1b[0m");
         }
         public static void Write(string text, ConsoleColor foreColor = ConsoleColor.White, ConsoleColor backColor = ConsoleColor.Black) {
             ConsoleColor currentFore = Console.ForegroundColor;

@@ -8,7 +8,7 @@ namespace AdventOfCode.Y2015 {
         private Dictionary<string, Dictionary<string, int>> distances = new();
 
         public override void Setup() {
-            Input.Slice('\n', item => {
+            foreach (string item in Input.Split('\n')) {
                 string[] splits = item.SplitOn(" to ", " = ");
                 string city1 = splits[0];
                 string city2 = splits[1];
@@ -26,7 +26,7 @@ namespace AdventOfCode.Y2015 {
                     distances.Add(city2, subDistances);
                 }
                 subDistances.Add(city1, distance);
-            });
+            }
         }
 
         [Description("What is the distance of the shortest route?")]

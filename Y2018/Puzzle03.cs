@@ -68,11 +68,11 @@ namespace AdventOfCode.Y2018 {
                 Claim claim = new Claim();
 
                 string[] splits = value.SplitOn(" @ ", ",", ": ", "x");
-                claim.ID = Tools.ParseInt(splits[0], 1);
-                claim.X = Tools.ParseInt(splits[1]);
-                claim.Y = Tools.ParseInt(splits[2]);
-                claim.W = Tools.ParseInt(splits[3]);
-                claim.H = Tools.ParseInt(splits[4]);
+                claim.ID = splits[0].Substring(1).ToInt();
+                claim.X = splits[1].ToInt();
+                claim.Y = splits[2].ToInt();
+                claim.W = splits[3].ToInt();
+                claim.H = splits[4].ToInt();
 
                 return claim;
             }

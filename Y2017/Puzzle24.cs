@@ -120,8 +120,8 @@ namespace AdventOfCode.Y2017 {
             public int Port1, Port2;
             public Component(string value) {
                 int index = value.IndexOf('/');
-                Port1 = Tools.ParseInt(value, 0, index);
-                Port2 = Tools.ParseInt(value, index + 1);
+                Port1 = value.Substring(0, index).ToInt();
+                Port2 = value.Substring(index + 1).ToInt();
             }
 
             public int Strength() {

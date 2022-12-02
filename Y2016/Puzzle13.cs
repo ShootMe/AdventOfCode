@@ -10,7 +10,7 @@ namespace AdventOfCode.Y2016 {
         private bool[] grid;
 
         public override void Setup() {
-            int id = Tools.ParseInt(Input);
+            int id = Input.ToInt();
             grid = new bool[100 * 100];
             int width = 100;
             int x = 0;

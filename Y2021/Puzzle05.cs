@@ -18,11 +18,11 @@ namespace AdventOfCode.Y2021 {
             for (int i = 0; i < items.Count; i++) {
                 string item = items[i];
                 string[] splits = item.SplitOn(",", " -> ", ",");
-                int x1 = Tools.ParseInt(splits[0]);
-                int y1 = Tools.ParseInt(splits[1]);
+                int x1 = splits[0].ToInt();
+                int y1 = splits[1].ToInt();
 
-                int x2 = Tools.ParseInt(splits[2]);
-                int y2 = Tools.ParseInt(splits[3]);
+                int x2 = splits[2].ToInt();
+                int y2 = splits[3].ToInt();
 
                 if (x1 < minX) { minX = x1; }
                 if (x2 < minX) { minX = x2; }

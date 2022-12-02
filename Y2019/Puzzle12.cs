@@ -82,15 +82,15 @@ namespace AdventOfCode.Y2019 {
             public Moon(string position) {
                 int index1 = position.IndexOf('=');
                 int index2 = position.IndexOf(',', index1);
-                X = Tools.ParseInt(position, index1 + 1, index2 - index1 - 1);
+                X = position.Substring(index1 + 1, index2 - index1 - 1).ToInt();
 
                 index1 = position.IndexOf('=', index2);
                 index2 = position.IndexOf(',', index1);
-                Y = Tools.ParseInt(position, index1 + 1, index2 - index1 - 1);
+                Y = position.Substring(index1 + 1, index2 - index1 - 1).ToInt();
 
                 index1 = position.IndexOf('=', index2);
                 index2 = position.IndexOf('>', index1);
-                Z = Tools.ParseInt(position, index1 + 1, index2 - index1 - 1);
+                Z = position.Substring(index1 + 1, index2 - index1 - 1).ToInt();
                 VX = 0;
                 VY = 0;
                 VZ = 0;

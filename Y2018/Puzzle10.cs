@@ -21,8 +21,8 @@ namespace AdventOfCode.Y2018 {
                 int index2 = item.IndexOf('>', index1);
                 int index3 = item.IndexOf(',', index2);
 
-                points[i] = new Point() { X = Tools.ParseInt(item, 10, index1 - 10), Y = Tools.ParseInt(item, index1 + 1, index2 - index1 - 1) };
-                speeds[i] = new Point() { X = Tools.ParseInt(item, index2 + 12, index3 - index2 - 12), Y = Tools.ParseInt(item, index3 + 1) };
+                points[i] = new Point() { X = item.Substring(10, index1 - 10).ToInt(), Y = item.Substring(index1 + 1, index2 - index1 - 1).ToInt() };
+                speeds[i] = new Point() { X = item.Substring(index2 + 12, index3 - index2 - 12).ToInt(), Y = item.Substring(index3 + 1).ToInt() };
             }
 
             timeSpent = 0;

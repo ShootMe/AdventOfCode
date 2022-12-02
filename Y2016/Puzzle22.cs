@@ -171,13 +171,13 @@ namespace AdventOfCode.Y2016 {
                 int index2 = value.IndexOf('-', index1 + 5);
                 int index3 = value.IndexOf(' ', index2);
 
-                X = Tools.ParseInt(value, index1 + 6, index2 - index1 - 6);
-                Y = Tools.ParseInt(value, index2 + 2, index3 - index2 - 2);
+                X = value.Substring(index1 + 6, index2 - index1 - 6).ToInt();
+                Y = value.Substring(index2 + 2, index3 - index2 - 2).ToInt();
 
                 index1 = value.IndexOf('T', index3);
-                Size = Tools.ParseInt(value, index3, index1 - index3);
+                Size = value.Substring(index3, index1 - index3).ToInt();
                 index2 = value.IndexOf('T', index1 + 1);
-                Used = Tools.ParseInt(value, index1 + 1, index2 - index1 - 1);
+                Used = value.Substring(index1 + 1, index2 - index1 - 1).ToInt();
                 HasGoal = false;
             }
             public override string ToString() {

@@ -10,7 +10,7 @@ namespace AdventOfCode.Y2021 {
             List<string> items = Input.Lines();
             depths = new List<int>();
             for (int i = 0; i < items.Count; i++) {
-                depths.Add(Tools.ParseInt(items[i]));
+                depths.Add(items[i].ToInt());
             }
         }
 

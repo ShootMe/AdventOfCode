@@ -10,7 +10,7 @@ namespace AdventOfCode.Y2020 {
             int total = 0;
             HashSet<char> questions = new HashSet<char>();
 
-            Input.Sections(item => {
+            foreach (string item in Input.Sections()) {
                 questions.Clear();
 
                 for (int j = 0; j < item.Length; j++) {
@@ -21,7 +21,7 @@ namespace AdventOfCode.Y2020 {
                 }
 
                 total += questions.Count;
-            });
+            }
 
             return $"{total}";
         }
@@ -31,7 +31,7 @@ namespace AdventOfCode.Y2020 {
             int total = 0;
             Dictionary<char, int> questions = new Dictionary<char, int>();
 
-            Input.Sections(section => {
+            foreach (string section in Input.Sections()) {
                 string[] people = section.Split('\n');
                 questions.Clear();
 
@@ -54,7 +54,7 @@ namespace AdventOfCode.Y2020 {
                         }
                     }
                 }
-            });
+            }
 
             return $"{total}";
         }

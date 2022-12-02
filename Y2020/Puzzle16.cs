@@ -25,13 +25,13 @@ namespace AdventOfCode.Y2020 {
                 rule.Name = line.Substring(0, index1);
 
                 int index2 = line.IndexOf('-', index1);
-                rule.Range1Start = Tools.ParseInt(line, index1 + 2, index2 - index1 - 2);
+                rule.Range1Start = line.Substring(index1 + 2, index2 - index1 - 2).ToInt();
                 index1 = line.IndexOf(' ', index2);
-                rule.Range1End = Tools.ParseInt(line, index2 + 1, index1 - index2 - 1);
+                rule.Range1End = line.Substring(index2 + 1, index1 - index2 - 1).ToInt();
                 index2 = line.IndexOf(' ', index1 + 1);
                 index1 = line.IndexOf('-', index2);
-                rule.Range2Start = Tools.ParseInt(line, index2 + 1, index1 - index2 - 1);
-                rule.Range2End = Tools.ParseInt(line, index1 + 1);
+                rule.Range2Start = line.Substring(index2 + 1, index1 - index2 - 1).ToInt();
+                rule.Range2End = line.Substring(index1 + 1).ToInt();
 
                 rules.Add(rule);
             }
@@ -129,8 +129,7 @@ namespace AdventOfCode.Y2020 {
             string[] values = ticket.Split(',');
             int[] nums = new int[values.Length];
             for (int j = 0; j < values.Length; j++) {
-                string value = values[j];
-                nums[j] = Tools.ParseInt(value);
+                nums[j] = values[j].ToInt();
             }
             result.Values = nums;
             result.Verified = new bool[nums.Length];

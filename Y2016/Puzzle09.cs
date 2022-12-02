@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.ComponentModel;
 namespace AdventOfCode.Y2016 {
@@ -24,9 +25,9 @@ namespace AdventOfCode.Y2016 {
                 if (indexNext == end) { break; }
 
                 int indexSplit = value.IndexOf('x', indexNext);
-                int chars = Tools.ParseInt(value, indexNext + 1, indexSplit - indexNext - 1);
+                int chars = value.Substring(indexNext + 1, indexSplit - indexNext - 1).ToInt();
                 index = value.IndexOf(')', indexSplit);
-                int repeat = Tools.ParseInt(value, indexSplit + 1, index - indexSplit - 1);
+                int repeat = value.Substring(indexSplit + 1, index - indexSplit - 1).ToInt();
                 long totalChars = chars;
                 if (recursive) {
                     totalChars = DecompressedLength(value, index + 1, index + chars + 1, true);

@@ -18,27 +18,27 @@ namespace AdventOfCode.Y2016 {
                 string item = items[i];
                 if (item.IndexOf("value", StringComparison.OrdinalIgnoreCase) == 0) {
                     int index = item.IndexOf(' ', 6);
-                    int value = Tools.ParseInt(item, 6, index - 6);
+                    int value = item.Substring(6, index - 6).ToInt();
                     index = item.IndexOf(" bot ", StringComparison.OrdinalIgnoreCase);
-                    int id = Tools.ParseInt(item, index + 5);
+                    int id = item.Substring(index + 5).ToInt();
 
                     Microchip chip = GetChip(value);
                     Holder bot = GetHolder(id, HolderType.Bot);
                     bot.Add(chip);
                 } else {
                     int index = item.IndexOf(' ', 4);
-                    int idBot = Tools.ParseInt(item, 4, index - 4);
+                    int idBot = item.Substring(4, index - 4).ToInt();
 
                     bool isBotLow = item[index + 14] == 'b';
                     index += isBotLow ? 17 : 20;
 
                     int indexHigh = item.IndexOf(" and high");
-                    int idLow = Tools.ParseInt(item, index, indexHigh - index);
+                    int idLow = item.Substring(index, indexHigh - index).ToInt();
 
                     bool isBotHigh = item[indexHigh + 13] == 'b';
                     indexHigh += isBotHigh ? 16 : 19;
 
-                    int idHigh = Tools.ParseInt(item, indexHigh);
+                    int idHigh = item.Substring(indexHigh).ToInt();
 
                     Bot bot = (Bot)GetHolder(idBot, HolderType.Bot);
                     Holder holderLow = GetHolder(idLow, isBotLow ? HolderType.Bot : HolderType.Output);

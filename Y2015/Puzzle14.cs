@@ -8,14 +8,14 @@ namespace AdventOfCode.Y2015 {
         private List<Reindeer> reindeers = new();
 
         public override void Setup() {
-            Input.Slice('\n', item => {
+            foreach (string item in Input.Split('\n')) {
                 string[] splits = item.SplitOn(" can fly ", " km/s for ", " seconds", " rest for ", " seconds");
                 int velocity = splits[1].ToInt();
                 int length = splits[2].ToInt();
                 int rest = splits[4].ToInt();
 
                 reindeers.Add(new Reindeer() { Velocity = velocity, RestLength = rest, VelocityLength = length });
-            });
+            }
         }
 
         [Description("What distance has the winning reindeer traveled?")]

@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.ComponentModel;
@@ -8,7 +9,7 @@ namespace AdventOfCode.Y2018 {
         private int[] grid, sums;
 
         public override void Setup() {
-            serialNumber = Tools.ParseInt(Input);
+            serialNumber = Input.ToInt();
             grid = new int[300 * 300];
             sums = new int[300 * 300];
             int x = 1;

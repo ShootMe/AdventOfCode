@@ -10,11 +10,11 @@ namespace AdventOfCode.Y2021 {
 
         public override void Setup() {
             string[] splits = Input.SplitOn("x=", "..", ", y=", "..");
-            x1 = Tools.ParseInt(splits[1]);
-            x2 = Tools.ParseInt(splits[2]);
+            x1 = splits[1].ToInt();
+            x2 = splits[2].ToInt();
 
-            y1 = Tools.ParseInt(splits[3]);
-            y2 = Tools.ParseInt(splits[4]);
+            y1 = splits[3].ToInt();
+            y2 = splits[4].ToInt();
         }
 
         [Description("What is the highest y position it reaches on this trajectory?")]

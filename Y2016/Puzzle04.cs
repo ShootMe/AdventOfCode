@@ -67,7 +67,7 @@ namespace AdventOfCode.Y2016 {
                 Room room = new Room();
                 room.Code = value.Substring(0, index1);
                 int index2 = value.IndexOf('[', index1);
-                room.ID = Tools.ParseInt(value.Substring(index1 + 1, index2 - index1 - 1));
+                room.ID = value.Substring(index1 + 1, index2 - index1 - 1).ToInt();
                 room.Checksum = value.Substring(index2 + 1, value.Length - index2 - 2);
                 return room;
             }

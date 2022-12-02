@@ -13,7 +13,7 @@ namespace AdventOfCode.Y2021 {
             for (int i = 0; i < items.Count; i++) {
                 string item = items[i];
                 int index = item.IndexOf(' ');
-                commands.Add((item.Substring(0, index), Tools.ParseInt(item, index + 1)));
+                commands.Add((item.Substring(0, index), item.Substring(index + 1).ToInt()));
             }
         }
 

@@ -54,9 +54,9 @@ namespace AdventOfCode.Y2016 {
             public static implicit operator Triangle(string item) {
                 string[] sides = item.Split(' ', StringSplitOptions.RemoveEmptyEntries);
                 return new Triangle() {
-                    Side1 = Tools.ParseInt(sides[0]),
-                    Side2 = Tools.ParseInt(sides[1]),
-                    Side3 = Tools.ParseInt(sides[2])
+                    Side1 = sides[0].ToInt(),
+                    Side2 = sides[1].ToInt(),
+                    Side3 = sides[2].ToInt()
                 };
             }
 

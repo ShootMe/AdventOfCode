@@ -124,7 +124,7 @@ namespace AdventOfCode.Y2018 {
                 int index1;
                 if ((index1 = value.IndexOf("begin")) > 0) {
                     int index2 = value.IndexOf("Guard");
-                    record.ID = Tools.ParseInt(value.Substring(index2 + 7, index1 - index2 - 8));
+                    record.ID = value.Substring(index2 + 7, index1 - index2 - 8).ToInt();
                     record.Action = LogAction.StartShift;
                 } else if (value.IndexOf("falls") > 0) {
                     record.Action = LogAction.FallAsleep;

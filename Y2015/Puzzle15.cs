@@ -8,7 +8,7 @@ namespace AdventOfCode.Y2015 {
         private List<Ingredient> ingredients = new();
 
         public override void Setup() {
-            Input.Slice('\n', item => {
+            foreach (string item in Input.Split('\n')) {
                 string[] splits = item.SplitOn(" capacity ", ", durability ", ", flavor ", ", texture ", ", calories ");
                 Ingredient ingredient = new Ingredient() {
                     Capacity = splits[1].ToInt(),
@@ -18,7 +18,7 @@ namespace AdventOfCode.Y2015 {
                     Calories = splits[5].ToInt()
                 };
                 ingredients.Add(ingredient);
-            });
+            }
         }
 
         [Description("What is the total score of the highest-scoring cookie you can make?")]

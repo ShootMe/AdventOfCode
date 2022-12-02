@@ -75,13 +75,13 @@ namespace AdventOfCode.Y2019 {
                 int index;
                 if ((index = item.IndexOf("increment", StringComparison.OrdinalIgnoreCase)) > 0) {
                     Type = OpType.Increment;
-                    Amount = Tools.ParseInt(item, index + 10);
+                    Amount = item.Substring(index + 10).ToInt();
                 } else if ((index = item.IndexOf("stack", StringComparison.OrdinalIgnoreCase)) > 0) {
                     Type = OpType.Deal;
                     Amount = 0;
                 } else {
                     Type = OpType.Cut;
-                    Amount = Tools.ParseInt(item, 4);
+                    Amount = item.Substring(4).ToInt();
                 }
             }
 

@@ -102,16 +102,16 @@ namespace AdventOfCode.Y2018 {
 
             public Nanobot(string value) {
                 int index1 = value.IndexOf(',');
-                X = Tools.ParseInt(value, 5, index1 - 5);
+                X = value.Substring(5, index1 - 5).ToInt();
 
                 int index2 = value.IndexOf(',', index1 + 1);
-                Y = Tools.ParseInt(value, index1 + 1, index2 - index1 - 1);
+                Y = value.Substring(index1 + 1, index2 - index1 - 1).ToInt();
 
                 index1 = value.IndexOf('>', index2);
-                Z = Tools.ParseInt(value, index2 + 1, index1 - index2 - 1);
+                Z = value.Substring(index2 + 1, index1 - index2 - 1).ToInt();
 
                 index2 = value.IndexOf('=', index1 + 3);
-                R = Tools.ParseInt(value, index2 + 1);
+                R = value.Substring(index2 + 1).ToInt();
             }
 
             public int CompareTo(Nanobot other) {
