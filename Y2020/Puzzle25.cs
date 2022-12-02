@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.ComponentModel;
 using System.Numerics;
@@ -7,7 +8,7 @@ namespace AdventOfCode.Y2020 {
         private int CardKey, DoorKey;
 
         public override void Setup() {
-            int[] numbers = Tools.GetInts(Input);
+            int[] numbers = Input.ToInts();
             CardKey = numbers[0];
             DoorKey = numbers[1];
         }

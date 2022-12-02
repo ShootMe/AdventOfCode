@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,7 +8,7 @@ namespace AdventOfCode.Y2021 {
         private List<(string, int)> commands;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             commands = new List<(string, int)>();
             for (int i = 0; i < items.Count; i++) {
                 string item = items[i];

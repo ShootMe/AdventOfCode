@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,7 +8,7 @@ namespace AdventOfCode.Y2020 {
         private List<string> program;
 
         public override void Setup() {
-            program = Tools.GetLines(Input);
+            program = Input.Lines();
         }
 
         [Description("What value is in the accumulator?")]

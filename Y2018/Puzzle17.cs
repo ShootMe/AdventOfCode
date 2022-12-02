@@ -9,7 +9,7 @@ namespace AdventOfCode.Y2018 {
         private int width, height, minX, minY;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             List<Line> lines = new List<Line>();
             minX = int.MaxValue;
             int maxX = int.MinValue;

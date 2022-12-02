@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,7 +9,7 @@ namespace AdventOfCode.Y2020 {
         private List<Operand> expressions;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             expressions = new List<Operand>();
 
             for (int i = 0; i < items.Count; i++) {
@@ -126,12 +127,12 @@ namespace AdventOfCode.Y2020 {
                     char c = exp[j];
 
                     if (c == '+' || c == '*' || c == ')' || char.IsWhiteSpace(c)) {
-                        Value = Tools.ParseLong(exp, index, j - index);
+                        Value = exp[index..j].ToLong();
                         index = char.IsWhiteSpace(c) ? j : j - 1;
                         return;
                     }
                 }
-                Value = Tools.ParseLong(exp, index, exp.Length - index);
+                Value = exp[index..exp.Length].ToLong();
                 index = exp.Length;
             }
             public override long Evaluate(bool additionFirst = false) { return Value; }

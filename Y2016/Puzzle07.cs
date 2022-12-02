@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ namespace AdventOfCode.Y2016 {
         private IPv7[] ips;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             ips = new IPv7[items.Count];
             for (int i = 0; i < ips.Length; i++) {
                 ips[i] = items[i];

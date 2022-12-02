@@ -12,8 +12,7 @@ namespace AdventOfCode.Core {
         private static HttpClient web;
         static Tools() {
             web = new HttpClient(new HttpClientHandler() { AutomaticDecompression = System.Net.DecompressionMethods.All, AllowAutoRedirect = false });
-            //web.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("advent-of-code-grabber", "1.0"));
-            web.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("github.com/ShootMe/AdventOfCode", "1.0"));
+            web.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("github.com-ShootMe-AdventOfCode", "1.0"));
             web.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("deflate"));
             web.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
             web.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -102,14 +101,12 @@ using System.ComponentModel;
 namespace AdventOfCode.Y{year} {{
     [Description(""{dayTitle}"")]
     public class Puzzle{day:00} : ASolver {{
-        private List<int> numbers;
+        private List<int> numbers = new();
 
         public override void Setup() {{
-            List<string> items = Tools.GetLines(Input);
-            numbers = new List<int>();
-            for (int i = 0; i < items.Count; i++) {{
-                numbers.Add(Tools.ParseInt(items[i]));
-            }}
+            Input.Slice('\n', line => {{
+                numbers.Add(line.ToInt());
+            }});
         }}
 
         [Description(""{part1Question}"")]
@@ -163,56 +160,6 @@ namespace AdventOfCode.Y{year} {{
             }
             return "Unknown";
         }
-        public static List<string> GetLines(string input) {
-            List<string> lines = new List<string>();
-
-            int index = input.IndexOf('\n');
-            int lastIndex = 0;
-            while (index > 0) {
-                if (input[index - 1] == '\r') {
-                    lines.Add(input.Substring(lastIndex, index - lastIndex - 1));
-                } else {
-                    lines.Add(input.Substring(lastIndex, index - lastIndex));
-                }
-                lastIndex = index + 1;
-                index = input.IndexOf('\n', lastIndex);
-            }
-            if (lastIndex < input.Length) {
-                lines.Add(input.Substring(lastIndex));
-            }
-
-            return lines;
-        }
-        public static int[] GetInts(string input, char splitChar = '\n') {
-            List<int> numbers = new List<int>();
-            int startIndex = 0;
-            char last = splitChar;
-            for (int i = 0; i < input.Length; i++) {
-                char c = input[i];
-                if (c == splitChar && last != c) {
-                    numbers.Add(ParseInt(input, startIndex, i - startIndex));
-                    startIndex = i + 1;
-                }
-                last = c;
-            }
-            numbers.Add(ParseInt(input, startIndex));
-            return numbers.ToArray();
-        }
-        public static long[] GetLongs(string input, char splitChar = '\n') {
-            List<long> numbers = new List<long>();
-            int startIndex = 0;
-            char last = splitChar;
-            for (int i = 0; i < input.Length; i++) {
-                char c = input[i];
-                if (c == splitChar && last != c) {
-                    numbers.Add(ParseLong(input, startIndex, i - startIndex));
-                    startIndex = i + 1;
-                }
-                last = c;
-            }
-            numbers.Add(ParseInt(input, startIndex));
-            return numbers.ToArray();
-        }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ParseInt(string number) {
             return (int)ParseLong(number, 0, number.Length);
@@ -224,12 +171,6 @@ namespace AdventOfCode.Y{year} {{
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ParseInt(string number, int startIndex, int length) {
             return (int)ParseLong(number, startIndex, length);
-        }
-        public static long ParseLong(string number, string startFrom, int startIndex = 0) {
-            int index1 = number.IndexOf(startFrom, startIndex);
-            if (index1 < 0) { return 0; }
-
-            return ParseLong(number, index1 + startFrom.Length, number.Length - index1 - startFrom.Length);
         }
         public static long ParseLong(string number, int startIndex, int length) {
             if (length <= 0) { return 0; }
@@ -249,26 +190,6 @@ namespace AdventOfCode.Y{year} {{
                 i++;
             }
             return isNegative ? -result : result;
-        }
-        public static string[] SplitOn(string input, params string[] splits) {
-            string[] results = new string[splits.Length + 1];
-            int index = 0;
-            for (int i = 0; i < splits.Length; i++) {
-                string split = splits[i];
-                int newIndex = input.IndexOf(split, index);
-                if (newIndex >= 0) {
-                    results[i] = input.Substring(index, newIndex - index);
-                    index = newIndex + split.Length;
-                } else {
-                    results[i] = string.Empty;
-                }
-            }
-            if (index < input.Length) {
-                results[splits.Length] = input.Substring(index);
-            } else {
-                results[splits.Length] = string.Empty;
-            }
-            return results;
         }
     }
 }

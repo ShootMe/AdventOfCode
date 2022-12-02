@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace AdventOfCode.Y2018 {
         private int[] sleepTime;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             records = new LogRecord[items.Count];
             for (int i = 0; i < records.Length; i++) {
                 records[i] = items[i];

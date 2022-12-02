@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
@@ -66,7 +67,7 @@ namespace AdventOfCode.Y2021 {
 
                 ILGenerator il = null;
                 Dictionary<char, int> localIndex = new Dictionary<char, int>() { { 'w', 0 }, { 'x', 1 }, { 'y', 2 }, { 'z', 3 } };
-                List<string> lines = Tools.GetLines(program);
+                List<string> lines = program.Lines();
 
                 byte charIndex = 0;
                 for (int i = 0; i < lines.Count; i++) {

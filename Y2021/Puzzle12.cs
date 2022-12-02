@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,7 +8,7 @@ namespace AdventOfCode.Y2021 {
         private Dictionary<int, HashSet<int>> links;
         private int startID, endID;
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             links = new Dictionary<int, HashSet<int>>();
             Dictionary<string, int> mappings = new Dictionary<string, int>();
             int mappingID = 1;

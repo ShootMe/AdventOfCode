@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,7 +9,7 @@ namespace AdventOfCode.Y2020 {
         private int timestamp;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             timestamp = Tools.ParseInt(items[0]);
             string[] ids = items[1].Split(',');
             busIDs = new int[ids.Length];

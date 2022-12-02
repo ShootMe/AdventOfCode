@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ namespace AdventOfCode.Y2017 {
         private List<string> phrases;
 
         public override void Setup() {
-            phrases = Tools.GetLines(Input);
+            phrases = Input.Lines();
         }
 
         [Description("How many passphrases are valid?")]

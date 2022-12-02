@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ namespace AdventOfCode.Y2016 {
         private List<string> items;
 
         public override void Setup() {
-            items = Tools.GetLines(Input);
+            items = Input.Lines();
         }
 
         [Description("How many of the listed triangles are possible?")]

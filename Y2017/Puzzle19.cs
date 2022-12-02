@@ -10,7 +10,7 @@ namespace AdventOfCode.Y2017 {
         private int width, height, start;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             width = items[0].Length;
             height = items.Count;
             network = new char[width * height];

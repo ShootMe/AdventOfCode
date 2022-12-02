@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ namespace AdventOfCode.Y2018 {
         private List<SpacePoint> points;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             points = new List<SpacePoint>();
             for (int i = 0; i < items.Count; i++) {
                 points.Add(new SpacePoint(items[i]) { ID = i });

@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
@@ -60,7 +61,7 @@ namespace AdventOfCode.Y2017 {
             public int Multiplications;
 
             public VM(string program) {
-                List<string> lines = Tools.GetLines(program);
+                List<string> lines = program.Lines();
                 Instructions = new List<Instruction>(lines.Count);
                 Registers = new Dictionary<string, Register>();
 

@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,7 +8,7 @@ namespace AdventOfCode.Y2017 {
         private List<Scanner> scanners;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             scanners = new List<Scanner>(items.Count + 1);
             HashSet<int> seen = new HashSet<int>();
             for (int i = 0; i < items.Count; i++) {

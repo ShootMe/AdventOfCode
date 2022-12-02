@@ -8,7 +8,7 @@ namespace AdventOfCode.Y2020 {
         private List<string> items;
 
         public override void Setup() {
-            items = Tools.GetLines(Input);
+            items = Input.Lines();
         }
 
         [Description("What is the sum of all values left in memory after it completes?")]

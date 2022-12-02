@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.ComponentModel;
@@ -7,7 +8,7 @@ namespace AdventOfCode.Y2020 {
         private int[] numbers;
 
         public override void Setup() {
-            numbers = Tools.GetInts(Input);
+            numbers = Input.ToInts();
             Array.Sort(numbers);
             int[] newNumbers = new int[numbers.Length + 2];
             for (int i = 0; i < numbers.Length; i++) {

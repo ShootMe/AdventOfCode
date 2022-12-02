@@ -12,7 +12,7 @@ namespace AdventOfCode.Y2019 {
         private uint allKeys;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             width = items[0].Length;
             height = items.Count;
             vault = new byte[width * height];

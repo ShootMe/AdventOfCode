@@ -8,7 +8,7 @@ namespace AdventOfCode.Y2020 {
         private List<int> player1, player2;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
 
             player1 = new List<int>();
             player2 = new List<int>();

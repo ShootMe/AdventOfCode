@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.ComponentModel;
 namespace AdventOfCode.Y2019 {
@@ -6,7 +7,7 @@ namespace AdventOfCode.Y2019 {
         private IntCode program;
 
         public override void Setup() {
-            program = new IntCode(Tools.GetLongs(Input, ','));
+            program = new IntCode(Input.ToLongs(','));
         }
 
         [Description("How many points are affected by the tractor beam in the 50x50 area?")]

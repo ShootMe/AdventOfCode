@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace AdventOfCode.Y2021 {
         private Amphipod[] hallway;
         private int bestEnergy;
         public override void Setup() {
-            List<string> lines = Tools.GetLines(Input);
+            List<string> lines = Input.Lines();
             hallway = new Amphipod[7];
             rooms = new Amphipod[16];
             Array.Fill(hallway, Amphipod.EMPTY);

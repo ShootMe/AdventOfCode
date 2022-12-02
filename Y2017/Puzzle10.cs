@@ -7,7 +7,7 @@ namespace AdventOfCode.Y2017 {
     public class Puzzle10 : ASolver {
         [Description("What is the result of multiplying the first two numbers in the list?")]
         public override string SolvePart1() {
-            int[] numbers = Tools.GetInts(Input, ',');
+            int[] numbers = Input.ToInts(',');
             WrappingList<int> list = new WrappingList<int>(256);
 
             for (int i = 0; i < 256; i++) {

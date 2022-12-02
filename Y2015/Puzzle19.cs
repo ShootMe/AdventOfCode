@@ -10,7 +10,7 @@ namespace AdventOfCode.Y2015 {
         private string medicine;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             replacements = new List<KeyValuePair<string, string>>();
             for (int i = items.Count - 3; i >= 0; i--) {
                 string item = items[i];

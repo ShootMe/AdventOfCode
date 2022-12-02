@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Core;
+﻿using AdventOfCode.Common;
+using AdventOfCode.Core;
 using System.ComponentModel;
 namespace AdventOfCode.Y2020 {
     [Description("Report Repair")]
@@ -6,7 +7,7 @@ namespace AdventOfCode.Y2020 {
         private int[] numbers;
 
         public override void Setup() {
-            numbers = Tools.GetInts(Input);
+            numbers = Input.ToInts();
         }
 
         [Description("What do you get if you multiply them together?")]

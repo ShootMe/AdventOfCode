@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -40,7 +41,7 @@ namespace AdventOfCode.Y2017 {
             public bool InputNeeded;
 
             public VM(string program, int id) {
-                List<string> lines = Tools.GetLines(program);
+                List<string> lines = program.Lines();
                 Instructions = new List<Instruction>(lines.Count);
                 Registers = new Dictionary<string, Register>();
 

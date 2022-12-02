@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,7 +32,7 @@ namespace AdventOfCode.Y2016 {
         public int Pointer;
 
         public VM(string program) {
-            List<string> lines = Tools.GetLines(program);
+            List<string> lines = program.Lines();
             Instructions = new List<Instruction>(lines.Count);
             A = new Register() { Name = "a", Value = 0 };
             B = new Register() { Name = "b", Value = 0 };

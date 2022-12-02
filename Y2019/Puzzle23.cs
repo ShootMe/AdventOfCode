@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,7 +8,7 @@ namespace AdventOfCode.Y2019 {
         private List<IntCode> programs;
 
         public override void Setup() {
-            long[] code = Tools.GetLongs(Input, ',');
+            long[] code = Input.ToLongs(',');
 
             programs = new List<IntCode>();
             for (int i = 0; i < 50; i++) {

@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,10 +9,10 @@ namespace AdventOfCode.Y2021 {
         private List<string[]> segments;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             segments = new List<string[]>();
             for (int i = 0; i < items.Count; i++) {
-                string[] codes = Tools.SplitOn(items[i], " ", " ", " ", " ", " ", " ", " ", " ", " ", " | ", " ", " ", " ");
+                string[] codes = items[i].SplitOn(" ", " ", " ", " ", " ", " ", " ", " ", " ", " | ", " ", " ", " ");
                 segments.Add(codes);
             }
         }

@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.ComponentModel;
 namespace AdventOfCode.Y2019 {
@@ -6,7 +7,7 @@ namespace AdventOfCode.Y2019 {
         private int[] numbers;
 
         public override void Setup() {
-            numbers = Tools.GetInts(Input);
+            numbers = Input.ToInts();
         }
 
         [Description("What is the sum of the fuel requirements for all of the modules on your spacecraft?")]

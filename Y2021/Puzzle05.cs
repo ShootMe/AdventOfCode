@@ -11,13 +11,13 @@ namespace AdventOfCode.Y2021 {
         private int width, height, minX, maxX, minY, maxY;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             lines = new List<Line>();
 
             minX = int.MaxValue; maxX = int.MinValue; minY = int.MaxValue; maxY = int.MinValue;
             for (int i = 0; i < items.Count; i++) {
                 string item = items[i];
-                string[] splits = Tools.SplitOn(item, ",", " -> ", ",");
+                string[] splits = item.SplitOn(",", " -> ", ",");
                 int x1 = Tools.ParseInt(splits[0]);
                 int y1 = Tools.ParseInt(splits[1]);
 

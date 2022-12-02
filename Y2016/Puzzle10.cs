@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ namespace AdventOfCode.Y2016 {
         private HashSet<Holder> Holders;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             Chips = new HashSet<Microchip>();
             Holders = new HashSet<Holder>();
 

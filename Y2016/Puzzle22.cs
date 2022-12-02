@@ -9,7 +9,7 @@ namespace AdventOfCode.Y2016 {
         private Node[] nodes, original;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             nodes = new Node[items.Count - 2];
             original = new Node[nodes.Length];
             int maxX = 0;

@@ -11,7 +11,7 @@ namespace AdventOfCode.Y2019 {
         private char[] display;
 
         public override void Setup() {
-            program = new IntCode(Tools.GetLongs(Input, ','));
+            program = new IntCode(Input.ToLongs(','));
 
             width = 0;
             int count = 0;

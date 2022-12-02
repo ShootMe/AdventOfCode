@@ -7,6 +7,21 @@ internal static class Extensions {
     public static int ToInt(this string value) {
         return (int)value.ToLong();
     }
+    public static int[] ToInts(this string input, char splitChar = '\n') {
+        List<int> numbers = new List<int>();
+        int start = 0;
+        char last = splitChar;
+        for (int end = 0; end < input.Length; end++) {
+            char c = input[end];
+            if (c == splitChar && last != c) {
+                numbers.Add(input[start..end].ToInt());
+                start = end + 1;
+            }
+            last = c;
+        }
+        numbers.Add(input[start..].ToInt());
+        return numbers.ToArray();
+    }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static uint ToUInt(this string value) {
         return (uint)value.ToLong();
@@ -30,6 +45,37 @@ internal static class Extensions {
             i++;
         }
         return isNegative ? -result : result;
+    }
+    public static long[] ToLongs(this string input, char splitChar = '\n') {
+        List<long> numbers = new();
+        int start = 0;
+        char last = splitChar;
+        for (int end = 0; end < input.Length; end++) {
+            char c = input[end];
+            if (c == splitChar && last != c) {
+                numbers.Add(input[start..end].ToLong());
+                start = end + 1;
+            }
+            last = c;
+        }
+        numbers.Add(input[start..].ToLong());
+        return numbers.ToArray();
+    }
+    public static List<string> Lines(this string input) {
+        List<string> lines = new();
+
+        int start = 0;
+        int end = input.IndexOf('\n');
+        while (end > 0) {
+            lines.Add(input[start..end]);
+            start = end + 1;
+            end = input.IndexOf('\n', start);
+        }
+        if (start < input.Length) {
+            lines.Add(input[start..]);
+        }
+
+        return lines;
     }
     public static void Slice(this string input, char splitOn, Action<string> action) {
         foreach (string value in input.Slice(splitOn)) {
@@ -108,14 +154,14 @@ internal static class Extensions {
             string split = splits[i];
             int newIndex = input.IndexOf(split, index);
             if (newIndex >= 0) {
-                results[i] = input.Substring(index, newIndex - index);
+                results[i] = input[index..newIndex];
                 index = newIndex + split.Length;
             } else {
                 results[i] = string.Empty;
             }
         }
         if (index < input.Length) {
-            results[splits.Length] = input.Substring(index);
+            results[splits.Length] = input[index..];
         } else {
             results[splits.Length] = string.Empty;
         }

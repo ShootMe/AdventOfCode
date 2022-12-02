@@ -10,7 +10,7 @@ namespace AdventOfCode.Y2018 {
         private int width, height;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             points = new Point[items.Count];
             for (int i = 0; i < points.Length; i++) {
                 string item = items[i];

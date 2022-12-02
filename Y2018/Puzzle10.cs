@@ -11,7 +11,7 @@ namespace AdventOfCode.Y2018 {
         private int timeSpent;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             points = new Point[items.Count];
             speeds = new Point[items.Count];
 

@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.ComponentModel;
@@ -7,7 +8,7 @@ namespace AdventOfCode.Y2017 {
         private int[] codes;
 
         public override void Setup() {
-            codes = Tools.GetInts(Input);
+            codes = Input.ToInts();
         }
 
         [Description("How many steps does it take to reach the exit?")]

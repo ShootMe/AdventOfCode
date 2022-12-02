@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ namespace AdventOfCode.Y2017 {
         private Particle[] particles;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             particles = new Particle[items.Count];
             for (int i = 0; i < items.Count; i++) {
                 particles[i] = new Particle(items[i]);
@@ -95,7 +96,7 @@ namespace AdventOfCode.Y2017 {
             public int AX, AY, AZ;
 
             public Particle(string value) {
-                string[] results = Tools.SplitOn(value, "<", ",", ",", ">", "<", ",", ",", ">", "<", ",", ",", ">");
+                string[] results = value.SplitOn("<", ",", ",", ">", "<", ",", ",", ">", "<", ",", ",", ">");
                 X = Tools.ParseInt(results[1]);
                 Y = Tools.ParseInt(results[2]);
                 Z = Tools.ParseInt(results[3]);

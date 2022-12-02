@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,7 +10,7 @@ namespace AdventOfCode.Y2020 {
         private Dictionary<string, HashSet<string>> allergenToIngredients;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             foods = new List<Food>();
 
             for (int i = 0; i < items.Count; i++) {

@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ namespace AdventOfCode.Y2021 {
         private int x1, x2, y1, y2;
 
         public override void Setup() {
-            string[] splits = Tools.SplitOn(Input, "x=", "..", ", y=", "..");
+            string[] splits = Input.SplitOn("x=", "..", ", y=", "..");
             x1 = Tools.ParseInt(splits[1]);
             x2 = Tools.ParseInt(splits[2]);
 

@@ -8,7 +8,7 @@ namespace AdventOfCode.Y2015 {
     public class Puzzle22 : ASolver {
         [Description("What is the least amount of mana you can spend and still win the fight?")]
         public override string SolvePart1() {
-            List<string> lines = Tools.GetLines(Input);
+            List<string> lines = Input.Lines();
             int hp = Tools.ParseInt(lines[0]);
             int dmg = Tools.ParseInt(lines[1]);
 
@@ -17,7 +17,7 @@ namespace AdventOfCode.Y2015 {
 
         [Description("What is the least amount of mana you can spend and still win the fight?")]
         public override string SolvePart2() {
-            List<string> lines = Tools.GetLines(Input);
+            List<string> lines = Input.Lines();
             int hp = Tools.ParseInt(lines[0]);
             int dmg = Tools.ParseInt(lines[1]);
 

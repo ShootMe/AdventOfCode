@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace AdventOfCode.Y2018 {
         private byte[] plants, state;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             string initialState = items[0].Substring(15);
             plants = new byte[initialState.Length + Buffer * 2];
             state = new byte[plants.Length];

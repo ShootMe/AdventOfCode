@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ namespace AdventOfCode.Y2021 {
         private List<Cube> cubes;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             cubes = new List<Cube>();
             for (int i = 0; i < items.Count; i++) {
                 string line = items[i];
@@ -70,16 +71,16 @@ namespace AdventOfCode.Y2021 {
                 Value = value;
             }
             public Cube(string line) {
-                string[] splits = Tools.SplitOn(line, " x=", "..", ",y=", "..", ",z=", "..");
+                string[] splits = line.SplitOn(" x=", "..", ",y=", "..", ",z=", "..");
                 Value = splits[0] == "on";
-                X1 = Tools.ParseInt(splits[1]);
-                X2 = Tools.ParseInt(splits[2]);
+                X1 = splits[1].ToInt();
+                X2 = splits[2].ToInt();
 
-                Y1 = Tools.ParseInt(splits[3]);
-                Y2 = Tools.ParseInt(splits[4]);
+                Y1 = splits[3].ToInt();
+                Y2 = splits[4].ToInt();
 
-                Z1 = Tools.ParseInt(splits[5]);
-                Z2 = Tools.ParseInt(splits[6]);
+                Z1 = splits[5].ToInt();
+                Z2 = splits[6].ToInt();
             }
             public bool IsValid(int min, int max) {
                 return X1 <= max && X2 >= min

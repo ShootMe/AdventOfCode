@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ namespace AdventOfCode.Y2017 {
         private List<Component> components;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             components = new List<Component>();
             for (int i = 0; i < items.Count; i++) {
                 components.Add(new Component(items[i]));

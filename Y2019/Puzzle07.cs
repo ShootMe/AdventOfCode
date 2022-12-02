@@ -7,7 +7,7 @@ namespace AdventOfCode.Y2019 {
         private IntCode amp1, amp2, amp3, amp4, amp5;
 
         public override void Setup() {
-            long[] code = Tools.GetLongs(Input, ',');
+            long[] code = Input.ToLongs(',');
             amp1 = new IntCode(code);
             amp2 = new IntCode(code);
             amp3 = new IntCode(code);

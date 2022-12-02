@@ -11,7 +11,7 @@ namespace AdventOfCode.Y2019 {
         private int width, height;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
 
             height = items.Count;
             width = items[0].Length;

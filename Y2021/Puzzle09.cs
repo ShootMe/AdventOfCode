@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace AdventOfCode.Y2021 {
         private List<int> lowPoints;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             width = items[0].Length;
             height = items.Count;
             map = new int[width * height];

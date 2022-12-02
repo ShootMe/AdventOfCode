@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,7 +7,7 @@ namespace AdventOfCode.Y2021 {
     public class Puzzle01 : ASolver {
         private List<int> depths;
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             depths = new List<int>();
             for (int i = 0; i < items.Count; i++) {
                 depths.Add(Tools.ParseInt(items[i]));

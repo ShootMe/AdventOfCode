@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -37,7 +38,7 @@ namespace AdventOfCode.Y2020 {
             private bool[] State;
 
             public Cube(string input, bool is3d = true) {
-                List<string> items = Tools.GetLines(input);
+                List<string> items = input.Lines();
                 Width = items[0].Length + 12;
                 Height = items.Count + 12;
                 Depth = 13;

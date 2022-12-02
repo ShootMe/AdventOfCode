@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,7 +8,7 @@ namespace AdventOfCode.Y2018 {
         private int[] numbers;
 
         public override void Setup() {
-            numbers = Tools.GetInts(Input);
+            numbers = Input.ToInts();
         }
 
         [Description("What is the resulting frequency after all of the changes in frequency have been applied?")]

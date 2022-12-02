@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ namespace AdventOfCode.Y2020 {
         private List<string> items;
 
         public override void Setup() {
-            items = Tools.GetLines(Input);
+            items = Input.Lines();
         }
 
         [Description("What is the highest seat ID on a boarding pass?")]

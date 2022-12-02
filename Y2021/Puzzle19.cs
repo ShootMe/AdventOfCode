@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
@@ -8,16 +9,16 @@ namespace AdventOfCode.Y2021 {
         private List<Scanner> scanners;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             scanners = new List<Scanner>();
             for (int i = 0; i < items.Count;) {
                 string line = items[i++];
-                string[] splits = Tools.SplitOn(line, "--- scanner ", " ---");
-                Scanner scanner = new Scanner(Tools.ParseInt(splits[1]));
+                string[] splits = line.SplitOn("--- scanner ", " ---");
+                Scanner scanner = new Scanner(splits[1].ToInt());
 
                 while (i < items.Count && !string.IsNullOrEmpty(line = items[i++])) {
-                    splits = Tools.SplitOn(line, ",", ",");
-                    scanner.Add(Tools.ParseInt(splits[0]), Tools.ParseInt(splits[1]), Tools.ParseInt(splits[2]));
+                    splits = line.SplitOn(",", ",");
+                    scanner.Add(splits[0].ToInt(), splits[1].ToInt(), splits[2].ToInt());
                 }
                 scanners.Add(scanner);
                 scanner.SetDistances();

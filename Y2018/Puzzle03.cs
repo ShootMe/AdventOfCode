@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ namespace AdventOfCode.Y2018 {
         private Claim[] claims;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             claims = new Claim[items.Count];
             for (int i = 0; i < claims.Length; i++) {
                 claims[i] = items[i];
@@ -65,14 +66,14 @@ namespace AdventOfCode.Y2018 {
 
             public static implicit operator Claim(string value) {
                 Claim claim = new Claim();
-                
-                string[] splits = Tools.SplitOn(value, " @ ", ",", ": ", "x");
+
+                string[] splits = value.SplitOn(" @ ", ",", ": ", "x");
                 claim.ID = Tools.ParseInt(splits[0], 1);
                 claim.X = Tools.ParseInt(splits[1]);
                 claim.Y = Tools.ParseInt(splits[2]);
                 claim.W = Tools.ParseInt(splits[3]);
                 claim.H = Tools.ParseInt(splits[4]);
-                
+
                 return claim;
             }
             public int Overlaps(Claim other) {

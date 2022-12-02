@@ -10,7 +10,7 @@ namespace AdventOfCode.Y2017 {
         private string[] startTile = new string[] { ".#.", "..#", "###" };
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             enhancements = new Dictionary<Tile, Tile>();
 
             for (int i = 0; i < items.Count; i++) {

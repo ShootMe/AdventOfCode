@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ namespace AdventOfCode.Y2018 {
         private HashSet<AssemblyStep> steps;
 
         private void SetupSteps() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             steps = new HashSet<AssemblyStep>();
 
             for (int i = 0; i < items.Count; i++) {

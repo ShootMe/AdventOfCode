@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,7 +10,7 @@ namespace AdventOfCode.Y2020 {
         private Ticket yourTicket;
 
         public override void Setup() {
-            List<string> lines = Tools.GetLines(Input);
+            List<string> lines = Input.Lines();
 
             rules = new List<Rule>();
             int i = 0;

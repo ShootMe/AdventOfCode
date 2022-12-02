@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.ComponentModel;
@@ -8,7 +9,7 @@ namespace AdventOfCode.Y2020 {
         private int[] numbers;
 
         public override void Setup() {
-            numbers = Tools.GetInts(Input);
+            numbers = Input.ToInts();
         }
 
         [Description("What is the first number that does not have this property?")]

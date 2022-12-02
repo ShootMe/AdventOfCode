@@ -9,7 +9,7 @@ namespace AdventOfCode.Y2019 {
         private Moon[] moons;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             moons = new Moon[items.Count];
             for (int i = 0; i < items.Count; i++) {
                 moons[i] = new Moon(items[i]);

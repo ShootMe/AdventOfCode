@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,7 +11,7 @@ namespace AdventOfCode.Y2021 {
         private readonly Dictionary<char, char> mapping = new Dictionary<char, char>() { { ')', '(' }, { ']', '[' }, { '}', '{' }, { '>', '<' } };
 
         public override void Setup() {
-            lines = Tools.GetLines(Input);
+            lines = Input.Lines();
         }
 
         [Description("What is the total syntax error score for those errors?")]

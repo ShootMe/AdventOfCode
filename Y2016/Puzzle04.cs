@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,7 +10,7 @@ namespace AdventOfCode.Y2016 {
         private List<Room> validRooms = new List<Room>();
 
         public override void Setup() {
-            rooms = Tools.GetLines(Input);
+            rooms = Input.Lines();
 
             for (int i = 0; i < rooms.Count; i++) {
                 Room room = rooms[i];

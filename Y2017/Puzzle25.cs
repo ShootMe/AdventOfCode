@@ -9,7 +9,7 @@ namespace AdventOfCode.Y2017 {
         private int state, checksumCount;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             state = items[0][15] - 'A';
             string[] splits = items[1].SplitOn("after ", " steps");
             checksumCount = splits[1].ToInt();

@@ -8,7 +8,7 @@ namespace AdventOfCode.Y2018 {
     public class Puzzle15 : ASolver {
         [Description("What is the outcome of the combat?")]
         public override string SolvePart1() {
-            Area area = new Area(Tools.GetLines(Input), 3);
+            Area area = new Area(Input.Lines(), 3);
             while (area.Step()) {
                 //Console.WriteLine($"Round {area.Rounds}");
                 //Console.WriteLine(area);
@@ -22,7 +22,7 @@ namespace AdventOfCode.Y2018 {
         public override string SolvePart2() {
             int elfAttack = 4;
             while (true) {
-                Area area = new Area(Tools.GetLines(Input), elfAttack++);
+                Area area = new Area(Input.Lines(), elfAttack++);
                 int startingElves = area.Elves;
                 while (area.Step()) { }
 

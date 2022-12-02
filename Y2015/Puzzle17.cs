@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.ComponentModel;
 namespace AdventOfCode.Y2015 {
@@ -6,7 +7,7 @@ namespace AdventOfCode.Y2015 {
         private int[] numbers;
 
         public override void Setup() {
-            numbers = Tools.GetInts(Input);
+            numbers = Input.ToInts();
         }
 
         [Description("How many different combinations can exactly fit all 150 liters of eggnog?")]

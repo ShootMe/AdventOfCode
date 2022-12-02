@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ namespace AdventOfCode.Y2021 {
     public class Puzzle21 : ASolver {
         private int P1, P2;
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             P1 = Tools.ParseInt(items[0], 28);
             P2 = Tools.ParseInt(items[1], 28);
         }

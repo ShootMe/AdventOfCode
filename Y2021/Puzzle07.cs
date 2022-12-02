@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.ComponentModel;
@@ -8,7 +9,7 @@ namespace AdventOfCode.Y2021 {
         private int mean, median;
 
         public override void Setup() {
-            numbers = Tools.GetInts(Input, ',');
+            numbers = Input.ToInts(',');
             Array.Sort(numbers);
 
             for (int i = 0; i < numbers.Length; i++) {

@@ -10,7 +10,7 @@ namespace AdventOfCode.Y2015 {
         private int totalSum;
 
         public override void Setup() {
-            weights = Tools.GetInts(Input);
+            weights = Input.ToInts();
             totalSum = 0;
             for (int i = 0; i < weights.Length; i++) {
                 totalSum += weights[i];

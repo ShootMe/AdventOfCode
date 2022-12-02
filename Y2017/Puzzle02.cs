@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Core;
+﻿using AdventOfCode.Common;
+using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
 namespace AdventOfCode.Y2017 {
@@ -7,7 +8,7 @@ namespace AdventOfCode.Y2017 {
         private List<string> items;
 
         public override void Setup() {
-            items = Tools.GetLines(Input);
+            items = Input.Lines();
         }
 
         [Description("What is the checksum for the spreadsheet?")]

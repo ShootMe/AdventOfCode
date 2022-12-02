@@ -8,7 +8,7 @@ namespace AdventOfCode.Y2015 {
         private BitGrid lights, state;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             lights = new BitGrid(items[0].Length + 2, items.Count + 2);
 
             for (int i = 0; i < items.Count; i++) {

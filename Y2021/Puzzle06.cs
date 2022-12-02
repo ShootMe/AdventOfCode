@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.ComponentModel;
@@ -7,7 +8,7 @@ namespace AdventOfCode.Y2021 {
         private int[] fishCounts;
 
         public override void Setup() {
-            int[] fishes = Tools.GetInts(Input, ',');
+            int[] fishes = Input.ToInts(',');
             fishCounts = new int[9];
             for (int i = 0; i < fishes.Length; i++) {
                 fishCounts[fishes[i]]++;

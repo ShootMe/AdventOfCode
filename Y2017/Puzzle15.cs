@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,9 +9,9 @@ namespace AdventOfCode.Y2017 {
         private long generatorB;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
-            generatorA = Tools.ParseLong(items[0], "starts with ");
-            generatorB = Tools.ParseLong(items[1], "starts with ");
+            List<string> items = Input.Lines();
+            generatorA = items[0].Substring(24).ToLong();
+            generatorB = items[1].Substring(24).ToLong();
         }
 
         [Description("After 40 million pairs, what is the judge's final count?")]

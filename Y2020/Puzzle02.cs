@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Core;
+﻿using AdventOfCode.Common;
+using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
 namespace AdventOfCode.Y2020 {
@@ -7,7 +8,7 @@ namespace AdventOfCode.Y2020 {
         private PasswordEntry[] entries;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             entries = new PasswordEntry[items.Count];
             for (int i = 0; i < entries.Length; i++) {
                 entries[i] = items[i];

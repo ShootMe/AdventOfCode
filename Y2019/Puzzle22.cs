@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ namespace AdventOfCode.Y2019 {
         private List<Operation> operations;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             operations = new List<Operation>();
             for (int i = 0; i < items.Count; i++) {
                 operations.Add(new Operation(items[i]));

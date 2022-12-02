@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,7 +10,7 @@ namespace AdventOfCode.Y2021 {
         private List<Snailfish> fishes;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             fishes = new List<Snailfish>();
             for (int i = 0; i < items.Count; i++) {
                 fishes.Add(Snailfish.ReadSnailfish(items[i]));

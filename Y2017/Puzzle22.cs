@@ -9,7 +9,7 @@ namespace AdventOfCode.Y2017 {
         private int width, height;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
 
             grid = new Dictionary<Point, State>();
 

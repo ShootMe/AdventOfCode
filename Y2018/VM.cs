@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Core;
+﻿using AdventOfCode.Common;
+using AdventOfCode.Core;
 using System.Collections.Generic;
 namespace AdventOfCode.Y2018 {
     public class VM {
@@ -7,7 +8,7 @@ namespace AdventOfCode.Y2018 {
         public string Pointer;
 
         public VM(string program) {
-            List<string> lines = Tools.GetLines(program);
+            List<string> lines = program.Lines();
             Instructions = new List<Instruction>(lines.Count);
             Registers = new Dictionary<string, Register>();
             for (int i = 0; i < 7; i++) {

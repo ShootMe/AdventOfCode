@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,7 +9,7 @@ namespace AdventOfCode.Y2016 {
         private int[] counts;
 
         public override void Setup() {
-            items = Tools.GetLines(Input);
+            items = Input.Lines();
 
             counts = new int[26 * items[0].Length];
             for (int i = 0; i < items.Count; i++) {

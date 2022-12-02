@@ -9,7 +9,7 @@ namespace AdventOfCode.Y2021 {
         private BitGrid image, output;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
 
             algorithm = new byte[512];
             string algo = items[0];

@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace AdventOfCode.Y2016 {
         private byte allElements;
 
         public override void Setup() {
-            List<string> floorItems = Tools.GetLines(Input);
+            List<string> floorItems = Input.Lines();
             floors = new FloorContents[floorItems.Count];
             elementToIndex = new Dictionary<string, byte>(StringComparer.OrdinalIgnoreCase);
             indexToElement = new Dictionary<byte, string>();

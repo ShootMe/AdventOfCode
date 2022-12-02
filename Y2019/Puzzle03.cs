@@ -9,7 +9,7 @@ namespace AdventOfCode.Y2019 {
         private List<Line> wire2 = new List<Line>();
 
         public override void Setup() {
-            List<string> wires = Tools.GetLines(Input);
+            List<string> wires = Input.Lines();
             string line1 = wires[0];
             string line2 = wires[1];
 

@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,8 +9,8 @@ namespace AdventOfCode.Y2021 {
         private int[] numbersToCall;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
-            numbersToCall = Tools.GetInts(items[0], ',');
+            List<string> items = Input.Lines();
+            numbersToCall = items[0].ToInts(',');
             boards = new List<Board>();
 
             for (int i = 2; i < items.Count; i += 6) {
@@ -58,7 +59,7 @@ namespace AdventOfCode.Y2021 {
                 Numbers = new int[5, 5];
                 Marked = new bool[5, 5];
                 for (int i = start; i < end; i++) {
-                    int[] values = Tools.GetInts(lines[i], ' ');
+                    int[] values = lines[i].ToInts(' ');
                     for (int j = 0; j < values.Length; j++) {
                         Numbers[i - start, j] = values[j];
                     }

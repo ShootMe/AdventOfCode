@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,7 +9,7 @@ namespace AdventOfCode.Y2021 {
         private Dictionary<(char, char), long> pairs;
         private string template;
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
 
             pairs = new Dictionary<(char, char), long>();
             template = items[0];

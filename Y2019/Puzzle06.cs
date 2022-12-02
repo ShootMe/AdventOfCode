@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ namespace AdventOfCode.Y2019 {
         private HashSet<Orbit> orbits;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             orbits = new HashSet<Orbit>();
             for (int i = 0; i < items.Count; i++) {
                 string[] names = items[i].Split(')');

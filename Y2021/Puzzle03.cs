@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ namespace AdventOfCode.Y2021 {
         private List<string> numbers;
 
         public override void Setup() {
-            numbers = Tools.GetLines(Input);
+            numbers = Input.Lines();
         }
 
         [Description("What is the power consumption of the submarine?")]

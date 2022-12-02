@@ -8,7 +8,7 @@ namespace AdventOfCode.Y2020 {
         private Dictionary<Point, bool> tiles, state;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             tiles = new Dictionary<Point, bool>(15000);
             for (int i = 0; i < items.Count; i++) {
                 Point point = GetPosition(items[i]);

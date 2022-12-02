@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,7 +8,7 @@ namespace AdventOfCode.Y2017 {
         private Dictionary<int, string[]> programs;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             programs = new Dictionary<int, string[]>();
             for (int i = 0; i < items.Count; i++) {
                 string item = items[i];

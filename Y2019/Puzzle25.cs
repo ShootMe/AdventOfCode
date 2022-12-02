@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System.ComponentModel;
 using System.Text;
@@ -7,7 +8,7 @@ namespace AdventOfCode.Y2019 {
         private IntCode program;
 
         public override void Setup() {
-            program = new IntCode(Tools.GetLongs(Input, ','));
+            program = new IntCode(Input.ToLongs(','));
         }
 
         [Description("What is the password for the main airlock?")]

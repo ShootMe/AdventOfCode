@@ -12,7 +12,7 @@ namespace AdventOfCode.Y2016 {
         private uint allKeys;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             width = items[0].Length;
             height = items.Count;
             ducting = new byte[width * height];

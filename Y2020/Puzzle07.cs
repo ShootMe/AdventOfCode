@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Core;
+﻿using AdventOfCode.Common;
+using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,7 +9,7 @@ namespace AdventOfCode.Y2020 {
         private HashSet<Bag> bags;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
 
             bags = new HashSet<Bag>();
             Bag temp;

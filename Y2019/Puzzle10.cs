@@ -11,7 +11,7 @@ namespace AdventOfCode.Y2019 {
         private Point station;
 
         public override void Setup() {
-            List<string> items = Tools.GetLines(Input);
+            List<string> items = Input.Lines();
             grid = new bool[Input.Length];
             width = items[0].Length;
             for (int i = 0; i < items.Count; i++) {
