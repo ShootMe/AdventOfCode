@@ -56,7 +56,7 @@ namespace AdventOfCode.Y2022 {
         }
 
         private int ItemValue(char c) {
-            return (c & 0x1f) + (c >= 'a' ? 0 : 26);
+            return (c - 38) % 58;
         }
     }
 }
