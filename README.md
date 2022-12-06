@@ -64,5 +64,7 @@ When ran, the output is checked against those values and if it matches it will o
 You can add multiple inputs by adding an extra description to the end.
 
 ie) puzzle01-123-456.txt
+
 ie) puzzle01-654-321-Test.txt
+
 ie) puzzle01-ABC-DEF-Extra.txt
