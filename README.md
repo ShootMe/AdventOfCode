@@ -46,19 +46,23 @@ You will then need to add an App.config file to the solution as such:
 </configuration>
 ```
 
-You can then run Tools.GeneratePuzzleTemplate(year, day)
+You can then run Runner.AdventYear(year, day)
 
-This will download the puzzle description as puzzleXX.html and parse out just the problem portion. If you have not beat part 1 yet, you will need to run the GeneratePuzzleTemplate method again. It will only overwrite your html file on subsequent runs.
+This will download the puzzle description as puzzleXX.html and parse out just the problem portion.
+If you have not beat part 1 yet, you will need to run the Tools.GeneratePuzzleTemplate method manually,
+or add the [Submit] attribute on the SolvePart1() method to submit your answer and it will then redownload the puzzle description for part 2.
 
-It will also download your specific input as puzzleXX--.txt
+The puzzle input is downloaded as well as puzzleXX--.txt
 
-And then it generates a PuzzleXX.cs class file for the proper year folder.
+It then generates a PuzzleXX.cs class file for that year.
 
 ### Input Files
 Are in the format puzzleXX-Part1Solution-Part2Solution.txt
 
-When ran, the output is checked against those values and if it matches it will output those as blue text, otherwise it will be yellow.
+When ran, the output is checked against those values and if it matches it will output those as blue text, otherwise it will be red.
 
 You can add multiple inputs by adding an extra description to the end.
 
-ie) puzzle01-123-456-Test.txt
+ie) puzzle01-123-456.txt
+ie) puzzle01-654-321-Test.txt
+ie) puzzle01-ABC-DEF-Extra.txt
