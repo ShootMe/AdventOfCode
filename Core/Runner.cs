@@ -12,12 +12,16 @@ namespace AdventOfCode.Core {
             Type[] types = typeof(Tools).Assembly.GetTypes();
             List<Type> puzzles = new List<Type>();
 
-            string adventYear = year == 0 ? $"AdventOfCode.Y" : $"AdventOfCode.Y{year}.Puzzle";
+            string adventYear = year == 0 ? $"AdventOfCode.Y" : dayToRun == 0 ? $"AdventOfCode.Y{year}.Puzzle" : $"AdventOfCode.Y{year}.Puzzle{dayToRun:00}";
             for (int i = 0; i < types.Length; i++) {
                 Type type = types[i];
                 if (!type.IsNestedPrivate && typeof(ASolver).IsAssignableFrom(type) && type.FullName.IndexOf(adventYear, StringComparison.OrdinalIgnoreCase) == 0) {
                     puzzles.Add(type);
                 }
+            }
+
+            if (dayToRun > 0 && year > 0 && puzzles.Count == 0) {
+                Tools.DownloadProblem(year, dayToRun, true);
             }
 
             year = 0;
@@ -48,6 +52,10 @@ namespace AdventOfCode.Core {
 
                 if (dayToRun == 0 || dayToRun == day) {
                     string[] files = Directory.GetFiles(@$"Y{pYear}\Inputs\", $"puzzle{day:00}*.txt", SearchOption.TopDirectoryOnly);
+                    if (files.Length == 0 && dayToRun > 0) {
+                        Tools.DownloadProblem(pYear, dayToRun, false);
+                        files = Directory.GetFiles(@$"Y{pYear}\Inputs\", $"puzzle{day:00}*.txt", SearchOption.TopDirectoryOnly);
+                    }
                     for (int j = 0; j < files.Length; j++) {
                         string filePath = files[j];
                         string input = File.ReadAllText(filePath);

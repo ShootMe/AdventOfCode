@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
 namespace AdventOfCode.Core {
     public static class Tools {
         private const string BaseURL = $"https://adventofcode.com/";
         private static HttpClient web;
+        private static DateTime nextAvailableRequestTime = DateTime.MinValue;
         static Tools() {
             web = new HttpClient(new HttpClientHandler() { AutomaticDecompression = System.Net.DecompressionMethods.All, AllowAutoRedirect = false });
             web.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("github.com-ShootMe-AdventOfCode", "1.0"));
@@ -21,64 +24,54 @@ namespace AdventOfCode.Core {
                 web.DefaultRequestHeaders.Add("cookie", $"session={ConfigurationManager.AppSettings["SESSION"]}");
             }
         }
-        private static string GetSolutionRootPath() {
+        public static string GetSolutionRootPath() {
             string runningExePath = AppDomain.CurrentDomain.BaseDirectory;
-            return runningExePath.Substring(0, runningExePath.IndexOf(@"\bin\"));
+            int index = runningExePath.IndexOf(@"\AdventOfCode\") + 14;
+            if (index < 14) {
+                index = runningExePath.IndexOf(@"\bin\") + 1;
+            }
+            return runningExePath.Substring(0, index);
         }
-        public static void GeneratePuzzleTemplate(int year, int day) {
+        public static bool GeneratePuzzleTemplate(int year, int day) {
             if (string.IsNullOrEmpty(ConfigurationManager.AppSettings["SESSION"])) {
                 throw new ArgumentNullException("SESSION", "Missing SESSION code in the App.config");
             }
 
-            Console.WriteLine($"Generating Template for {year}-{day}");
-
             string path = GetSolutionRootPath();
-            string html = DownloadHtml($"{year}/day/{day}");
-            int part1Start = html.IndexOf("<article", StringComparison.OrdinalIgnoreCase);
-            int part1End = html.IndexOf("</article>", StringComparison.OrdinalIgnoreCase);
-            int part2Start = html.IndexOf("<article", part1Start + 1, StringComparison.OrdinalIgnoreCase);
-            int part2End = html.IndexOf("</article>", part1End + 1, StringComparison.OrdinalIgnoreCase);
-            if (part1Start < 0 || part1End < 0) {
+            string descriptionPath = Path.Combine(path, $@"Y{year}\Descriptions\puzzle{day:00}.html");
+            string html = File.Exists(descriptionPath) ? File.ReadAllText(descriptionPath) : DownloadHtml($"{year}/day/{day}");
+            PuzzleDescription description = new PuzzleDescription(html);
+
+            if (description.Part1 == null) {
                 Console.WriteLine($"Failed to download Puzzle data {year}-{day}", ConsoleColor.Red);
-                return;
+                nextAvailableRequestTime = DateTime.Now.AddSeconds(1.5);
+                return false;
+            } else if (File.Exists(descriptionPath) && description.Part2 == null) {
+                html = DownloadHtml($"{year}/day/{day}");
+                description = new PuzzleDescription(html);
             }
 
             Directory.CreateDirectory(Path.Combine(path, $"Y{year}"));
             Directory.CreateDirectory(Path.Combine(path, $"Y{year}\\Inputs"));
             Directory.CreateDirectory(Path.Combine(path, $"Y{year}\\Descriptions"));
 
-            string dayHeader = $"<h2>--- Day {day}: ";
-            int dayHeaderStart = html.IndexOf(dayHeader);
-            int dayHeaderEnd = html.IndexOf(" ---</h2>", dayHeaderStart);
-            string dayTitle = html.Substring(dayHeaderStart + dayHeader.Length, dayHeaderEnd - dayHeaderStart - dayHeader.Length);
-
-            int part1QuestionStart = html.LastIndexOf("<p>", part1End, StringComparison.OrdinalIgnoreCase);
-            int part1QuestionEnd = html.LastIndexOf("</p>", part1End, StringComparison.OrdinalIgnoreCase);
-            string part1Question = part1QuestionStart > part1Start && part1QuestionEnd > part1Start ? html.Substring(part1QuestionStart + 3, part1QuestionEnd - part1QuestionStart - 3).Replace("<em>", string.Empty).Replace("</em>", string.Empty) : string.Empty;
-
-            int part2QuestionStart = part2End > part1End ? html.LastIndexOf("<p>", part2End, StringComparison.OrdinalIgnoreCase) : 0;
-            int part2QuestionEnd = part2End > part1End ? html.LastIndexOf("</p>", part2End, StringComparison.OrdinalIgnoreCase) : 0;
-            string part2Question = part2QuestionStart > 0 && part2QuestionStart > part2Start && part2QuestionEnd > part2Start ? html.Substring(part2QuestionStart + 3, part2QuestionEnd - part2QuestionStart - 3).Replace("<em>", string.Empty).Replace("</em>", string.Empty) : string.Empty;
-
             string classPath = Path.Combine(path, $"Y{year}\\Puzzle{day:00}.cs");
             if (!File.Exists(classPath)) {
-                GenerateClassTemplate(year, day, dayTitle, part1Question, part2Question, classPath);
-            } else if (!string.IsNullOrEmpty(part2Question)) {
+                GenerateClassTemplate(year, day, description.Title, description.Part1?.Question, description.Part2?.Question, classPath);
+            } else if (!string.IsNullOrEmpty(description.Part2?.Question)) {
                 string classSource = File.ReadAllText(classPath);
                 if (classSource.IndexOf($"[Description(\"What is the answer?\")]") > 0) {
-                    File.WriteAllText(classPath, classSource.Replace($"[Description(\"What is the answer?\")]", $"[Description(\"{part2Question}\")]"));
+                    File.WriteAllText(classPath, classSource.Replace($"[Description(\"What is the answer?\")]", $"[Description(\"{description.Part2.Question}\")]"));
                 }
             }
 
-            string secondPart = part2Start > 0 ? html.Substring(part2Start, part2End - part2Start + 10) : string.Empty;
             string descriptionHtml =
 $@"<head>
 <link rel=""stylesheet"" type=""text/css"" href=""../../style.css""/>
 </head>
-{html.Substring(part1Start, part1End - part1Start + 10)}
-{secondPart}".TrimEnd();
+{description.Part1.Description}
+{description.Part2?.Description}".TrimEnd();
 
-            string descriptionPath = Path.Combine(path, $@"Y{year}\Descriptions\puzzle{day:00}.html");
             File.WriteAllText(descriptionPath, descriptionHtml);
 
             string[] files = Directory.GetFiles(@$"Y{year}\Inputs\", $"puzzle{day:00}*.txt", SearchOption.TopDirectoryOnly);
@@ -86,8 +79,13 @@ $@"<head>
                 html = DownloadHtml($"{year}/day/{day}/input");
                 File.WriteAllText(Path.Combine(path, $@"Y{year}\Inputs\puzzle{day:00}--.txt"), html.TrimEnd());
             }
+            nextAvailableRequestTime = DateTime.Now.AddSeconds(1.1);
+
+            return true;
         }
         private static void GenerateClassTemplate(int year, int day, string dayTitle, string part1Question, string part2Question, string classPath) {
+            Console.WriteLine($"Generating class template for {year}-{day}");
+
             part1Question = string.IsNullOrEmpty(part1Question) ? "What is the answer?" : part1Question;
             part2Question = string.IsNullOrEmpty(part2Question) ? "What is the answer?" : part2Question;
 
@@ -127,6 +125,10 @@ namespace AdventOfCode.Y{year} {{
             File.WriteAllText(classPath, templateClass);
         }
         private static string DownloadHtml(string url) {
+            Console.WriteLine($"Downloading {url} ...");
+            if (DateTime.Now < nextAvailableRequestTime) {
+                Thread.Sleep((int)(nextAvailableRequestTime - DateTime.Now).TotalMilliseconds);
+            }
             Task<HttpResponseMessage> responseTask = web.GetAsync($"{BaseURL}{url}");
             responseTask.Wait();
             HttpResponseMessage response = responseTask.Result.EnsureSuccessStatusCode();
@@ -135,6 +137,9 @@ namespace AdventOfCode.Y{year} {{
             return contentTask.Result.ToString();
         }
         public static string SubmitSolution(int year, int day, int part, string solution) {
+            if (DateTime.Now < nextAvailableRequestTime) {
+                Thread.Sleep((int)(nextAvailableRequestTime - DateTime.Now).TotalMilliseconds);
+            }
             Task<HttpResponseMessage> responseTask = web.PostAsync($"{BaseURL}{year}/day/{day}/answer", new FormUrlEncodedContent(new Dictionary<string, string>() { { "level", $"{part}" }, { "answer", solution } }));
             responseTask.Wait();
             HttpResponseMessage response = responseTask.Result;
@@ -142,6 +147,7 @@ namespace AdventOfCode.Y{year} {{
             if (!completed) { return "Failed to submit solution"; }
             Task<string> contentTask = response.Content.ReadAsStringAsync();
             contentTask.Wait();
+            nextAvailableRequestTime = DateTime.Now.AddSeconds(1.1);
             string result = contentTask.Result.ToString();
             int index;
             if ((index = result.IndexOf("That's not the right answer", StringComparison.OrdinalIgnoreCase)) > 0) {
@@ -154,10 +160,70 @@ namespace AdventOfCode.Y{year} {{
                 int endIndex = result.IndexOf(" left to wait", index);
                 return $"You gave an answer too recently. Wait {result.Substring(index + 9, endIndex - index - 9)}";
             } else if (result.IndexOf("That's the right answer", StringComparison.OrdinalIgnoreCase) > 0 || result.IndexOf("You've finished every puzzle", StringComparison.OrdinalIgnoreCase) > 0) {
-                if (part == 1) { GeneratePuzzleTemplate(year, day); }
+                if (part == 1) { DownloadProblem(year, day, true); }
                 return $"Correct";
             }
             return "Unknown";
+        }
+        public static void DownloadProblem(int year, int dayToRun, bool showDescriptionInBrowser) {
+            DateTime target = DateTime.Parse($"{year}-12-{dayToRun:00}T00:00:00.5-05:00");
+            TimeSpan nowTillTarget = target - DateTime.Now;
+            if (nowTillTarget.TotalMinutes > 0 && nowTillTarget.TotalMinutes < 30) {
+                Console.WriteLine("Waiting till puzzle releases at midnight EST...");
+                (int left, int top) = Console.GetCursorPosition();
+                Console.CursorVisible = false;
+                while (DateTime.Now < target) {
+                    Console.WriteLine($"{target - DateTime.Now}");
+                    Console.SetCursorPosition(left, top);
+                    Thread.Sleep(200);
+                }
+                Console.CursorVisible = true;
+                Console.SetCursorPosition(left, top + 1);
+            } else if (nowTillTarget.TotalMinutes > 30) {
+                Console.WriteLine($"Puzzle release date is farther than 30 minutes in the future ({nowTillTarget.TotalMinutes:0} minutes). Please try again later.");
+                return;
+            }
+
+            if (GeneratePuzzleTemplate(year, dayToRun) && showDescriptionInBrowser) {
+                string htmlPath = Path.Combine(GetSolutionRootPath(), @$"Y{year}\Descriptions\puzzle{dayToRun:00}.html");
+                Process.Start(new ProcessStartInfo($"{htmlPath}") { UseShellExecute = true });
+            }
+        }
+    }
+    internal class PuzzleDescription {
+        public string Title;
+        public PuzzlePart Part1;
+        public PuzzlePart Part2;
+
+        public PuzzleDescription(string html) {
+            int part1Start = html.IndexOf("<article", StringComparison.OrdinalIgnoreCase);
+            int part1End = html.IndexOf("</article>", StringComparison.OrdinalIgnoreCase);
+            if (part1Start < 0 || part1End < 0) {
+                return;
+            }
+            Part1 = new PuzzlePart(html.Substring(part1Start, part1End - part1Start + 10));
+
+            int part2Start = html.IndexOf("<article", part1Start + 1, StringComparison.OrdinalIgnoreCase);
+            int part2End = html.IndexOf("</article>", part1End + 1, StringComparison.OrdinalIgnoreCase);
+            if (part2Start < part2End && part2Start >= 0) {
+                Part2 = new PuzzlePart(html.Substring(part2Start, part2End - part2Start + 10));
+            }
+
+            int dayHeaderStart = html.IndexOf("<h2>--- Day ");
+            dayHeaderStart = html.IndexOf(':', dayHeaderStart) + 2;
+            int dayHeaderEnd = html.IndexOf(" ---</h2>", dayHeaderStart);
+            Title = html.Substring(dayHeaderStart, dayHeaderEnd - dayHeaderStart);
+        }
+    }
+    internal class PuzzlePart {
+        public string Description;
+        public string Question;
+
+        public PuzzlePart(string html) {
+            int start = html.LastIndexOf("<p>", StringComparison.OrdinalIgnoreCase);
+            int end = html.LastIndexOf("</p>", StringComparison.OrdinalIgnoreCase);
+            Description = html;
+            Question = start < end && start >= 0 ? html.Substring(start + 3, end - start - 3).Replace("<em>", string.Empty).Replace("</em>", string.Empty) : string.Empty;
         }
     }
 }
