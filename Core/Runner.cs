@@ -58,27 +58,12 @@ namespace AdventOfCode.Core {
                     }
                     for (int j = 0; j < files.Length; j++) {
                         string filePath = files[j];
-                        string input = File.ReadAllText(filePath);
-                        if (input.IndexOf('\r') >= 0) {
-                            input = input.Replace("\r", string.Empty);
-                            File.WriteAllText(filePath, input);
-                        }
-
-                        int dotIndex = filePath.LastIndexOf('.');
-                        int indexPart1 = filePath.IndexOf('-');
-                        int indexPart2 = filePath.IndexOf('-', indexPart1 + 1);
-                        indexPart2 = indexPart2 < 0 ? dotIndex : indexPart2;
-                        int indexDesc = filePath.IndexOf('-', indexPart2 + 1);
-                        indexDesc = indexDesc < 0 ? dotIndex : indexDesc;
-
-                        string answer1 = indexPart1 > 0 ? filePath.Substring(indexPart1 + 1, indexPart2 - indexPart1 - 1) : string.Empty;
-                        string answer2 = indexPart2 < indexDesc ? filePath.Substring(indexPart2 + 1, indexDesc - indexPart2 - 1) : string.Empty;
-                        string inputName = indexDesc >= dotIndex ? "Given" : filePath.Substring(indexDesc + 1, dotIndex - indexDesc - 1);
+                        InputData input = new InputData(filePath);
 
                         string onlyRunInput = GetInputName(puzzle);
-                        if (string.IsNullOrEmpty(onlyRunInput) || onlyRunInput == inputName) {
+                        if (string.IsNullOrEmpty(onlyRunInput) || onlyRunInput == input.Title) {
                             ASolver solver = (ASolver)Activator.CreateInstance(puzzle);
-                            solver.Input = input;
+                            solver.Input = input.Data;
                             Stopwatch sw = new Stopwatch();
 
                             sw.Start();
@@ -86,7 +71,7 @@ namespace AdventOfCode.Core {
                             sw.Stop();
 
                             totalTime += sw.ElapsedTicks / 100;
-                            totalTime += AdventDay(pYear, day, solver, sw.ElapsedTicks / 100, inputName, answer1, answer2);
+                            totalTime += AdventDay(pYear, day, solver, sw.ElapsedTicks / 100, input);
                         }
                     }
                 }
@@ -94,13 +79,13 @@ namespace AdventOfCode.Core {
             Write($"--- Total Time:");
             WriteTime(totalTime);
         }
-        private static long AdventDay(int year, int day, ASolver puzzle, long constructorMS, string inputName, string answer1, string answer2) {
+        private static long AdventDay(int year, int day, ASolver puzzle, long constructorMS, InputData input) {
             Type puzzleType = puzzle.GetType();
 
             Write($"Day {day}", ConsoleColor.Yellow);
             string puzzleName = GetDescription(puzzleType);
             if (!string.IsNullOrEmpty(puzzleName)) { Write($": {puzzleName}"); }
-            Write($"  ({inputName})", ConsoleColor.Yellow);
+            Write($"  ({input.Title})", ConsoleColor.Yellow);
             Write($" (Setup {(double)constructorMS / 100:0.00} ms)", ConsoleColor.Gray);
             WriteLine();
 
@@ -116,12 +101,18 @@ namespace AdventOfCode.Core {
                 string answer = puzzle.SolvePart1();
                 sw.Stop();
 
-                Write(string.IsNullOrEmpty(answer) ? "N/A" : answer, string.IsNullOrEmpty(answer) || (!string.IsNullOrEmpty(answer1) && !answer.Equals(answer1, StringComparison.OrdinalIgnoreCase)) ? ConsoleColor.Red : string.IsNullOrEmpty(answer1) ? ConsoleColor.Yellow : ConsoleColor.Cyan);
+                Write(string.IsNullOrEmpty(answer) ? "N/A" : answer, string.IsNullOrEmpty(answer) || (!string.IsNullOrEmpty(input.Answer1) && !answer.Equals(input.Answer1, StringComparison.OrdinalIgnoreCase)) ? ConsoleColor.Red : string.IsNullOrEmpty(input.Answer1) ? ConsoleColor.Yellow : ConsoleColor.Cyan);
                 WriteTime(sw.ElapsedTicks / 100);
                 timeTaken += sw.ElapsedTicks / 100;
 
-                if (inputName == "Given" && string.IsNullOrEmpty(answer1) && !string.IsNullOrEmpty(answer) && ShouldSubmit(puzzleType, "SolvePart1")) {
+                if (input.Title == "Given" && string.IsNullOrEmpty(input.Answer1) && !string.IsNullOrEmpty(answer) && ShouldSubmit(puzzleType, "SolvePart1")) {
                     WriteSolutionResult(year, day, 1, answer);
+                    if (WriteSolutionResult(year, day, 1, answer)) {
+                        string oldPath = input.FullPath;
+                        input.Answer1 = answer;
+                        input.Name = $"puzzle{day:00}-{input.Answer1}-{input.Answer2}.txt";
+                        File.Move(oldPath, input.FullPath);
+                    }
                 }
             }
 
@@ -135,22 +126,28 @@ namespace AdventOfCode.Core {
                 string answer = puzzle.SolvePart2();
                 sw.Stop();
 
-                Write(string.IsNullOrEmpty(answer) ? "N/A" : answer, string.IsNullOrEmpty(answer) || (!string.IsNullOrEmpty(answer2) && !answer.Equals(answer2, StringComparison.OrdinalIgnoreCase)) ? ConsoleColor.Red : string.IsNullOrEmpty(answer2) ? ConsoleColor.Yellow : ConsoleColor.Cyan);
+                Write(string.IsNullOrEmpty(answer) ? "N/A" : answer, string.IsNullOrEmpty(answer) || (!string.IsNullOrEmpty(input.Answer2) && !answer.Equals(input.Answer2, StringComparison.OrdinalIgnoreCase)) ? ConsoleColor.Red : string.IsNullOrEmpty(input.Answer2) ? ConsoleColor.Yellow : ConsoleColor.Cyan);
                 WriteTime(sw.ElapsedTicks / 100);
                 timeTaken += sw.ElapsedTicks / 100;
 
-                if (inputName == "Given" && string.IsNullOrEmpty(answer2) && !string.IsNullOrEmpty(answer) && ShouldSubmit(puzzleType, "SolvePart2")) {
-                    WriteSolutionResult(year, day, 2, answer);
+                if (input.Title == "Given" && string.IsNullOrEmpty(input.Answer2) && !string.IsNullOrEmpty(answer) && ShouldSubmit(puzzleType, "SolvePart2")) {
+                    if (WriteSolutionResult(year, day, 2, answer)) {
+                        string oldPath = input.FullPath;
+                        input.Answer2 = answer;
+                        input.Name = $"puzzle{day:00}-{input.Answer1}-{input.Answer2}.txt";
+                        File.Move(oldPath, input.FullPath);
+                    }
                 }
             }
 
             WriteLine();
             return timeTaken;
         }
-        private static void WriteSolutionResult(int year, int day, int part, string answer) {
+        private static bool WriteSolutionResult(int year, int day, int part, string answer) {
             Write("    Submitting Solution... ");
             string solutionResult = Tools.SubmitSolution(year, day, part, answer);
             WriteLine(solutionResult, solutionResult == "Correct" ? ConsoleColor.Green : ConsoleColor.Red);
+            return solutionResult == "Correct";
         }
         private static void WriteTime(long time) {
             Color cc;
@@ -206,6 +203,37 @@ namespace AdventOfCode.Core {
         private static string GetInputName(Type type) {
             RunAttribute inputName = (RunAttribute)type.GetCustomAttribute(typeof(RunAttribute), false);
             return inputName == null ? string.Empty : inputName.InputName;
+        }
+        private class InputData {
+            public string BasePath;
+            public string Name;
+            public string Title;
+            public string Answer1;
+            public string Answer2;
+            public string Data;
+            public string FullPath { get { return Path.Combine(BasePath, Name); } }
+
+            public InputData(string path) {
+                BasePath = Path.GetDirectoryName(path);
+                Name = Path.GetFileName(path);
+
+                Data = File.ReadAllText(path);
+                if (Data.IndexOf('\r') >= 0) {
+                    Data = Data.Replace("\r", string.Empty);
+                    File.WriteAllText(path, Data);
+                }
+
+                int extIndex = path.LastIndexOf('.');
+                int part1 = path.IndexOf('-');
+                int part2 = path.IndexOf('-', part1 + 1);
+                part2 = part2 < 0 || part2 > extIndex ? extIndex : part2;
+                int desc = path.IndexOf('-', part2 + 1);
+                desc = desc < 0 || desc > extIndex ? extIndex : desc;
+
+                Answer1 = part1 > 0 ? path.Substring(part1 + 1, part2 - part1 - 1) : string.Empty;
+                Answer2 = part2 < desc ? path.Substring(part2 + 1, desc - part2 - 1) : string.Empty;
+                Title = desc >= extIndex ? "Given" : path.Substring(desc + 1, extIndex - desc - 1);
+            }
         }
     }
 }
