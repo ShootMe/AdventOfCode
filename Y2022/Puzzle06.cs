@@ -14,28 +14,32 @@ namespace AdventOfCode.Y2022 {
         }
 
         private static string CheckForMarker(string data, int length) {
-            char[] list = new char[length--];
+            byte[] hits = new byte[26];
+            int count = 0;
+            length--;
             for (int i = 0; i < length; i++) {
-                list[i] = data[i];
+                if ((hits[data[i] - 'a'] ^= 1) == 1) {
+                    count++;
+                } else {
+                    count--;
+                }
             }
 
-            int index = length;
-            for (int i = length; i < data.Length; i++) {
-                list[index++] = data[i];
-                if (index > length) { index = 0; }
-
-                bool good = true;
-                for (int j = 0; j <= length; j++) {
-                    for (int k = j + 1; k <= length; k++) {
-                        if (list[j] == list[k]) {
-                            good = false;
-                            break;
-                        }
-                    }
+            for (int i = length++; i < data.Length;) {
+                if ((hits[data[i] - 'a'] ^= 1) == 1) {
+                    count++;
+                } else {
+                    count--;
                 }
 
-                if (good) {
+                if (count == length) {
                     return $"{i + 1}";
+                }
+
+                if ((hits[data[++i - length] - 'a'] ^= 1) == 1) {
+                    count++;
+                } else {
+                    count--;
                 }
             }
             return string.Empty;
