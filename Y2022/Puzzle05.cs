@@ -1,6 +1,5 @@
 using AdventOfCode.Common;
 using AdventOfCode.Core;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 namespace AdventOfCode.Y2022 {
