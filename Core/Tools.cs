@@ -14,9 +14,10 @@ namespace AdventOfCode.Core {
         private static DateTime nextAvailableRequestTime = DateTime.MinValue;
         static Tools() {
             web = new HttpClient(new HttpClientHandler() { AutomaticDecompression = System.Net.DecompressionMethods.All, AllowAutoRedirect = false });
-            web.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("github.com-ShootMe-AdventOfCode", "1.0"));
-            web.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("deflate"));
+            web.DefaultRequestHeaders.UserAgent.ParseAdd(".NET (github.com/ShootMe/AdventOfCode)");
+            web.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("br"));
             web.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
+            web.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("deflate"));
             web.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             web.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/html"));
             web.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue() { NoCache = true };
