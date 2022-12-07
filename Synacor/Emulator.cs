@@ -248,10 +248,13 @@ use mirror
                                 byte c = solution[solutionIndex++];
                                 if (c != 13) {
                                     memory[operand1] = c;
+                                    Console.Write((char)c);
                                 } else {
                                     instruction -= 2;
                                 }
-                            } else {
+                            } else if (solutionIndex == solution.Length) {
+                                return;
+                            } else { 
                                 ConsoleKeyInfo key = Console.ReadKey();
                                 if (key.KeyChar == '\r') {
                                     memory[operand1] = '\n';
