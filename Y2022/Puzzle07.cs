@@ -5,7 +5,7 @@ using System.ComponentModel;
 namespace AdventOfCode.Y2022 {
     [Description("No Space Left On Device")]
     public class Puzzle07 : ASolver {
-        private Directory root = new("/");
+        private Directory root = new(string.Empty);
         private List<Directory> dirs = new();
 
         public override void Setup() {
@@ -106,7 +106,7 @@ namespace AdventOfCode.Y2022 {
                 return total;
             }
             public override string ToString() {
-                return (Parent != null ? Parent.ToString() : string.Empty) + Name + (Name != "/" ? "/" : string.Empty);
+                return $"{Parent}{Name}/";
             }
         }
         private class File {
