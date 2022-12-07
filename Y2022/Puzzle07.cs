@@ -15,40 +15,37 @@ namespace AdventOfCode.Y2022 {
             string[] lines = Input.Split('\n');
             for (int i = 0; i < lines.Length; i++) {
                 string line = lines[i];
-
-                if (line[0] == '$') {
-                    string[] cmds = line.Substring(2).Split(' ');
-                    switch (cmds[0]) {
-                        case "cd":
-                            current = cmds[1] switch {
-                                ".." => current.Parent,
-                                "/" => root,
-                                _ => current.Children[cmds[1]]
-                            };
-                            break;
-                        case "ls":
-                            while (++i < lines.Length) {
-                                line = lines[i];
-                                if (line[0] == '$') {
-                                    i--;
-                                    break;
-                                }
-
-                                string[] list = line.Split(' ');
-                                switch (list[0]) {
-                                    case "dir":
-                                        Directory directory = new Directory(list[1]) { Parent = current };
-                                        current.Children.Add(directory.Name, directory);
-                                        dirs.Add(directory);
-                                        break;
-                                    default:
-                                        File file = new File() { Name = list[1], Size = list[0].ToInt() };
-                                        current.Files.Add(file.Name, file);
-                                        break;
-                                }
+                string[] cmds = line.Substring(2).Split(' ');
+                switch (cmds[0]) {
+                    case "cd":
+                        current = cmds[1] switch {
+                            ".." => current.Parent,
+                            "/" => root,
+                            _ => current.Children[cmds[1]]
+                        };
+                        break;
+                    case "ls":
+                        while (++i < lines.Length) {
+                            line = lines[i];
+                            if (line[0] == '$') {
+                                i--;
+                                break;
                             }
-                            break;
-                    }
+
+                            string[] list = line.Split(' ');
+                            switch (list[0]) {
+                                case "dir":
+                                    Directory directory = new Directory(list[1]) { Parent = current };
+                                    current.Children.Add(directory.Name, directory);
+                                    dirs.Add(directory);
+                                    break;
+                                default:
+                                    File file = new File() { Name = list[1], Size = list[0].ToInt() };
+                                    current.Files.Add(file.Name, file);
+                                    break;
+                            }
+                        }
+                        break;
                 }
             }
         }
