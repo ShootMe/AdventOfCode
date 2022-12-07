@@ -51,10 +51,11 @@ namespace AdventOfCode.Core {
                 }
 
                 if (dayToRun == 0 || dayToRun == day) {
-                    string[] files = Directory.GetFiles(@$"Y{pYear}\Inputs\", $"puzzle{day:00}*.txt", SearchOption.TopDirectoryOnly);
+                    string basePath = Tools.GetSolutionRootPath();
+                    string[] files = Directory.GetFiles(@$"{basePath}Y{pYear}\Inputs\", $"puzzle{day:00}*.txt", SearchOption.TopDirectoryOnly);
                     if (files.Length == 0 && dayToRun > 0) {
                         Tools.DownloadProblem(pYear, dayToRun, false);
-                        files = Directory.GetFiles(@$"Y{pYear}\Inputs\", $"puzzle{day:00}*.txt", SearchOption.TopDirectoryOnly);
+                        files = Directory.GetFiles(@$"{basePath}Y{pYear}\Inputs\", $"puzzle{day:00}*.txt", SearchOption.TopDirectoryOnly);
                     }
                     for (int j = 0; j < files.Length; j++) {
                         string filePath = files[j];
@@ -106,7 +107,6 @@ namespace AdventOfCode.Core {
                 timeTaken += sw.ElapsedTicks / 100;
 
                 if (input.Title == "Given" && string.IsNullOrEmpty(input.Answer1) && !string.IsNullOrEmpty(answer) && ShouldSubmit(puzzleType, "SolvePart1")) {
-                    WriteSolutionResult(year, day, 1, answer);
                     if (WriteSolutionResult(year, day, 1, answer)) {
                         string oldPath = input.FullPath;
                         input.Answer1 = answer;
