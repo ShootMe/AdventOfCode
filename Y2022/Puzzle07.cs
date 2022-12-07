@@ -55,9 +55,9 @@ namespace AdventOfCode.Y2022 {
 
         [Description("What is the sum of the total sizes of those directories?")]
         public override string SolvePart1() {
-            long total = 0;
+            int total = 0;
             for (int i = 0; i < dirs.Count; i++) {
-                long size = dirs[i].Size;
+                int size = dirs[i].Size;
                 if (size < 100000) {
                     total += size;
                 }
@@ -67,11 +67,11 @@ namespace AdventOfCode.Y2022 {
 
         [Description("What is the total size of that directory?")]
         public override string SolvePart2() {
-            long neededSpace = root.Size - 40000000;
+            int neededSpace = root.Size - 40000000;
             dirs.Sort((left, right) => left.Size.CompareTo(right.Size));
 
             for (int i = 0; i < dirs.Count; i++) {
-                long size = dirs[i].Size;
+                int size = dirs[i].Size;
                 if (size >= neededSpace) {
                     return $"{size}";
                 }
