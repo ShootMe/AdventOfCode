@@ -76,7 +76,13 @@ $@"<head>
             File.WriteAllText(descriptionPath, descriptionHtml);
 
             string[] files = Directory.GetFiles(@$"{path}Y{year}\Inputs\", $"puzzle{day:00}*.txt", SearchOption.TopDirectoryOnly);
-            if (files.Length == 0) {
+            int givenCount = 0;
+            for (int i = 0; i < files.Length; i++) {
+                if (!files[i].EndsWith("-Example.txt", StringComparison.OrdinalIgnoreCase)) {
+                    givenCount++;
+                }
+            }
+            if (givenCount == 0) {
                 html = DownloadHtml($"{year}/day/{day}/input");
                 File.WriteAllText($@"{path}Y{year}\Inputs\puzzle{day:00}--.txt", html.TrimEnd());
             }

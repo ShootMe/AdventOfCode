@@ -53,7 +53,13 @@ namespace AdventOfCode.Core {
                 if (dayToRun == 0 || dayToRun == day) {
                     string basePath = Tools.GetSolutionRootPath();
                     string[] files = Directory.GetFiles(@$"{basePath}Y{pYear}\Inputs\", $"puzzle{day:00}*.txt", SearchOption.TopDirectoryOnly);
-                    if (files.Length == 0 && dayToRun > 0) {
+                    int givenCount = 0;
+                    for (int j = 0; j < files.Length; j++) {
+                        if (!files[j].EndsWith("-Example.txt", StringComparison.OrdinalIgnoreCase)) {
+                            givenCount++;
+                        }
+                    }
+                    if (givenCount == 0 && dayToRun > 0) {
                         Tools.DownloadProblem(pYear, dayToRun, false);
                         files = Directory.GetFiles(@$"{basePath}Y{pYear}\Inputs\", $"puzzle{day:00}*.txt", SearchOption.TopDirectoryOnly);
                     }
