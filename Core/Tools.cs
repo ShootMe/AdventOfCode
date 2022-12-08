@@ -39,7 +39,7 @@ namespace AdventOfCode.Core {
             }
 
             string path = GetSolutionRootPath();
-            string descriptionPath = Path.Combine(path, $@"Y{year}\Descriptions\puzzle{day:00}.html");
+            string descriptionPath = $@"{path}Y{year}\Descriptions\puzzle{day:00}.html";
             string html = File.Exists(descriptionPath) ? File.ReadAllText(descriptionPath) : DownloadHtml($"{year}/day/{day}");
             PuzzleDescription description = new PuzzleDescription(html);
 
@@ -52,11 +52,11 @@ namespace AdventOfCode.Core {
                 description = new PuzzleDescription(html);
             }
 
-            Directory.CreateDirectory(Path.Combine(path, $"Y{year}"));
-            Directory.CreateDirectory(Path.Combine(path, $"Y{year}\\Inputs"));
-            Directory.CreateDirectory(Path.Combine(path, $"Y{year}\\Descriptions"));
+            Directory.CreateDirectory($"{path}Y{year}");
+            Directory.CreateDirectory(@$"{path}Y{year}\Inputs");
+            Directory.CreateDirectory(@$"{path}Y{year}\Descriptions");
 
-            string classPath = Path.Combine(path, $"Y{year}\\Puzzle{day:00}.cs");
+            string classPath = @$"{path}Y{year}\Puzzle{day:00}.cs";
             if (!File.Exists(classPath)) {
                 GenerateClassTemplate(year, day, description.Title, description.Part1?.Question, description.Part2?.Question, classPath);
             } else if (!string.IsNullOrEmpty(description.Part2?.Question)) {
@@ -75,10 +75,10 @@ $@"<head>
 
             File.WriteAllText(descriptionPath, descriptionHtml);
 
-            string[] files = Directory.GetFiles(@$"Y{year}\Inputs\", $"puzzle{day:00}*.txt", SearchOption.TopDirectoryOnly);
+            string[] files = Directory.GetFiles(@$"{path}Y{year}\Inputs\", $"puzzle{day:00}*.txt", SearchOption.TopDirectoryOnly);
             if (files.Length == 0) {
                 html = DownloadHtml($"{year}/day/{day}/input");
-                File.WriteAllText(Path.Combine(path, $@"Y{year}\Inputs\puzzle{day:00}--.txt"), html.TrimEnd());
+                File.WriteAllText($@"{path}Y{year}\Inputs\puzzle{day:00}--.txt", html.TrimEnd());
             }
             nextAvailableRequestTime = DateTime.Now.AddSeconds(1.1);
 
@@ -186,7 +186,7 @@ namespace AdventOfCode.Y{year} {{
             }
 
             if (GeneratePuzzleTemplate(year, dayToRun) && showDescriptionInBrowser) {
-                string htmlPath = Path.Combine(GetSolutionRootPath(), @$"Y{year}\Descriptions\puzzle{dayToRun:00}.html");
+                string htmlPath = @$"{GetSolutionRootPath()}Y{year}\Descriptions\puzzle{dayToRun:00}.html";
                 Process.Start(new ProcessStartInfo($"{htmlPath}") { UseShellExecute = true });
             }
         }
