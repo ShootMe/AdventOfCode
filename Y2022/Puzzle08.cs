@@ -3,7 +3,7 @@ using System.ComponentModel;
 namespace AdventOfCode.Y2022 {
     [Description("Treetop Tree House")]
     public class Puzzle08 : ASolver {
-        private int[] forest;
+        private byte[,] forest;
         private int height;
         private int width;
 
@@ -11,11 +11,11 @@ namespace AdventOfCode.Y2022 {
             string[] lines = Input.Split('\n');
             height = lines.Length;
             width = lines[0].Length;
-            forest = new int[height * width];
-            for (int i = 0, k = 0; i < lines.Length; i++) {
-                string line = lines[i];
-                for (int j = 0; j < line.Length; j++) {
-                    forest[k++] = line[j] - '0';
+            forest = new byte[height, width];
+            for (int y = 0; y < lines.Length; y++) {
+                string line = lines[y];
+                for (int x = 0; x < line.Length; x++) {
+                    forest[y, x] = (byte)(line[x] - '0');
                 }
             }
         }
@@ -23,22 +23,22 @@ namespace AdventOfCode.Y2022 {
         [Description("Consider your map; how many trees are visible from outside the grid?")]
         public override string SolvePart1() {
             int total = 0;
-            for (int i = 0; i < width; i++) {
-                for (int j = 0; j < height; j++) {
-                    if (IsVisible(i, j)) {
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    if (IsVisible(x, y)) {
                         total++;
                     }
                 }
             }
             return $"{total}";
         }
-        
+
         [Description("Consider each tree on your map. What is the highest scenic score possible for any tree?")]
         public override string SolvePart2() {
             int max = 0;
-            for (int i = 0; i < width; i++) {
-                for (int j = 0; j < height; j++) {
-                    int count = VisibleCount(i, j);
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    int count = VisibleCount(x, y);
                     if (count > max) {
                         max = count;
                     }
@@ -50,83 +50,32 @@ namespace AdventOfCode.Y2022 {
         private bool IsVisible(int x, int y) {
             if (x == 0 || x == width - 1 || y == 0 || y == height - 1) { return true; }
 
-            int start = y * height + x;
-            int tree = forest[start];
-            bool visible = true;
-            for (int i = start + height; i < forest.Length; i += height) {
-                if (tree <= forest[i]) {
-                    visible = false;
-                    break;
-                }
-            }
-            if (visible) { return true; }
-
-            visible = true;
-            for (int i = start - height; i >= 0; i -= height) {
-                if (tree <= forest[i]) {
-                    visible = false;
-                    break;
-                }
-            }
-            if (visible) { return true; }
-
-            visible = true;
-            for (int i = start + 1, xt = x + 1; i < forest.Length && xt < width; i++, xt++) {
-                if (tree <= forest[i]) {
-                    visible = false;
-                    break;
-                }
-            }
-            if (visible) { return true; }
-
-            visible = true;
-            for (int i = start - 1, xt = x - 1; i >= 0 && xt >= 0; i--, xt--) {
-                if (tree <= forest[i]) {
-                    visible = false;
-                    break;
-                }
-            }
-            return visible;
+            int tree = forest[y, x];
+            return CheckDirection(tree, x, y + 1, 0, 1).Visible ||
+                CheckDirection(tree, x, y - 1, 0, -1).Visible ||
+                CheckDirection(tree, x + 1, y, 1, 0).Visible ||
+                CheckDirection(tree, x - 1, y, -1, 0).Visible;
         }
-
         private int VisibleCount(int x, int y) {
             if (x == 0 || x == width - 1 || y == 0 || y == height - 1) { return 0; }
 
-            int start = y * height + x;
-            int tree = forest[start];
+            int tree = forest[y, x];
+            return CheckDirection(tree, x, y + 1, 0, 1).Count *
+                CheckDirection(tree, x, y - 1, 0, -1).Count *
+                CheckDirection(tree, x + 1, y, 1, 0).Count *
+                CheckDirection(tree, x - 1, y, -1, 0).Count;
+        }
+        private (bool Visible, int Count) CheckDirection(int tree, int x, int y, int xd, int yd) {
             int count = 0;
-            for (int i = start + height; i < forest.Length; i += height) {
+            while (x >= 0 && x < width && y >= 0 && y < height) {
                 count++;
-                if (tree <= forest[i]) {
-                    break;
+                if (tree <= forest[y, x]) {
+                    return (false, count);
                 }
+                x += xd;
+                y += yd;
             }
-
-            int total = count;
-            count = 0;
-            for (int i = start - height; i >= 0; i -= height) {
-                count++;
-                if (tree <= forest[i]) {
-                    break;
-                }
-            }
-            total *= count;
-            count = 0;
-            for (int i = start + 1, xt = x + 1; i < forest.Length && xt < width; i++, xt++) {
-                count++;
-                if (tree <= forest[i]) {
-                    break;
-                }
-            }
-            total *= count;
-            count = 0;
-            for (int i = start - 1, xt = x - 1; i >= 0 && xt >= 0; i--, xt--) {
-                count++;
-                if (tree <= forest[i]) {
-                    break;
-                }
-            }
-            return total * count;
+            return (true, count);
         }
     }
 }
