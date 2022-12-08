@@ -341,4 +341,5 @@ healthchecksdb
 
 App.config
 **/Inputs/*.txt
+!**/Inputs/*Example.txt
 **/Descriptions/*.html
