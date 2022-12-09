@@ -39,7 +39,7 @@ namespace AdventOfCode.Y2022 {
 
                     for (int i = 1; i < rope.Count; i++) {
                         if (Math.Abs(rope[i].x - rope[i - 1].x) > 1 || Math.Abs(rope[i].y - rope[i - 1].y) > 1) {
-                            rope[i] = (rope[i].x + Math.Sign(rope[i-1].x - rope[i].x), rope[i].y + Math.Sign(rope[i - 1].y - rope[i].y));
+                            rope[i] = (rope[i].x + Math.Sign(rope[i - 1].x - rope[i].x), rope[i].y + Math.Sign(rope[i - 1].y - rope[i].y));
                         }
                     }
 
