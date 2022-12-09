@@ -25,21 +25,17 @@ namespace AdventOfCode.Y2022 {
 
             foreach (string line in Input.Split('\n')) {
                 int amount = line[2..].ToInt();
-                int xd = 0;
-                int yd = 0;
-                switch (line[0]) {
-                    case 'R': xd = 1; break;
-                    case 'L': xd = -1; break;
-                    case 'U': yd = 1; break;
-                    case 'D': yd = -1; break;
-                }
+                int xd = line[0] switch { 'R' => 1, 'L' => -1, _ => 0 };
+                int yd = line[0] switch { 'U' => 1, 'D' => -1, _ => 0 };
 
                 while (amount-- > 0) {
                     rope[0] = (rope[0].x + xd, rope[0].y + yd);
 
                     for (int i = 1; i < rope.Count; i++) {
-                        if (Math.Abs(rope[i].x - rope[i - 1].x) > 1 || Math.Abs(rope[i].y - rope[i - 1].y) > 1) {
-                            rope[i] = (rope[i].x + Math.Sign(rope[i - 1].x - rope[i].x), rope[i].y + Math.Sign(rope[i - 1].y - rope[i].y));
+                        int diffX = rope[i - 1].x - rope[i].x;
+                        int diffY = rope[i - 1].y - rope[i].y;
+                        if (Math.Abs(diffX) > 1 || Math.Abs(diffY) > 1) {
+                            rope[i] = (rope[i].x + Math.Sign(diffX), rope[i].y + Math.Sign(diffY));
                         }
                     }
 
