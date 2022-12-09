@@ -18,10 +18,7 @@ namespace AdventOfCode.Y2022 {
 
         private int CountPositions(int knots) {
             HashSet<(int x, int y)> positions = new();
-            List<(int x, int y)> rope = new();
-            for (int i = 0; i < knots; i++) {
-                rope.Add((0, 0));
-            }
+            (int x, int y)[] rope = new (int x, int y)[knots];
 
             foreach (string line in Input.Split('\n')) {
                 int amount = line[2..].ToInt();
@@ -31,7 +28,7 @@ namespace AdventOfCode.Y2022 {
                 while (amount-- > 0) {
                     rope[0] = (rope[0].x + xd, rope[0].y + yd);
 
-                    for (int i = 1; i < rope.Count; i++) {
+                    for (int i = 1; i < rope.Length; i++) {
                         int diffX = rope[i - 1].x - rope[i].x;
                         int diffY = rope[i - 1].y - rope[i].y;
                         if (Math.Abs(diffX) > 1 || Math.Abs(diffY) > 1) {
