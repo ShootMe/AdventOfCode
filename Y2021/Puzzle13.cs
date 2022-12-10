@@ -56,49 +56,12 @@ namespace AdventOfCode.Y2021 {
             int charWidth = maxY - minY - 2;
             int amountOfChars = (maxX - minX + 1) / (charWidth + 1);
 
-            bool[,] grid = new bool[maxX - minX, maxY - minY];
+            bool[,] grid = new bool[maxY - minY, maxX - minX];
             foreach ((int x, int y) in dots) {
-                grid[x - minX, y - minY] = true;
+                grid[y - minY, x - minX] = true;
             }
 
-            // ██  ███   ██  ███  ████ ████  ██  █  █  ███   ██ █  █ █     ██  ███   ██  ███   ███ ████ █  █ █   ██   █████
-            //█  █ █  █ █  █ █  █ █    █    █  █ █  █   █     █ █ █  █    █  █ █  █ █  █ █  █ █      █  █  █  █ █ █   █   █
-            //████ ███  █    █  █ ███  ███  █    ████   █     █ ██   █    █  █ █  █ █  █ █  █ █      █  █  █   █   █ █   █
-            //█  █ █  █ █    █  █ █    █    █ ██ █  █   █     █ █ █  █    █  █ ███  █  █ ███   ██    █  █  █   █    █   █
-            //█  █ █  █ █  █ █  █ █    █    █  █ █  █   █  █  █ █ █  █    █  █ █     ██  █ █     █   █  █  █  █ █   █  █
-            //█  █ ███   ██  ███  ████ █     ██  █  █  ███  ██  █  █ ████  ██  █       █ █  █ ███    █   ██  █   █  █  ████
-            Dictionary<int, char> charMap = new Dictionary<int, char>() { { 210, 'A' }, { 169, 'B' }, { 112, 'C' }, { 175, 'D' }, { 137, 'E' }, { 53, 'F' }, { 160, 'G' }, { 207, 'H' }, { 154, 'I' }, { 165, 'J' }, { 127, 'K' }, { 105, 'L' }, { 168, 'O' }, { 91, 'P' }, { 159, 'R' }, { 125, 'S' }, { 95, 'T' }, { 55, 'T' }, { 171, 'U' }, { 73, 'Y' }, { 146, 'Z' } };
-            char[] characters = new char[amountOfChars];
-            for (int i = 0; i < amountOfChars; i++) {
-                int charSum = 0;
-                int startX = i * (charWidth + 1) + minX;
-                int endX = (i + 1) * (charWidth + 1) + minX - 1;
-                for (int j = minY; j < maxY; j++) {
-                    int rowSum = 0;
-                    for (int k = startX; k < endX; k++) {
-                        if (grid[k - minX, j - minY]) {
-                            rowSum += 1 << (k - startX);
-                        }
-                    }
-                    charSum += rowSum * (j - minY + 1);
-                }
-
-                if (charMap.TryGetValue(charSum, out char found)) {
-                    characters[i] = found;
-                } else {
-                    characters[i] = '?';
-                }
-            }
-
-            //System.Console.WriteLine();
-            //for (int j = minY; j < maxY; j++) {
-            //    for (int i = minX; i < maxX; i++) {
-            //        System.Console.Write(grid[i, j] ? '█' : ' ');
-            //    }
-            //    System.Console.WriteLine();
-            //}
-
-            return new string(characters);
+            return Extensions.FindStringInGrid(grid, 4);
         }
 
         private void Fold(int fold) {
