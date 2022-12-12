@@ -9,8 +9,6 @@ namespace AdventOfCode.Y2022 {
         private int[,] map;
         private int width;
         private int height;
-        private (int x, int y) start;
-        private (int x, int y) end;
 
         public override void Setup() {
             string[] lines = Input.Split('\n');
@@ -23,10 +21,10 @@ namespace AdventOfCode.Y2022 {
                 for (int x = 0; x < line.Length; x++) {
                     char c = line[x];
                     if (c == 'S') {
-                        start = (x, y);
+                        Path.Start = (x, y);
                         map[y, x] = 0;
                     } else if (c == 'E') {
-                        end = (x, y);
+                        Path.End = (x, y);
                         map[y, x] = 26;
                     } else {
                         map[y, x] = line[x] - 'a';
@@ -35,39 +33,39 @@ namespace AdventOfCode.Y2022 {
             }
         }
 
-
         [Description("What is the fewest steps required to get to the location that should get the best signal?")]
         public override string SolvePart1() {
-            return $"{StepsNeededAt(start.x, start.y)}";
+            return $"{StepsNeeded()}";
         }
 
         [Description("What is the fewest steps required to move from any square with elevation a to the end?")]
         public override string SolvePart2() {
-            int min = int.MaxValue;
-            for (int y = 0; y < height; y++) {
-                for (int x = 0; x < width; x++) {
-                    if (map[y, x] != 0) { continue; }
-
-                    int moves = StepsNeededAt(x, y);
-                    if (moves < min) {
-                        min = moves;
-                    }
-                }
-            }
-            return $"{min}";
+            return $"{StepsNeeded(true)}";
         }
 
-        private int StepsNeededAt(int startX, int startY) {
+        private int StepsNeeded(bool checkAll = false) {
             (int, int)[] dirs = { (0, 1), (1, 0), (-1, 0), (0, -1) };
             Heap<Path> queue = new Heap<Path>();
             HashSet<(int, int)> seen = new HashSet<(int, int)>(width * height);
-            queue.Enqueue(new Path() { X = startX, Y = startY, Value = 0 });
-            seen.Add((startX, startY));
+
+            if (checkAll) {
+                for (int y = 0; y < height; y++) {
+                    for (int x = 0; x < width; x++) {
+                        if (map[y, x] != 0) { continue; }
+
+                        queue.Enqueue(new Path() { X = x, Y = y, Value = 0 });
+                        seen.Add((x, y));
+                    }
+                }
+            } else {
+                queue.Enqueue(new Path() { X = Path.Start.x, Y = Path.Start.y, Value = 0 });
+                seen.Add(Path.Start);
+            }
 
             while (queue.Count > 0) {
                 Path current = queue.Dequeue();
 
-                if (current.X == end.x && current.Y == end.y) {
+                if (current.X == Path.End.x && current.Y == Path.End.y) {
                     return current.Steps;
                 }
 
@@ -87,13 +85,15 @@ namespace AdventOfCode.Y2022 {
         }
 
         private struct Path : IComparable<Path> {
+            public static (int x, int y) Start;
+            public static (int x, int y) End;
             public int X, Y, Value, Steps;
 
             public int CompareTo(Path other) {
                 int comp = Steps.CompareTo(other.Steps);
                 if (comp != 0) { return comp; }
 
-                return (other.X + other.Y).CompareTo(X + Y);
+                return other.Value.CompareTo(Value);
             }
             public override string ToString() {
                 return $"({X},{Y})={Value}";
