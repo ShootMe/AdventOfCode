@@ -25,7 +25,7 @@ namespace AdventOfCode.Y2022 {
                         map[y, x] = 0;
                     } else if (c == 'E') {
                         Path.End = (x, y);
-                        map[y, x] = 26;
+                        map[y, x] = 25;
                     } else {
                         map[y, x] = line[x] - 'a';
                     }
