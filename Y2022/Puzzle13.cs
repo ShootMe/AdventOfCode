@@ -59,16 +59,14 @@ namespace AdventOfCode.Y2022 {
                             newPacket.Packets.Add(ReadPacket(packet, ref start, ref index));
                             break;
                         case ']':
-                            if (start < index - 1) {
-                                newPacket.Packets.Add(new PacketValue() { Value = packet[start..(index - 1)].ToInt() });
-                            }
-                            start = index;
-                            return newPacket;
                         case ',':
                             if (start < index - 1) {
                                 newPacket.Packets.Add(new PacketValue() { Value = packet[start..(index - 1)].ToInt() });
                             }
                             start = index;
+                            if (current == ']') {
+                                return newPacket;
+                            }
                             break;
                     }
                 }
