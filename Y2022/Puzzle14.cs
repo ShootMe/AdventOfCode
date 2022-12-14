@@ -99,7 +99,7 @@ namespace AdventOfCode.Y2022 {
                 }
             }
         }
-        private int FillSand(bool stillWater = false) {
+        private int FillSand() {
             int totalSand = 0;
         StartLoop:
             int position = 500 - minX;
@@ -114,19 +114,7 @@ namespace AdventOfCode.Y2022 {
                 switch (cave[position]) {
                     case BlockType.Empty: continue;
                     case BlockType.Rock:
-                        if (cave[position - 1] == BlockType.Empty) {
-                            position--;
-                        } else if (cave[position + 1] == BlockType.Empty) {
-                            position++;
-                        } else {
-                            cave[position - width] = BlockType.Sand;
-                            totalSand++;
-                            //Display(position - width);
-                            goto StartLoop;
-                        }
-                        break;
                     case BlockType.Sand:
-
                         if (cave[position - 1] == BlockType.Empty) {
                             position--;
                         } else if (cave[position + 1] == BlockType.Empty) {
