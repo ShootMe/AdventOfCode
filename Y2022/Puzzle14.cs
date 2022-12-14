@@ -101,31 +101,33 @@ namespace AdventOfCode.Y2022 {
         }
         private int FillSand() {
             int totalSand = 0;
-        StartLoop:
-            int position = 500 - minX;
-            if (cave[position] == BlockType.Sand) {
-                //Display(position);
-                return totalSand;
-            }
+            Queue<Sand> sand = new();
+            sand.Enqueue(new Sand() { Position = 500 - minX });
 
-            while (position + width < cave.Length) {
-                position += width;
+            while (sand.Count > 0) {
+                Sand current = sand.Dequeue();
+                Sand next = new Sand() { Position = current.Position + width, Parent = current };
+                if (next.Position >= cave.Length) { continue; }
 
-                switch (cave[position]) {
-                    case BlockType.Empty: continue;
-                    case BlockType.Rock:
-                    case BlockType.Sand:
-                        if (cave[position - 1] == BlockType.Empty) {
-                            position--;
-                        } else if (cave[position + 1] == BlockType.Empty) {
-                            position++;
-                        } else {
-                            cave[position - width] = BlockType.Sand;
-                            totalSand++;
-                            //Display(position - width);
-                            goto StartLoop;
-                        }
-                        break;
+                BlockType block = cave[next.Position];
+                if (block == BlockType.Empty) {
+                    sand.Enqueue(next);
+                    continue;
+                }
+
+                if (cave[next.Position - 1] == BlockType.Empty) {
+                    next.Position--;
+                    sand.Enqueue(next);
+                } else if (cave[next.Position + 1] == BlockType.Empty) {
+                    next.Position++;
+                    sand.Enqueue(next);
+                } else {
+                    cave[current.Position] = BlockType.Sand;
+                    if (current.Parent != null) {
+                        sand.Enqueue(current.Parent);
+                    }
+                    totalSand++;
+                    //Display(current.Position);
                 }
             }
             //Display(position);
@@ -149,6 +151,13 @@ namespace AdventOfCode.Y2022 {
             Empty,
             Sand,
             Rock
+        }
+        private class Sand {
+            public int Position;
+            public Sand Parent;
+            public override string ToString() {
+                return $"{Position}";
+            }
         }
     }
 }
