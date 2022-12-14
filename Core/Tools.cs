@@ -173,7 +173,7 @@ namespace AdventOfCode.Y{year} {{
             return "Unknown";
         }
         public static void DownloadProblem(int year, int dayToRun, bool showDescriptionInBrowser) {
-            DateTime target = DateTime.Parse($"{year}-12-{dayToRun:00}T00:00:00.5-05:00");
+            DateTime target = DateTime.Parse($"{year}-12-{dayToRun:00}T00:00:00-05:00");
             TimeSpan nowTillTarget = target - DateTime.Now;
             if (nowTillTarget.TotalMinutes > 0 && nowTillTarget.TotalMinutes < 30) {
                 Console.WriteLine("Waiting till puzzle releases at midnight EST...");
