@@ -155,44 +155,5 @@ namespace AdventOfCode.Y2018 {
             }
             return (reservoir[index], index);
         }
-
-        //private Gif.GifEncoder gif;
-        //private Gif.Bitmap image;
-        //private void Display(bool final = false) {
-        //    if (gif == null) {
-        //        gif = new Gif.GifEncoder();
-        //        gif.Start(@"out.gif");
-        //        gif.Delay = 2;
-        //        gif.Repeat = 0;
-        //        gif.ColorBits = 8;
-        //        gif.Disposal = 0;
-        //        gif.UseLocalColorTable = false;
-        //        image = new Gif.Bitmap(width, height);
-        //        gif.AddColor(System.Drawing.Color.Blue);
-        //    }
-
-        //    int x = 0;
-        //    int y = 0;
-        //    for (int i = 0; y < height; i++) {
-        //        BlockType value = reservoir[i];
-        //        switch (value) {
-        //            case BlockType.Clay: image[i] = System.Drawing.Color.Black; break;
-        //            case BlockType.StillWater: image[i] = System.Drawing.Color.Blue; break;
-        //            case BlockType.MovingWater: image[i] = System.Drawing.Color.Green; break;
-        //            default: image[i] = System.Drawing.Color.White; break;
-        //        }
-
-        //        x++;
-        //        if (x == width) {
-        //            x = 0;
-        //            y++;
-        //        }
-        //    }
-
-        //    gif.AddFrame(image);
-        //    if (final) {
-        //        gif.Finish();
-        //    }
-        //}
     }
 }
