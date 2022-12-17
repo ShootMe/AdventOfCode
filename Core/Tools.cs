@@ -230,7 +230,7 @@ namespace AdventOfCode.Y{year} {{
             int start = html.LastIndexOf("<p>", StringComparison.OrdinalIgnoreCase);
             int end = html.LastIndexOf("</p>", StringComparison.OrdinalIgnoreCase);
             Description = html;
-            Question = start < end && start >= 0 ? html.Substring(start + 3, end - start - 3).Replace("<em>", string.Empty).Replace("</em>", string.Empty) : string.Empty;
+            Question = start < end && start >= 0 ? html.Substring(start + 3, end - start - 3).Replace("<em>", string.Empty).Replace("</em>", string.Empty).Replace("<code>", string.Empty).Replace("</code>", string.Empty) : string.Empty;
         }
     }
 }
