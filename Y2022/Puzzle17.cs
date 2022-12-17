@@ -37,7 +37,7 @@ namespace AdventOfCode.Y2022 {
                     positions.Add((index, FilledRows()));
                     if (positions.Count > 5) {
                         (int position, int length) = FindLongestDuplicate(positions);
-                        if (position <= 0) { continue; }
+                        if (position <= 0 || length < 3) { continue; }
 
                         if (length > maxLength) {
                             maxLength = length;
@@ -111,7 +111,7 @@ namespace AdventOfCode.Y2022 {
         }
         private int FilledRows() {
             int row = rocks.Count - 1;
-            while (row >= 0 && rocks[row] != 0) {
+            while (row >= 0 && rocks[row] == 0) {
                 row--;
             }
             return row + 1;
