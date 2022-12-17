@@ -28,35 +28,22 @@ namespace AdventOfCode.Y2022 {
             int placed = 0;
             int index = 0;
             List<(int position, int count)> positions = new();
-            int maxLength = 0;
             while (true) {
                 index = Simulate(current, index);
                 placed++;
                 current = current switch { RockType.Minus => RockType.Plus, RockType.Plus => RockType.RevL, RockType.RevL => RockType.Pipe, RockType.Pipe => RockType.Square, _ => RockType.Minus };
                 if (current == RockType.Minus) {
                     positions.Add((index, FilledRows()));
-                    if (positions.Count > 5) {
-                        (int position, int length) = FindLongestDuplicate(positions);
-                        if (position <= 0 || length < 3) { continue; }
+                    if (positions.Count < 1000) { continue; }
 
-                        if (length > maxLength) {
-                            maxLength = length;
-                        } else {
-                            int baseCount = positions[position].count;
-                            int duplicateCount = positions[position + length].count;
-                            int difference = duplicateCount - baseCount;
-                            int basePlaced = position * 5;
-                            int duplicatePlaced = length * 5;
-                            long repeats = (1000000000000L - basePlaced) / duplicatePlaced;
-                            int leftOver = (int)(1000000000000L - basePlaced - repeats * duplicatePlaced);
-                            if (leftOver != 0) {
-                                baseCount = positions[position + leftOver / 5 - 1].count;
-                            } else {
-                                baseCount = positions[position - 1].count;
-                            }
-                            return $"{baseCount + repeats * difference}";
-                        }
-                    }
+                    (int position, int length) = FindLongestDuplicate(positions);
+                    int difference = positions[position + length].count - positions[position].count;
+                    int basePlaced = position * 5;
+                    int duplicatePlaced = length * 5;
+                    long repeats = (1000000000000L - basePlaced) / duplicatePlaced;
+                    int leftOver = (int)(1000000000000L - basePlaced - repeats * duplicatePlaced);
+                    int baseCount = positions[position + leftOver / 5 - 1].count;
+                    return $"{baseCount + repeats * difference}";
                 }
             }
         }
