@@ -109,7 +109,7 @@ namespace AdventOfCode.Y2022 {
                 return bestValue;
             }
             private bool TryAdd(Dictionary<Simulation, (byte minutes, Resources rocks)> closed, Simulation simulation) {
-                return !closed.TryGetValue(simulation, out var value) || value.minutes > simulation.Minutes || (value.minutes == simulation.Minutes && value.rocks != simulation.Rocks);
+                return !closed.TryGetValue(simulation, out var value) || (value.minutes == simulation.Minutes && value.rocks != simulation.Rocks);
             }
             public static implicit operator Blueprint(string line) {
                 Blueprint blueprint = new Blueprint();
