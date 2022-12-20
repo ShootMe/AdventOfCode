@@ -41,19 +41,22 @@ namespace AdventOfCode.Y2022 {
                 Dictionary<Simulation, (byte minutes, Resources rocks)> closed = new();
                 open.Enqueue(new Simulation() { Minutes = 0, OreBots = 1 });
                 int bestValue = -1;
-                int maxOre = 0;
-                int maxClay = 0;
-                int maxObsidian = 0;
+                int maxOre = 0; int clayOre = 0;
+                int obsidianOre = 0; int obsidianClay = 0;
+                int geodeOre = 0; int geodeObsidian = 0;
                 for (int i = 0; i < Robots.Count; i++) {
                     Robot robot = Robots[i];
                     if (robot.Ore > maxOre) { maxOre = robot.Ore; }
-                    if (robot.Clay > maxClay) { maxClay = robot.Clay; }
-                    if (robot.Obsidian > maxObsidian) { maxObsidian = robot.Obsidian; }
+                    if (robot.RockType == RockType.Geode) {
+                        geodeOre = robot.Ore;
+                        geodeObsidian = robot.Obsidian;
+                    } else if (robot.RockType == RockType.Obsidian) {
+                        obsidianOre = robot.Ore;
+                        obsidianClay = robot.Clay;
+                    } else if (robot.RockType == RockType.Clay) {
+                        clayOre = robot.Ore;
+                    }
                 }
-
-                //Magic values to keep it fast
-                maxClay = maxClay * 7 / 10;
-                maxObsidian = maxObsidian * 4 / 5;
 
                 while (open.Count > 0) {
                     Simulation current = open.Dequeue();
@@ -64,11 +67,28 @@ namespace AdventOfCode.Y2022 {
                         continue;
                     }
 
+                    int minutesLeft = minutes - current.Minutes - 1;
+
+                    int obsidianBotsToMake = geodeObsidian - current.ObsidianBots;
+                    obsidianBotsToMake = obsidianBotsToMake > minutesLeft ? minutesLeft : obsidianBotsToMake;
+
+                    int clayBotsToMake = obsidianClay - current.ClayBots;
+                    clayBotsToMake = clayBotsToMake > minutesLeft ? minutesLeft : clayBotsToMake;
+
+                    bool obsidianNotNeeded = current.Rocks.Obsidian + (current.ObsidianBots - geodeObsidian) * minutesLeft >= 0;
+                    bool clayNotNeeded = current.Rocks.Clay + (current.ClayBots - obsidianClay) * obsidianBotsToMake >= 0;
+                    bool oreNotNeeded = current.Rocks.Ore + current.OreBots * minutesLeft - geodeOre * minutesLeft - obsidianOre * obsidianBotsToMake - clayOre * clayBotsToMake >= 0;
+
+                    bool skipOre = current.OreBots >= maxOre || oreNotNeeded;
+                    bool skipObsidian = obsidianNotNeeded;
+                    bool skipClay = obsidianNotNeeded || clayNotNeeded;
+
                     for (int i = 0; i < Robots.Count; i++) {
                         Robot robot = Robots[i];
-                        if (robot.RockType == RockType.Ore && current.OreBots >= maxOre) { continue; }
-                        if (robot.RockType == RockType.Clay && current.ClayBots >= maxClay) { continue; }
-                        if (robot.RockType == RockType.Obsidian && current.ObsidianBots >= maxObsidian) { continue; }
+
+                        if (robot.RockType == RockType.Ore && skipOre) { continue; }
+                        if (robot.RockType == RockType.Clay && skipClay) { continue; }
+                        if (robot.RockType == RockType.Obsidian && skipObsidian) { continue; }
 
                         if (current.Rocks.Ore >= robot.Ore && current.Rocks.Clay >= robot.Clay && current.Rocks.Obsidian >= robot.Obsidian) {
                             Simulation next = new Simulation(current);
