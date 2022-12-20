@@ -15,32 +15,15 @@ namespace AdventOfCode.Y2022 {
 
         [Description("What is the sum of the three numbers that form the grove coordinates?")]
         public override string SolvePart1() {
-            WrappingList<(int num, int index)> list = new(numbers.Count);
+            WrappingList<(long num, int index)> list = new(numbers.Count);
             for (int i = 0; i < numbers.Count; i++) {
-                int number = (int)numbers[i];
+                long number = numbers[i];
                 list.AddBefore((number, i));
             }
 
-            for (int i = 0; i < numbers.Count; i++) {
-                int number = (int)numbers[i];
-                list.InsertCurrent(number % (numbers.Count - 1));
-                
-                while (i + 1 < numbers.Count && list.Current.index != i + 1) {
-                    list.IncreasePosition();
-                }
-            }
+            Mix(list);
 
-            while (list.Current.num != 0) {
-                list.IncreasePosition();
-            }
-
-            list.IncreasePosition(1000);
-            int coordinates = list.Current.num;
-            list.IncreasePosition(1000);
-            coordinates += list.Current.num;
-            list.IncreasePosition(1000);
-            coordinates += list.Current.num;
-            return $"{coordinates}";
+            return $"{FindCoordinates(list)}";
         }
 
         [Description("What is the sum of the three numbers that form the grove coordinates?")]
@@ -53,19 +36,22 @@ namespace AdventOfCode.Y2022 {
             }
 
             for (int j = 0; j < 10; j++) {
-                while (list.Current.index != 0) {
+                Mix(list);
+            }
+
+            return $"{FindCoordinates(list)}";
+        }
+        private void Mix(WrappingList<(long num, int index)> list) {
+            for (int i = 0; i < numbers.Count; i++) {
+                while (list.Current.index != i) {
                     list.IncreasePosition();
                 }
 
-                for (int i = 0; i < numbers.Count; i++) {
-                    long number = numbers[i];
-                    list.InsertCurrent((int)(number % (numbers.Count - 1)));
-                    while (i + 1 < numbers.Count && list.Current.index != i + 1) {
-                        list.IncreasePosition();
-                    }
-                }
+                long number = numbers[i];
+                list.InsertCurrent((int)(number % (numbers.Count - 1)));
             }
-
+        }
+        private long FindCoordinates(WrappingList<(long num, int index)> list) {
             while (list.Current.num != 0) {
                 list.IncreasePosition();
             }
@@ -76,7 +62,7 @@ namespace AdventOfCode.Y2022 {
             coordinates += list.Current.num;
             list.IncreasePosition(1000);
             coordinates += list.Current.num;
-            return $"{coordinates}";
+            return coordinates;
         }
     }
 }
