@@ -131,6 +131,21 @@ namespace AdventOfCode.Common {
                 values[ptr.Index] = value;
             }
         }
+        public void InsertCurrent(int distance) {
+            WrappingNode start = current;
+
+            if (distance >= 0) {
+                for (int j = 0; j < distance; j++) {
+                    Swap(start.Index, start.Next);
+                    start = storage[start.Next];
+                }
+            } else {
+                for (int j = 0; j < -distance; j++) {
+                    Swap(start.Index, start.Previous);
+                    start = storage[start.Previous];
+                }
+            }
+        }
         public void AddBefore(T value, bool setCurrentElement = false) {
             if (++Count > storage.Length || storageIndex == storage.Length) {
                 Resize();

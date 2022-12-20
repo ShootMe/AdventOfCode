@@ -5,7 +5,7 @@ using System.ComponentModel;
 namespace AdventOfCode.Y2022 {
     [Description("Grove Positioning System")]
     public class Puzzle20 : ASolver {
-        private List<int> numbers = new();
+        private List<long> numbers = new();
 
         public override void Setup() {
             foreach (string line in Input.Split('\n')) {
@@ -17,22 +17,14 @@ namespace AdventOfCode.Y2022 {
         public override string SolvePart1() {
             WrappingList<(int num, int index)> list = new(numbers.Count);
             for (int i = 0; i < numbers.Count; i++) {
-                int number = numbers[i];
+                int number = (int)numbers[i];
                 list.AddBefore((number, i));
             }
 
             for (int i = 0; i < numbers.Count; i++) {
-                int number = numbers[i];
-                if (number > 0) {
-                    (int num, int index) = list.Remove();
-                    list.IncreasePosition(num - 1);
-                    list.AddAfter((num, index));
-                } else if (number < 0) {
-                    (int num, int index) = list.Remove();
-                    list.DecreasePosition(-num);
-                    list.AddBefore((num, index));
-                }
-
+                int number = (int)numbers[i];
+                list.InsertCurrent(number % (numbers.Count - 1));
+                
                 while (i + 1 < numbers.Count && list.Current.index != i + 1) {
                     list.IncreasePosition();
                 }
@@ -50,31 +42,24 @@ namespace AdventOfCode.Y2022 {
             coordinates += list.Current.num;
             return $"{coordinates}";
         }
-        
+
         [Description("What is the sum of the three numbers that form the grove coordinates?")]
         public override string SolvePart2() {
             WrappingList<(long num, int index)> list = new(numbers.Count);
             for (int i = 0; i < numbers.Count; i++) {
-                int number = numbers[i];
-                list.AddBefore(((long)number * 811589153, i));
+                long number = numbers[i] * 811589153;
+                numbers[i] = number;
+                list.AddBefore((number, i));
             }
 
             for (int j = 0; j < 10; j++) {
                 while (list.Current.index != 0) {
-                    list.DecreasePosition();
+                    list.IncreasePosition();
                 }
 
                 for (int i = 0; i < numbers.Count; i++) {
-                    int number = numbers[i];
-                    if (number > 0) {
-                        (long num, int index) = list.Remove();
-                        list.IncreasePosition((int)((num - 1) % list.Count));
-                        list.AddAfter((num, index));
-                    } else if (number < 0) {
-                        (long num, int index) = list.Remove();
-                        list.DecreasePosition((int)(-num % list.Count));
-                        list.AddBefore((num, index));
-                    }
+                    long number = numbers[i];
+                    list.InsertCurrent((int)(number % (numbers.Count - 1)));
                     while (i + 1 < numbers.Count && list.Current.index != i + 1) {
                         list.IncreasePosition();
                     }
@@ -82,7 +67,7 @@ namespace AdventOfCode.Y2022 {
             }
 
             while (list.Current.num != 0) {
-                list.DecreasePosition();
+                list.IncreasePosition();
             }
 
             list.IncreasePosition(1000);
