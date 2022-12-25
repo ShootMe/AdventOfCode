@@ -4,18 +4,17 @@ using System.ComponentModel;
 namespace AdventOfCode.Y2022 {
     [Description("Blizzard Basin")]
     public class Puzzle24 : ASolver {
-        private Area area = new();
+        private Area area;
 
         public override void Setup() {
             string[] lines = Input.Split('\n');
-            area.Width = lines[0].Length - 2;
-            area.Height = lines.Length - 2;
+            area = new Area(lines[0].Length - 2, lines.Length - 2);
             for (int y = 1; y < lines.Length - 1; y++) {
                 string line = lines[y];
                 for (int x = 1; x < line.Length - 1; x++) {
                     char c = line[x];
                     if (c != '.') {
-                        area.Blizzards.Add(new Blizzard() { X = x - 1, Y = y - 1, Dir = c switch { '^' => 0, '>' => 1, 'v' => 2, _ => 3 } });
+                        area.AddBlizzard(x - 1, y - 1, c);
                     }
                 }
             }
@@ -25,7 +24,7 @@ namespace AdventOfCode.Y2022 {
         public override string SolvePart1() {
             return $"{FindPath(0, -1, area.Width - 1, area.Height)}";
         }
-        
+
         [Description("What is the fewest number of minutes required to reach the goal, go back to the start, then reach the goal again?")]
         public override string SolvePart2() {
             FindPath(area.Width - 1, area.Height, 0, -1);
@@ -40,16 +39,12 @@ namespace AdventOfCode.Y2022 {
             while (open.Count > 0) {
                 Person person = open.Dequeue();
 
-                while (area.Rounds > person.Rounds) {
-                    area.Reverse();
-                }
-                while (area.Rounds < person.Rounds) {
+                while (area.Rounds < person.Rounds + 1) {
                     area.Step();
                 }
                 if (person.X == endX && person.Y == endY) {
                     return person.Rounds;
                 }
-                area.Step();
 
                 for (int i = 0; i < directions.Count; i++) {
                     (int x, int y) = directions[i];
@@ -74,50 +69,42 @@ namespace AdventOfCode.Y2022 {
             }
         }
         private class Area {
+            public const byte UP = 1; public const byte RIGHT = 2;
+            public const byte DOWN = 4; public const byte LEFT = 8;
             public int Width, Height;
-            public List<Blizzard> Blizzards = new();
+            public byte[,] Blizzards;
             public int Rounds;
+            public Area(int width, int height) {
+                Width = width;
+                Height = height;
+
+                Blizzards = new byte[Height, Width];
+            }
+            public void AddBlizzard(int x, int y, char type) {
+                Blizzards[y, x] = type switch { '^' => UP, '>' => RIGHT, 'v' => DOWN, _ => LEFT };
+            }
             public bool IsValidPosition(int x, int y) {
-                for (int i = 0; i < Blizzards.Count; i++) {
-                    Blizzard blizzard = Blizzards[i];
-                    if (blizzard.X == x && blizzard.Y == y) {
-                        return false;
-                    }
-                }
-                return true;
+                return x < 0 || y < 0 || x >= Width || y >= Height || Blizzards[y, x] == 0;
             }
             public void Step() {
                 Rounds++;
-                for (int i = 0; i < Blizzards.Count; i++) {
-                    Blizzard blizzard = Blizzards[i];
-                    blizzard.Step(Width, Height);
+                for (int y = 0; y < Height; y++) {
+                    int yU = (y + Height - 1) % Height;
+                    int yD = (y + 1) % Height;
+
+                    for (int x = 0; x < Width; x++) {
+                        byte value = Blizzards[y, x];
+                        if ((value & UP) != 0) { Blizzards[yU, x] |= UP << 4; }
+                        if ((value & RIGHT) != 0) { Blizzards[y, (x + 1) % Width] |= RIGHT << 4; }
+                        if ((value & DOWN) != 0) { Blizzards[yD, x] |= DOWN << 4; }
+                        if ((value & LEFT) != 0) { Blizzards[y, (x + Width - 1) % Width] |= LEFT << 4; }
+                    }
                 }
-            }
-            public void Reverse() {
-                Rounds--;
-                for (int i = 0; i < Blizzards.Count; i++) {
-                    Blizzard blizzard = Blizzards[i];
-                    blizzard.Reverse(Width, Height);
+                for (int y = 0; y < Height; y++) {
+                    for (int x = 0; x < Width; x++) {
+                        Blizzards[y, x] >>= 4;
+                    }
                 }
-            }
-        }
-        private class Blizzard {
-            public int X, Y, Dir;
-            public void Step(int width, int height) {
-                X += Dir switch { 0 => 0, 1 => 1, 2 => 0, _ => -1 };
-                Y += Dir switch { 0 => -1, 1 => 0, 2 => 1, _ => 0 };
-                CheckBounds(width, height);
-            }
-            public void Reverse(int width, int height) {
-                X -= Dir switch { 0 => 0, 1 => 1, 2 => 0, _ => -1 };
-                Y -= Dir switch { 0 => -1, 1 => 0, 2 => 1, _ => 0 };
-                CheckBounds(width, height);
-            }
-            private void CheckBounds(int width, int height) {
-                if (X < 0) { X = width - 1; }
-                if (X >= width) { X = 0; }
-                if (Y < 0) { Y = height - 1; }
-                if (Y >= height) { Y = 0; }
             }
         }
     }
