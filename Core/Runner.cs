@@ -8,7 +8,7 @@ using System.IO;
 using System.Reflection;
 namespace AdventOfCode.Core {
     public static class Runner {
-        public static void AdventYear(int year = 0, int dayToRun = 0) {
+        public static void AdventYear(int year = 0, int dayToRun = 0, bool excludeExamples = false) {
             Type[] types = typeof(Tools).Assembly.GetTypes();
             List<Type> puzzles = new List<Type>();
 
@@ -55,7 +55,7 @@ namespace AdventOfCode.Core {
                     string[] files = Directory.GetFiles(@$"{basePath}Y{pYear}\Inputs\", $"puzzle{day:00}*.txt", SearchOption.TopDirectoryOnly);
                     int givenCount = 0;
                     for (int j = 0; j < files.Length; j++) {
-                        if (!files[j].EndsWith("-Example.txt", StringComparison.OrdinalIgnoreCase)) {
+                        if (!files[j].EndsWith("~Example.txt", StringComparison.OrdinalIgnoreCase)) {
                             givenCount++;
                         }
                     }
@@ -65,6 +65,9 @@ namespace AdventOfCode.Core {
                     }
                     for (int j = 0; j < files.Length; j++) {
                         string filePath = files[j];
+                        if (excludeExamples && filePath.EndsWith("~Example.txt", StringComparison.OrdinalIgnoreCase)) {
+                            continue;
+                        }
                         InputData input = new InputData(filePath);
 
                         string onlyRunInput = GetInputName(puzzle);
@@ -116,7 +119,7 @@ namespace AdventOfCode.Core {
                     if (WriteSolutionResult(year, day, 1, answer)) {
                         string oldPath = input.FullPath;
                         input.Answer1 = answer;
-                        input.Name = $"puzzle{day:00}-{input.Answer1}-{input.Answer2}.txt";
+                        input.Name = $"puzzle{day:00}~{input.Answer1}~{input.Answer2}.txt";
                         File.Move(oldPath, input.FullPath);
                     }
                 }
@@ -140,7 +143,7 @@ namespace AdventOfCode.Core {
                     if (WriteSolutionResult(year, day, 2, answer)) {
                         string oldPath = input.FullPath;
                         input.Answer2 = answer;
-                        input.Name = $"puzzle{day:00}-{input.Answer1}-{input.Answer2}.txt";
+                        input.Name = $"puzzle{day:00}~{input.Answer1}~{input.Answer2}.txt";
                         File.Move(oldPath, input.FullPath);
                     }
                 }
@@ -230,10 +233,10 @@ namespace AdventOfCode.Core {
                 }
 
                 int extIndex = path.LastIndexOf('.');
-                int part1 = path.IndexOf('-');
-                int part2 = path.IndexOf('-', part1 + 1);
+                int part1 = path.IndexOf('~');
+                int part2 = path.IndexOf('~', part1 + 1);
                 part2 = part2 < 0 || part2 > extIndex ? extIndex : part2;
-                int desc = path.IndexOf('-', part2 + 1);
+                int desc = path.IndexOf('~', part2 + 1);
                 desc = desc < 0 || desc > extIndex ? extIndex : desc;
 
                 Answer1 = part1 > 0 ? path.Substring(part1 + 1, part2 - part1 - 1) : string.Empty;

@@ -22,8 +22,7 @@ namespace AdventOfCode.Y2022 {
 
             foreach (string line in Input.Split('\n')) {
                 int amount = line[2..].ToInt();
-                int xd = line[0] switch { 'R' => 1, 'L' => -1, _ => 0 };
-                int yd = line[0] switch { 'U' => 1, 'D' => -1, _ => 0 };
+                (int xd, int yd) = line[0] switch { 'R' => (1, 0), 'L' => (-1, 0), 'U' => (0, 1), _ => (0, -1) };
 
                 while (amount-- > 0) {
                     rope[0] = (rope[0].x + xd, rope[0].y + yd);

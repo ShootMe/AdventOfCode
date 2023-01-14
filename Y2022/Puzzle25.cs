@@ -1,5 +1,4 @@
 using AdventOfCode.Core;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
@@ -30,8 +29,9 @@ namespace AdventOfCode.Y2022 {
             string characters = "012=-";
             StringBuilder result = new();
             while (total > 0) {
-                result.Insert(0, characters[(int)(total % 5)]);
-                total = (long)Math.Round(total / 5d, MidpointRounding.AwayFromZero);
+                int rem = (int)(total % 5);
+                result.Insert(0, characters[rem]);
+                total = (total + rem) / 5;
             }
             return $"{result}";
         }
