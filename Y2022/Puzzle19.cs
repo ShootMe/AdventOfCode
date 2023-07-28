@@ -174,6 +174,12 @@ namespace AdventOfCode.Y2022 {
             public override string ToString() {
                 return $"[{Ore,3},{Clay,3},{Obsidian,3},{Geode,3}]";
             }
+            public override bool Equals(object obj) {
+                return obj is Resources resources && Ore == resources.Ore && Clay == resources.Clay && Obsidian == resources.Obsidian && Geode == resources.Geode;
+            }
+            public override int GetHashCode() {
+                return ((Ore * 17 + Clay) * 17 + Obsidian) * 17 + Geode;
+            }
         }
         private class Robot {
             public RockType RockType;
