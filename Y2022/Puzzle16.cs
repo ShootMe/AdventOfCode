@@ -109,11 +109,7 @@ namespace AdventOfCode.Y2022 {
 
             int maxRelease = 0;
             int maxVisited = (1 << FlowRateMaxID) - 1;
-            int maxOpen = 0;
-            int maxSeen = 0;
             while (open.Count > 0) {
-                if (open.Count > maxOpen) { maxOpen = open.Count; }
-                if (seen.Count > maxSeen) { maxSeen = seen.Count; }
                 current = open.Dequeue();
 
                 if (seen[current] > current.Release) { continue; }
