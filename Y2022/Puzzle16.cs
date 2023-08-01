@@ -43,52 +43,53 @@ namespace AdventOfCode.Y2022 {
                 for (int j = 0; j < splits.Length; j++) {
                     Valve connection = valves[ids[splits[j]]];
                     valve.Connections[j] = connection;
-                    valve.Costs[j] = connection.FlowRate > 0 ? 1 : 0;
+                    valve.Costs[j] = 1;
                 }
-            }
-
-            for (int i = 0; i < valves.Length; i++) {
-                Valve valve = valves[i];
-                Flatten(valve);
             }
 
             AAID = ids["AA"];
-        }
-        private void Flatten(Valve valve) {
-            if (!valve.NeedsFlattened()) { return; }
 
-            Valve[] connections = valve.Connections;
-            int[] costs = valve.Costs;
-            Queue<(Valve, int)> open = new Queue<(Valve, int)>();
-            Dictionary<Valve, int> found = new Dictionary<Valve, int>();
-
-            for (int j = 0; j < costs.Length; j++) {
-                if (connections[j] == valve) { continue; }
-
-                if (costs[j] != 0) {
-                    found.Add(connections[j], costs[j]);
-                } else {
-                    found.Add(connections[j], -1);
-                    open.Enqueue((connections[j], 1));
+            for (int i = 0; i < valves.Length; i++) {
+                Valve valve = valves[i];
+                if (i < FlowRateMaxID || i == AAID) {
+                    Flatten(valve);
                 }
             }
+        }
+        private void Flatten(Valve valve) {
+            Queue<(Valve, int)> open = new();
+            Dictionary<Valve, int> found = new();
+            open.Enqueue((valve, 0));
+            found.Add(valve, 0);
 
             while (open.Count > 0) {
                 (Valve next, int cost) = open.Dequeue();
 
-                Flatten(open, found, valve, next, cost);
+                Valve[] connections = next.Connections;
+                int[] costs = next.Costs;
+                for (int i = 0; i < costs.Length; i++) {
+                    int nextCost = cost + costs[i];
+
+                    if (!found.TryGetValue(connections[i], out int currentCost) || currentCost > nextCost) {
+                        found[connections[i]] = nextCost;
+                        open.Enqueue((connections[i], nextCost));
+                    }
+                }
             }
 
+            FlattenComplete(valve, found);
+        }
+        private void FlattenComplete(Valve valve, Dictionary<Valve, int> found) {
             int i = 0;
             foreach (KeyValuePair<Valve, int> pair in found) {
-                if (pair.Value > 0) { i++; }
+                if (pair.Value > 0 && pair.Key.FlowRate > 0) { i++; }
             }
 
-            connections = new Valve[i];
-            costs = new int[i];
+            Valve[] connections = new Valve[i];
+            int[] costs = new int[i];
             i = 0;
             foreach (KeyValuePair<Valve, int> pair in found) {
-                if (pair.Value > 0) {
+                if (pair.Value > 0 && pair.Key.FlowRate > 0) {
                     connections[i] = pair.Key;
                     costs[i++] = pair.Value;
                 }
@@ -97,78 +98,38 @@ namespace AdventOfCode.Y2022 {
             valve.Connections = connections;
             valve.Costs = costs;
         }
-        private void Flatten(Queue<(Valve, int)> open, Dictionary<Valve, int> found, Valve valve, Valve next, int cost) {
-            Valve[] connections = next.Connections;
-            int[] costs = next.Costs;
-            for (int j = 0; j < costs.Length; j++) {
-                if (connections[j] == valve) { continue; }
-
-                if (costs[j] != 0) {
-                    if (!found.TryGetValue(connections[j], out int currentCost) || currentCost > cost + costs[j]) {
-                        found[connections[j]] = cost + costs[j];
-                    }
-                } else if (!found.TryGetValue(connections[j], out int currentCost) || currentCost < -cost - 1) {
-                    found[connections[j]] = -cost - 1;
-                    open.Enqueue((connections[j], cost + 1));
-                }
-            }
-        }
 
         [Description("What is the most pressure you can release?")]
         public override string SolvePart1() {
-            Queue<State> open = new(20000);
-            Dictionary<State, int> seen = new(80000);
-            State current = new State() { ID = AAID };
+            Queue<State> open = new(15000);
+            Dictionary<State, int> seen = new(30000);
+            State current = new State() { ID = AAID, MinuteE = 30 };
             open.Enqueue(current);
             seen.Add(current, 0);
 
             int maxRelease = 0;
             int maxVisited = (1 << FlowRateMaxID) - 1;
+            int maxOpen = 0;
+            int maxSeen = 0;
             while (open.Count > 0) {
+                if (open.Count > maxOpen) { maxOpen = open.Count; }
+                if (seen.Count > maxSeen) { maxSeen = seen.Count; }
                 current = open.Dequeue();
 
-                if (current.Minute > 30 || seen[current] > current.Release) { continue; }
+                if (seen[current] > current.Release) { continue; }
                 if (current.Release > maxRelease) { maxRelease = current.Release; }
-                if (current.Visited == maxVisited || current.Minute == 30) { continue; }
+                if (current.Visited == maxVisited) { continue; }
 
-                Valve valve = valves[current.ID];
-                Valve[] connections = valve.Connections;
-                int[] costs = valve.Costs;
-
-                if (valve.FlowRate > 0 && (current.Visited & (1 << current.ID)) == 0) {
-                    int newRelease = current.Release + valve.FlowRate * (29 - current.Minute);
-                    int newVisited = current.Visited | (1 << current.ID);
-                    byte newMinute = (byte)(current.Minute + 1);
-                    State newState = new State() { ID = current.ID, Release = newRelease, Visited = newVisited, Minute = newMinute };
-                    if (!seen.TryGetValue(newState, out int best) || best < newRelease) {
-                        seen[newState] = newRelease;
-                        open.Enqueue(newState);
-                    }
-                }
-
-                for (int i = 0; i < connections.Length; i++) {
-                    Valve next = connections[i];
-                    byte newMinute = (byte)(current.Minute + costs[i]);
-                    if (newMinute > 30) { continue; }
-
-                    State newState = new State() { ID = next.ID, Release = current.Release, Visited = current.Visited, Minute = newMinute };
-                    if (!seen.TryGetValue(newState, out int best) || best < current.Release) {
-                        seen[newState] = current.Release;
-                        open.Enqueue(newState);
-                    }
-                }
+                OpenConnections(current, seen, open, false);
             }
-
+            
             return $"{maxRelease}";
         }
 
         [Description("With you and an elephant working together for 26 minutes, what is the most pressure you could release?")]
         public override string SolvePart2() {
-            return string.Empty;
-
-            //Takes about 74 seconds to solve correctly
-            Queue<State> open = new(2000000);
-            Dictionary<State, int> seen = new(6500000);
+            Queue<State> open = new(700000);
+            Dictionary<State, int> seen = new(1500000);
             State current = new State() { ID = AAID, IDE = AAID, Minute = 4, MinuteE = 4 };
             open.Enqueue(current);
             seen.Add(current, 0);
@@ -178,67 +139,56 @@ namespace AdventOfCode.Y2022 {
             while (open.Count > 0) {
                 current = open.Dequeue();
 
-                byte time = current.CurrentTime();
-                if (time > 30 || seen[current] > current.Release) { continue; }
+                if (seen[current] > current.Release) { continue; }
                 if (current.Release > maxRelease) { maxRelease = current.Release; }
-                if (current.Visited == maxVisited || time == 30) { continue; }
+                if (current.Visited == maxVisited) { continue; }
 
-                if (current.Minute == time) {
-                    Valve valve = valves[current.ID];
-                    Valve[] connections = valve.Connections;
-                    int[] costs = valve.Costs;
-
-                    if (valve.FlowRate > 0 && (current.Visited & (1 << current.ID)) == 0) {
-                        int newRelease = current.Release + valve.FlowRate * (29 - time);
-                        int newVisited = current.Visited | (1 << current.ID);
-                        byte newMinute = (byte)(time + 1);
-                        State newState = new State() { ID = current.ID, IDE = current.IDE, Release = newRelease, Visited = newVisited, Minute = newMinute, MinuteE = current.MinuteE };
-                        if (!seen.TryGetValue(newState, out int best) || best < newRelease) {
-                            seen[newState] = newRelease;
-                            open.Enqueue(newState);
-                        }
-                    }
-
-                    for (int i = 0; i < connections.Length; i++) {
-                        Valve next = connections[i];
-                        byte newMinute = (byte)(current.Minute + costs[i]);
-                        State newState = new State() { ID = next.ID, IDE = current.IDE, Release = current.Release, Visited = current.Visited, Minute = newMinute, MinuteE = current.MinuteE };
-                        if (!seen.TryGetValue(newState, out int best) || best < current.Release) {
-                            seen[newState] = current.Release;
-                            open.Enqueue(newState);
-                        }
-                    }
-                } else {
-                    Valve valveE = valves[current.IDE];
-                    Valve[] connectionsE = valveE.Connections;
-                    int[] costsE = valveE.Costs;
-
-                    if (valveE.FlowRate > 0 && (current.Visited & (1 << current.IDE)) == 0) {
-                        int newRelease = current.Release + valveE.FlowRate * (29 - time);
-                        int newVisited = current.Visited | (1 << current.IDE);
-                        byte newMinute = (byte)(time + 1);
-                        State newState = new State() { ID = current.ID, IDE = current.IDE, Release = newRelease, Visited = newVisited, Minute = current.Minute, MinuteE = newMinute };
-                        if (!seen.TryGetValue(newState, out int best) || best < newRelease) {
-                            seen[newState] = newRelease;
-                            open.Enqueue(newState);
-                        }
-                    }
-
-                    for (int i = 0; i < connectionsE.Length; i++) {
-                        Valve next = connectionsE[i];
-                        byte newMinute = (byte)(time + costsE[i]);
-                        State newState = new State() { ID = current.ID, IDE = next.ID, Release = current.Release, Visited = current.Visited, Minute = current.Minute, MinuteE = newMinute };
-                        if (!seen.TryGetValue(newState, out int best) || best < current.Release) {
-                            seen[newState] = current.Release;
-                            open.Enqueue(newState);
-                        }
-                    }
-                }
+                byte time = current.CurrentTime();
+                OpenConnections(current, seen, open, current.Minute != time);
             }
 
             return $"{maxRelease}";
         }
-        private struct State : IEquatable<State>, IComparable<State> {
+        private void OpenConnections(State current, Dictionary<State, int> seen, Queue<State> open, bool isElephant) {
+            Valve valve = valves[isElephant ? current.IDE : current.ID];
+            Valve[] connections = valve.Connections;
+            int[] costs = valve.Costs;
+            byte minute = isElephant ? current.MinuteE : current.Minute;
+            bool added = false;
+            for (int i = 0; i < connections.Length; i++) {
+                Valve next = connections[i];
+
+                if ((current.Visited & (1 << next.ID)) == 0) {
+                    byte newMinute = (byte)(minute + costs[i] + 1);
+                    if (newMinute >= 30) { continue; }
+
+                    int newRelease = current.Release + next.FlowRate * (30 - newMinute);
+                    State newState = new State() {
+                        ID = isElephant ? current.ID : next.ID,
+                        IDE = isElephant ? next.ID : current.IDE,
+                        Release = newRelease,
+                        Visited = current.Visited | (1 << next.ID),
+                        Minute = isElephant ? current.Minute : newMinute,
+                        MinuteE = isElephant ? newMinute : current.MinuteE
+                    };
+                    if (!seen.TryGetValue(newState, out int best) || best < newRelease) {
+                        seen[newState] = newRelease;
+                        open.Enqueue(newState);
+                        added = true;
+                    }
+                }
+            }
+
+            if (!added && current.Minute < 30 && current.MinuteE < 30) {
+                if (isElephant) {
+                    current.MinuteE = 30;
+                } else {
+                    current.Minute = 30;
+                }
+                open.Enqueue(current);
+            }
+        }
+        private struct State : IEquatable<State> {
             public byte ID;
             public byte IDE;
             public byte Minute;
@@ -247,7 +197,6 @@ namespace AdventOfCode.Y2022 {
             public int Visited;
 
             public byte CurrentTime() { return Minute <= MinuteE ? Minute : MinuteE; }
-            public int CompareTo(State other) { return ((Minute + MinuteE) * 5000 - Release).CompareTo((other.Minute + other.MinuteE) * 5000 - other.Release); }
             public override bool Equals(object obj) { return obj is State state && Equals(state); }
             public override int GetHashCode() { return (ID * 17 + IDE) * 17 + Visited; }
             public bool Equals(State other) { return ID == other.ID && IDE == other.IDE && Visited == other.Visited; }
@@ -260,14 +209,6 @@ namespace AdventOfCode.Y2022 {
             public Valve[] Connections;
             public int[] Costs;
 
-            public bool NeedsFlattened() {
-                for (int i = 0; i < Costs.Length; i++) {
-                    if (Costs[i] == 0) {
-                        return true;
-                    }
-                }
-                return false;
-            }
             public int CompareTo(Valve other) { return other.FlowRate.CompareTo(FlowRate); }
             public override bool Equals(object obj) { return obj is Valve valve && Equals(valve); }
             public override int GetHashCode() { return ID; }
