@@ -141,38 +141,35 @@ namespace AdventOfCode.Y2022 {
                 if (current.Release > maxRelease) { maxRelease = current.Release; }
                 if (current.Visited == maxVisited) { continue; }
 
-                OpenConnections(current, seen, open, false);
-            }
+                Valve valve = valves[current.ID];
+                Valve[] connections = valve.Connections;
+                int[] costs = valve.Costs;
+                byte minute = current.Minute;
 
-            return maxRelease;
-        }
-        private void OpenConnections(State current, Dictionary<State, int> seen, Queue<State> open, bool isElephant) {
-            Valve valve = valves[current.ID];
-            Valve[] connections = valve.Connections;
-            int[] costs = valve.Costs;
-            byte minute = current.Minute;
+                for (int i = 0; i < connections.Length; i++) {
+                    Valve next = connections[i];
 
-            for (int i = 0; i < connections.Length; i++) {
-                Valve next = connections[i];
+                    if ((current.Visited & (1 << next.ID)) == 0) {
+                        byte newMinute = (byte)(minute + costs[i] + 1);
+                        if (newMinute >= 30) { continue; }
 
-                if ((current.Visited & (1 << next.ID)) == 0) {
-                    byte newMinute = (byte)(minute + costs[i] + 1);
-                    if (newMinute >= 30) { continue; }
+                        short newRelease = (short)(current.Release + next.FlowRate * (30 - newMinute));
+                        State newState = new State() {
+                            ID = next.ID,
+                            Release = newRelease,
+                            Visited = current.Visited | (1 << next.ID),
+                            Minute = newMinute
+                        };
 
-                    short newRelease = (short)(current.Release + next.FlowRate * (30 - newMinute));
-                    State newState = new State() {
-                        ID = next.ID,
-                        Release = newRelease,
-                        Visited = current.Visited | (1 << next.ID),
-                        Minute = newMinute
-                    };
-
-                    if (!seen.TryGetValue(newState, out int best) || best < newRelease) {
-                        seen[newState] = newRelease;
-                        open.Enqueue(newState);
+                        if (!seen.TryGetValue(newState, out int best) || best < newRelease) {
+                            seen[newState] = newRelease;
+                            open.Enqueue(newState);
+                        }
                     }
                 }
             }
+
+            return maxRelease;
         }
         private struct State : IEquatable<State> {
             public byte ID;
