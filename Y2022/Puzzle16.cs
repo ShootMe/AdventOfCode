@@ -3,6 +3,7 @@ using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Numerics;
 using System.Text;
 namespace AdventOfCode.Y2022 {
     [Description("Proboscidea Volcanium")]
@@ -101,14 +102,38 @@ namespace AdventOfCode.Y2022 {
 
         [Description("What is the most pressure you can release?")]
         public override string SolvePart1() {
+            return $"{FindMaxRelease(AAID, (1 << FlowRateMaxID) - 1, 0)}";
+        }
+
+        [Description("With you and an elephant working together for 26 minutes, what is the most pressure you could release?")]
+        public override string SolvePart2() {
+            int maxVisited = (1 << FlowRateMaxID) - 1;
+            int valvesToCheck = BitOperations.PopCount((uint)maxVisited) / 2;
+            maxVisited >>= 1;
+
+            int maxRelease = 0;
+            for (int i = 0; i <= maxVisited; i++) {
+                int valvesSet = BitOperations.PopCount((uint)i);
+                if (valvesSet == valvesToCheck) {
+                    int person = FindMaxRelease(AAID, i, 4);
+                    int elephant = FindMaxRelease(AAID, ~i, 4);
+                    if (person + elephant > maxRelease) {
+                        maxRelease = person + elephant;
+                    }
+                }
+            }
+
+            return $"{maxRelease}";
+        }
+        private int FindMaxRelease(byte startingRoomID, int validValves, byte startingTime) {
+            int maxVisited = (1 << FlowRateMaxID) - 1;
             Queue<State> open = new(15000);
             Dictionary<State, int> seen = new(30000);
-            State current = new State() { ID = AAID, MinuteE = 30 };
+            State current = new State() { ID = startingRoomID, Visited = ~validValves & maxVisited, Minute = startingTime };
             open.Enqueue(current);
             seen.Add(current, 0);
 
             int maxRelease = 0;
-            int maxVisited = (1 << FlowRateMaxID) - 1;
             while (open.Count > 0) {
                 current = open.Dequeue();
 
@@ -118,39 +143,15 @@ namespace AdventOfCode.Y2022 {
 
                 OpenConnections(current, seen, open, false);
             }
-            
-            return $"{maxRelease}";
-        }
 
-        [Description("With you and an elephant working together for 26 minutes, what is the most pressure you could release?")]
-        public override string SolvePart2() {
-            Queue<State> open = new(700000);
-            Dictionary<State, int> seen = new(1500000);
-            State current = new State() { ID = AAID, IDE = AAID, Minute = 4, MinuteE = 4 };
-            open.Enqueue(current);
-            seen.Add(current, 0);
-
-            int maxRelease = 0;
-            int maxVisited = (1 << FlowRateMaxID) - 1;
-            while (open.Count > 0) {
-                current = open.Dequeue();
-
-                if (seen[current] > current.Release) { continue; }
-                if (current.Release > maxRelease) { maxRelease = current.Release; }
-                if (current.Visited == maxVisited) { continue; }
-
-                byte time = current.CurrentTime();
-                OpenConnections(current, seen, open, current.Minute != time);
-            }
-
-            return $"{maxRelease}";
+            return maxRelease;
         }
         private void OpenConnections(State current, Dictionary<State, int> seen, Queue<State> open, bool isElephant) {
-            Valve valve = valves[isElephant ? current.IDE : current.ID];
+            Valve valve = valves[current.ID];
             Valve[] connections = valve.Connections;
             int[] costs = valve.Costs;
-            byte minute = isElephant ? current.MinuteE : current.Minute;
-            bool added = false;
+            byte minute = current.Minute;
+
             for (int i = 0; i < connections.Length; i++) {
                 Valve next = connections[i];
 
@@ -158,45 +159,31 @@ namespace AdventOfCode.Y2022 {
                     byte newMinute = (byte)(minute + costs[i] + 1);
                     if (newMinute >= 30) { continue; }
 
-                    int newRelease = current.Release + next.FlowRate * (30 - newMinute);
+                    short newRelease = (short)(current.Release + next.FlowRate * (30 - newMinute));
                     State newState = new State() {
-                        ID = isElephant ? current.ID : next.ID,
-                        IDE = isElephant ? next.ID : current.IDE,
+                        ID = next.ID,
                         Release = newRelease,
                         Visited = current.Visited | (1 << next.ID),
-                        Minute = isElephant ? current.Minute : newMinute,
-                        MinuteE = isElephant ? newMinute : current.MinuteE
+                        Minute = newMinute
                     };
+
                     if (!seen.TryGetValue(newState, out int best) || best < newRelease) {
                         seen[newState] = newRelease;
                         open.Enqueue(newState);
-                        added = true;
                     }
                 }
-            }
-
-            if (!added && current.Minute < 30 && current.MinuteE < 30) {
-                if (isElephant) {
-                    current.MinuteE = 30;
-                } else {
-                    current.Minute = 30;
-                }
-                open.Enqueue(current);
             }
         }
         private struct State : IEquatable<State> {
             public byte ID;
-            public byte IDE;
             public byte Minute;
-            public byte MinuteE;
-            public int Release;
+            public short Release;
             public int Visited;
 
-            public byte CurrentTime() { return Minute <= MinuteE ? Minute : MinuteE; }
             public override bool Equals(object obj) { return obj is State state && Equals(state); }
-            public override int GetHashCode() { return (ID * 17 + IDE) * 17 + Visited; }
-            public bool Equals(State other) { return ID == other.ID && IDE == other.IDE && Visited == other.Visited; }
-            public override string ToString() { return $"ID: {ID} IDE: {IDE} Min: {Minute} MinE: {MinuteE} Rel: {Release} Vis: {Visited}"; }
+            public override int GetHashCode() { return ID * 17 + Visited; }
+            public bool Equals(State other) { return ID == other.ID && Visited == other.Visited; }
+            public override string ToString() { return $"ID: {ID} Min: {Minute} Rel: {Release} Vis: {Visited}"; }
         }
         private class Valve : IEquatable<Valve>, IComparable<Valve> {
             public byte ID;
