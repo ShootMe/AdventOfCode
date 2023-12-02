@@ -1,5 +1,6 @@
 using AdventOfCode.Common;
 using AdventOfCode.Core;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 namespace AdventOfCode.Y2023 {
@@ -37,52 +38,31 @@ namespace AdventOfCode.Y2023 {
 
         private class Game {
             public int ID;
-            public List<Cube> Cubes = new List<Cube>();
+            public int MaxRed, MaxGreen, MaxBlue;
             public Game(string game) {
                 int idIndex = game.IndexOf(':');
                 ID = game.Substring(5, idIndex - 5).ToInt();
-                string[] splits = game.Substring(idIndex + 2).Split("; ");
-                for (int i = 0; i < splits.Length; i++) {
-                    string[] items = splits[i].Split(", ");
-                    Cube cube = new Cube();
-                    for (int j = 0; j < items.Length; j++) {
-                        string item = items[j];
-                        int index = item.IndexOf(' ');
-                        int value = item.Substring(0, index).ToInt();
-                        string color = item.Substring(index + 1);
-                        switch (color) {
-                            case "red": cube.Red = value; break;
-                            case "green": cube.Green = value; break;
-                            case "blue": cube.Blue = value; break;
-                        }
+                string[] cubes = game.Substring(idIndex + 2).Split(new string[] { ", ", "; " }, StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < cubes.Length; i++) {
+                    string cube = cubes[i];
+                    int index = cube.IndexOf(' ');
+                    int amount = cube.Substring(0, index).ToInt();
+                    string color = cube.Substring(index + 1);
+                    switch (color) {
+                        case "red": if (MaxRed < amount) { MaxRed = amount; } break;
+                        case "green": if (MaxGreen < amount) { MaxGreen = amount; } break;
+                        case "blue": if (MaxBlue < amount) { MaxBlue = amount; } break;
                     }
-                    Cubes.Add(cube);
                 }
             }
             public bool IsValid(int redCount, int greenCount, int blueCount) {
-                for (int i = 0; i < Cubes.Count; i++) {
-                    Cube cube = Cubes[i];
-                    if (cube.Red > redCount || cube.Green > greenCount || cube.Blue > blueCount) {
-                        return false;
-                    }
-                }
-                return true;
+                return MaxRed <= redCount && MaxGreen <= greenCount && MaxBlue <= blueCount;
             }
             public int Power() {
-                int redCount = 0; int greenCount = 0; int blueCount = 0;
-                for (int i = 0; i < Cubes.Count; i++) {
-                    Cube cube = Cubes[i];
-                    if (cube.Red > redCount) { redCount = cube.Red; }
-                    if (cube.Green > greenCount) { greenCount = cube.Green; }
-                    if (cube.Blue > blueCount) { blueCount = cube.Blue; }
-                }
-                return redCount * greenCount * blueCount;
+                return MaxRed * MaxGreen * MaxBlue;
             }
-        }
-        private class Cube {
-            public int Red, Green, Blue;
             public override string ToString() {
-                return $"{Red},{Green},{Blue}";
+                return $"{ID}={MaxRed},{MaxGreen},{MaxBlue}";
             }
         }
     }
