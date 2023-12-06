@@ -25,7 +25,7 @@ namespace AdventOfCode.Y2023 {
             distanceAll = lines[1].ToLong();
         }
 
-        [Description("Determine the number of ways you could beat the record in each race. What do you get if you multiply these numbers together?")]
+        [Description("What do you get if you multiply these numbers together?")]
         public override string SolvePart1() {
             int total = 1;
             for (int i = 0; i < times.Count; i++) {
