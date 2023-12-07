@@ -17,36 +17,26 @@ namespace AdventOfCode.Y2023 {
 
         [Description("Find the rank of every hand in your set. What are the total winnings?")]
         public override string SolvePart1() {
-            Hand.UseJokers = false;
-            for (int i = 0; i < hands.Count; i++) {
-                Hand hand = hands[i];
-                hand.DetermineType();
-            }
-            hands.Sort();
-
-            int total = 0;
-            for (int i = 0; i < hands.Count; i++) {
-                Hand hand = hands[i];
-                total += hand.Amount * (i + 1);
-            }
-            return $"{total}";
+            return $"{SortAndRankHands(false)}";
         }
 
         [Description("Using the new joker rule, find the rank of every hand in your set. What are the new total winnings?")]
         public override string SolvePart2() {
-            Hand.UseJokers = true;
+            return $"{SortAndRankHands(true)}";
+        }
+
+        private int SortAndRankHands(bool useJokers) {
+            Hand.UseJokers = useJokers;
             for (int i = 0; i < hands.Count; i++) {
-                Hand hand = hands[i];
-                hand.DetermineType();
+                hands[i].DetermineType();
             }
             hands.Sort();
 
             int total = 0;
             for (int i = 0; i < hands.Count; i++) {
-                Hand hand = hands[i];
-                total += hand.Amount * (i + 1);
+                total += hands[i].Amount * (i + 1);
             }
-            return $"{total}";
+            return total;
         }
 
         private class Hand : IComparable<Hand> {
@@ -58,21 +48,22 @@ namespace AdventOfCode.Y2023 {
             public Hand(string hand) {
                 for (int i = 0; i < 5; i++) {
                     char c = hand[i];
-                    switch (c) {
-                        case '2': Cards[i] = Card.Two; break;
-                        case '3': Cards[i] = Card.Three; break;
-                        case '4': Cards[i] = Card.Four; break;
-                        case '5': Cards[i] = Card.Five; break;
-                        case '6': Cards[i] = Card.Six; break;
-                        case '7': Cards[i] = Card.Seven; break;
-                        case '8': Cards[i] = Card.Eight; break;
-                        case '9': Cards[i] = Card.Nine; break;
-                        case 'T': Cards[i] = Card.Ten; break;
-                        case 'J': Cards[i] = Card.Jack; break;
-                        case 'Q': Cards[i] = Card.Queen; break;
-                        case 'K': Cards[i] = Card.King; break;
-                        case 'A': Cards[i] = Card.Ace; break;
-                    }
+                    Cards[i] = c switch {
+                        '2' => Card.Two,
+                        '3' => Card.Three,
+                        '4' => Card.Four,
+                        '5' => Card.Five,
+                        '6' => Card.Six,
+                        '7' => Card.Seven,
+                        '8' => Card.Eight,
+                        '9' => Card.Nine,
+                        'T' => Card.Ten,
+                        'J' => Card.Jack,
+                        'Q' => Card.Queen,
+                        'K' => Card.King,
+                        'A' => Card.Ace,
+                        _ => throw new NotSupportedException()
+                    };
                 }
 
                 Amount = hand.Substring(6).ToInt();
@@ -81,6 +72,7 @@ namespace AdventOfCode.Y2023 {
             public int CompareTo(Hand other) {
                 int comp = Type.CompareTo(other.Type);
                 if (comp != 0) { return comp; }
+
                 for (int i = 0; i < 5; i++) {
                     Card myCard = UseJokers && Cards[i] == Card.Jack ? Card.Joker : Cards[i];
                     Card otherCard = UseJokers && other.Cards[i] == Card.Jack ? Card.Joker : other.Cards[i];
@@ -91,24 +83,22 @@ namespace AdventOfCode.Y2023 {
             }
             public void DetermineType() {
                 int[] counts = new int[13];
+                Card[] cards = new Card[13];
                 for (int i = 0; i < 5; i++) {
                     counts[(int)Cards[i]]++;
+                    cards[(int)Cards[i]] = Cards[i];
                 }
-                (int count, Card card)[] cardCounts = new (int, Card)[13];
-                for (int i = 0; i < 13; i++) {
-                    cardCounts[i] = (counts[i], (Card)i);
-                }
-                Array.Sort(cardCounts);
 
                 int jokerCount = UseJokers ? counts[(int)Card.Jack] : 0;
                 if (jokerCount >= 4) { Type = HandType.FiveOfAKind; return; }
+                if (UseJokers) { Array.Sort(counts, cards); }
 
                 bool hasPair = false;
                 bool hasThree = false;
                 for (int i = 12; i >= 0; i--) {
-                    if (cardCounts[i].count == 0 || (UseJokers && cardCounts[i].card == Card.Jack)) { continue; }
+                    if (counts[i] == 0 || (UseJokers && cards[i] == Card.Jack)) { continue; }
 
-                    switch (cardCounts[i].count + jokerCount) {
+                    switch (counts[i] + jokerCount) {
                         case 5: Type = HandType.FiveOfAKind; return;
                         case 4: Type = HandType.FourOfAKind; return;
                         case 3:
