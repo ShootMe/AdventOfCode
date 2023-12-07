@@ -18,19 +18,16 @@ namespace AdventOfCode.Y2023 {
             }
         }
         private void ParseSeeds(string line) {
-            string[] numbers = line.Substring(7).Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            long[] numbers = line.Substring(7).ToLongs(' ');
 
             seeds1 = new List<Seed>(numbers.Length);
             for (int i = 0; i < numbers.Length; i++) {
-                long id = numbers[i].ToLong();
-                seeds1.Add(new Seed(0, id, 1));
+                seeds1.Add(new Seed(0, numbers[i], 1));
             }
 
             seeds2 = new List<Seed>(numbers.Length / 2);
             for (int i = 0; i < numbers.Length; i += 2) {
-                long id = numbers[i].ToLong();
-                long length = numbers[i + 1].ToLong();
-                seeds2.Add(new Seed(0, id, length));
+                seeds2.Add(new Seed(0, numbers[i], numbers[i + 1]));
             }
         }
         private void MapDetails(string[] lines, ref int lineIndex, int level) {

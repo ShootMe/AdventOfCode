@@ -1,26 +1,19 @@
 using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 namespace AdventOfCode.Y2023 {
     [Description("Wait For It")]
     public class Puzzle06 : ASolver {
-        private List<int> times = new();
-        private List<int> distances = new();
+        private int[] times;
+        private int[] distances;
         private long timeAll;
         private long distanceAll;
 
         public override void Setup() {
             string[] lines = Input.Split('\n');
-            string[] boatTimes = lines[0].Substring(5).Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            string[] boatDistances = lines[1].Substring(9).Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-            for (int i = 0; i < boatTimes.Length; i++) {
-                times.Add(boatTimes[i].ToInt());
-                distances.Add(boatDistances[i].ToInt());
-            }
-
+            times = lines[0].Substring(5).ToInts(' ');
+            distances = lines[1].Substring(9).ToInts(' ');
             timeAll = lines[0].ToLong();
             distanceAll = lines[1].ToLong();
         }
@@ -28,7 +21,7 @@ namespace AdventOfCode.Y2023 {
         [Description("What do you get if you multiply these numbers together?")]
         public override string SolvePart1() {
             int total = 1;
-            for (int i = 0; i < times.Count; i++) {
+            for (int i = 0; i < times.Length; i++) {
                 total *= CalculateWins(times[i], distances[i]);
             }
             return $"{total}";
