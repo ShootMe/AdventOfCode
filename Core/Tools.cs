@@ -104,16 +104,20 @@ using System.Collections.Generic;
 using System.ComponentModel;
 namespace AdventOfCode.Y{year} {{
     [Description(""{dayTitle}"")]
+    //[Run(""Example"")]
+    //[Run(""Given"")]
     public class Puzzle{day:00} : ASolver {{
         private List<int> numbers = new();
 
         public override void Setup() {{
-            foreach (string line in Input.Split('\n')) {{
+            string[] lines = Input.Split('\n');
+            foreach (string line in lines) {{
                 numbers.Add(line.ToInt());
             }}
         }}
 
         [Description(""{part1Question}"")]
+        //[Submit]
         public override string SolvePart1() {{
             int total = 0;
             for (int i = 0; i < numbers.Count; i++) {{
@@ -124,6 +128,7 @@ namespace AdventOfCode.Y{year} {{
         }}
 
         [Description(""{part2Question}"")]
+        //[Submit]
         public override string SolvePart2() {{
             return string.Empty;
         }}
