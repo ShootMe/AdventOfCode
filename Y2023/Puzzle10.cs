@@ -38,22 +38,18 @@ namespace AdventOfCode.Y2023 {
 
                 if (position.Node.X - 1 >= 0 && ValidToW(position.Node, -1, 0) && seen.Add((position.Node.X - 1, position.Node.Y))) {
                     Node node = CreateNode(position.Node, -1, 0);
-                    seen.Add((node.X, node.Y));
                     positions.Enqueue((node, position.Steps + 1));
                 }
                 if (position.Node.X + 1 < width && ValidToE(position.Node, 1, 0) && seen.Add((position.Node.X + 1, position.Node.Y))) {
                     Node node = CreateNode(position.Node, 1, 0);
-                    seen.Add((node.X, node.Y));
                     positions.Enqueue((node, position.Steps + 1));
                 }
                 if (position.Node.Y - 1 >= 0 && ValidToN(position.Node, 0, -1) && seen.Add((position.Node.X, position.Node.Y - 1))) {
                     Node node = CreateNode(position.Node, 0, -1);
-                    seen.Add((node.X, node.Y));
                     positions.Enqueue((node, position.Steps + 1));
                 }
                 if (position.Node.Y + 1 < height && ValidToS(position.Node, 0, 1) && seen.Add((position.Node.X, position.Node.Y + 1))) {
                     Node node = CreateNode(position.Node, 0, 1);
-                    seen.Add((node.X, node.Y));
                     positions.Enqueue((node, position.Steps + 1));
                 }
             }
