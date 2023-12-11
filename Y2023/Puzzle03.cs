@@ -8,11 +8,11 @@ namespace AdventOfCode.Y2023 {
         private string[] grid;
         private int width, height;
         private List<Part> parts = new List<Part>();
+        private Dictionary<(int, int), Gear> gears = new Dictionary<(int, int), Gear>();
         public override void Setup() {
             grid = Input.Split('\n');
             width = grid[0].Length;
             height = grid.Length;
-            Dictionary<(int, int), Gear> gears = new Dictionary<(int, int), Gear>();
 
             for (int i = 0; i < grid.Length; i++) {
                 string line = grid[i];
@@ -30,12 +30,10 @@ namespace AdventOfCode.Y2023 {
 
                         Part part = new Part();
                         part.Value = line.Substring(j, endIndex - j).ToInt();
-                        if (HasSymbol(j - 1, endIndex, i - 1) || HasSymbol(j - 1, endIndex, i) || HasSymbol(j - 1, endIndex, i + 1)) {
-                            part.Symbols = true;
-                        }
-                        UpdateGear(j - 1, endIndex, i - 1, part, gears);
-                        UpdateGear(j - 1, endIndex, i, part, gears);
-                        UpdateGear(j - 1, endIndex, i + 1, part, gears);
+                        part.Symbols = HasSymbol(j - 1, endIndex, i - 1) || HasSymbol(j - 1, endIndex, i) || HasSymbol(j - 1, endIndex, i + 1);
+                        UpdateGear(j - 1, endIndex, i - 1, part);
+                        UpdateGear(j - 1, endIndex, i, part);
+                        UpdateGear(j - 1, endIndex, i + 1, part);
                         parts.Add(part);
 
                         j = endIndex;
@@ -59,16 +57,9 @@ namespace AdventOfCode.Y2023 {
         [Description("What is the sum of all of the gear ratios in your engine schematic?")]
         public override string SolvePart2() {
             int total = 0;
-            HashSet<(int, int)> gearsSeen = new HashSet<(int, int)>();
-            for (int i = 0; i < parts.Count; i++) {
-                Part part = parts[i];
-                if (part.Gears.Count > 0) {
-                    for (int j = 0; j < part.Gears.Count; j++) {
-                        Gear gear = part.Gears[j];
-                        if (gear.Parts.Count == 2 && gearsSeen.Add((gear.X,gear.Y))) {
-                            total += gear.Parts[0].Value * gear.Parts[1].Value;
-                        }
-                    }
+            foreach (Gear gear in gears.Values) {
+                if (gear.Parts.Count == 2) {
+                    total += gear.Parts[0].Value * gear.Parts[1].Value;
                 }
             }
             return $"{total}";
@@ -85,7 +76,7 @@ namespace AdventOfCode.Y2023 {
             }
             return false;
         }
-        private void UpdateGear(int startX, int endX, int y, Part part, Dictionary<(int, int), Gear> gears) {
+        private void UpdateGear(int startX, int endX, int y, Part part) {
             if (y < 0 || y >= height) { return; }
 
             string line = grid[y];
