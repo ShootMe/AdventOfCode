@@ -1,80 +1,86 @@
 using AdventOfCode.Core;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 namespace AdventOfCode.Y2023 {
     [Description("Cosmic Expansion")]
     public class Puzzle11 : ASolver {
-        private List<Galaxy> galaxies = new();
-        private int width, height;
+        private Galaxy[] galaxyCountsX, galaxyCountsY;
+        private int galaxiesX, galaxiesY;
 
         public override void Setup() {
             string[] space = Input.Split('\n');
-            height = space.Length;
-            width = space[0].Length;
-            HashSet<int> rowsFilled = new();
-            HashSet<int> colsFilled = new();
-            for (int j = 0; j < height; j++) {
-                string line = space[j];
-                for (int i = 0; i < width; i++) {
-                    char c = line[i];
-                    if (c == '#') {
-                        rowsFilled.Add(j);
-                        colsFilled.Add(i);
-                        galaxies.Add(new Galaxy() { ID = galaxies.Count + 1, X = i, Y = j });
-                    }
+            int height = space.Length;
+            int width = space[0].Length;
+            galaxyCountsX = new Galaxy[width];
+            galaxyCountsY = new Galaxy[height];
+
+            for (int y = 0; y < height; y++) {
+                string line = space[y];
+                for (int x = 0; x < width; x++) {
+                    char c = line[x];
+                    if (c != '#') { continue; }
+
+                    galaxyCountsX[x].Count++;
+                    galaxyCountsY[y].Count++;
                 }
             }
-            for (int j = height - 1; j >= 0; j--) {
-                if (rowsFilled.Contains(j)) { continue; }
-                for (int i = 0; i < galaxies.Count; i++) {
-                    Galaxy galaxy = galaxies[i];
-                    if (galaxy.Y > j) {
-                        galaxy.EY++;
-                    }
+
+            int expansions = 0;
+            for (int y = 0; y < height; y++) {
+                if (galaxyCountsY[y].Count > 0) {
+                    galaxiesY += galaxyCountsY[y].Count;
+                    galaxyCountsY[y].Expansions = expansions;
+                    continue;
                 }
+                expansions++;
             }
-            for (int j = width - 1; j >= 0; j--) {
-                if (colsFilled.Contains(j)) { continue; }
-                for (int i = 0; i < galaxies.Count; i++) {
-                    Galaxy galaxy = galaxies[i];
-                    if (galaxy.X > j) {
-                        galaxy.EX++;
-                    }
+
+            expansions = 0;
+            for (int x = 0; x < width; x++) {
+                if (galaxyCountsX[x].Count > 0) {
+                    galaxiesX += galaxyCountsX[x].Count;
+                    galaxyCountsX[x].Expansions = expansions;
+                    continue;
                 }
+                expansions++;
             }
         }
 
         [Description("What is the sum of these lengths?")]
         public override string SolvePart1() {
-            long total = 0;
-            for (int i = 0; i < galaxies.Count; i++) {
-                Galaxy galaxy1 = galaxies[i];
-                for (int j = i + 1; j < galaxies.Count; j++) {
-                    Galaxy galaxy2 = galaxies[j];
-                    total += Math.Abs(galaxy1.GetX() - galaxy2.GetX()) + Math.Abs(galaxy1.GetY() - galaxy2.GetY());
-                }
-            }
-            return $"{total}";
+            return $"{GetSumOfLength(2)}";
         }
 
         [Description("What is the sum of these lengths?")]
         public override string SolvePart2() {
-            long total = 0;
-            for (int i = 0; i < galaxies.Count; i++) {
-                Galaxy galaxy1 = galaxies[i];
-                for (int j = i + 1; j < galaxies.Count; j++) {
-                    Galaxy galaxy2 = galaxies[j];
-                    total += Math.Abs(galaxy1.GetX(1000000) - galaxy2.GetX(1000000)) + Math.Abs(galaxy1.GetY(1000000) - galaxy2.GetY(1000000));
-                }
-            }
-            return $"{total}";
+            return $"{GetSumOfLength(1000000)}";
         }
 
-        private class Galaxy {
-            public int ID, X, Y, EX, EY;
-            public long GetX(int expansions = 2) { return (long)X + (long)EX * (expansions - 1); }
-            public long GetY(int expansions = 2) { return (long)Y + (long)EY * (expansions - 1); }
+        private long GetSumOfLength(int expansions) {
+            long total = 0;
+            for (int i = galaxyCountsX.Length - 1, j = galaxiesX - 1; i >= 0; i--) {
+                Galaxy galaxy = galaxyCountsX[i];
+                if (galaxy.Count == 0) { continue; }
+
+                int modifier = galaxy.Count * (j - galaxy.Count + 1);
+                total += galaxy.GetValue(i, expansions) * modifier;
+                j -= 2 * galaxy.Count;
+            }
+
+            for (int i = galaxyCountsY.Length - 1, j = galaxiesY - 1; i >= 0; i--) {
+                Galaxy galaxy = galaxyCountsY[i];
+                if (galaxy.Count == 0) { continue; }
+                int modifier = galaxy.Count * (j - galaxy.Count + 1);
+                total += galaxy.GetValue(i, expansions) * modifier;
+                j -= 2 * galaxy.Count;
+            }
+
+            return total;
+        }
+
+        private struct Galaxy {
+            public int Count, Expansions;
+            public long GetValue(int index, int expansions) { return (long)index + (long)Expansions * (expansions - 1); }
+            public override string ToString() { return $"{Count},{Expansions}"; }
         }
     }
 }
