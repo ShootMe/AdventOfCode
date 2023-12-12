@@ -1,5 +1,6 @@
 using AdventOfCode.Common;
 using AdventOfCode.Core;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 namespace AdventOfCode.Y2023 {
@@ -50,16 +51,19 @@ namespace AdventOfCode.Y2023 {
                 }
             }
             public long Arrangements() {
-                return Arrangements(0, 0, TotalCount, new Dictionary<(int, int), long>());
+                long[] memory = new long[Groups.Length * Springs.Length];
+                Array.Fill(memory, -1L);
+                return Arrangements(0, 0, TotalCount, memory);
             }
-            private long Arrangements(int index, int groupIndex, int remainingCount, Dictionary<(int, int), long> memory) {
-                if (memory.TryGetValue((index, groupIndex), out long value)) { return value; }
+            private long Arrangements(int index, int groupIndex, int remainingCount, long[] memory) {
+                int memoryIndex = groupIndex * Springs.Length + index;
+                long memoryValue = memory[memoryIndex];
+                if (memoryValue >= 0) { return memoryValue; }
 
                 int groupCount = Groups[groupIndex];
                 int extraCount = groupCount == remainingCount ? 0 : 1;
 
                 long count = 0;
-                int start = index;
                 while (index + remainingCount <= Springs.Length) {
                     if (IsValid(index, groupCount, extraCount)) {
                         if (extraCount > 0) {
@@ -73,7 +77,7 @@ namespace AdventOfCode.Y2023 {
                     index++;
                 }
 
-                memory.Add((start, groupIndex), count);
+                memory[memoryIndex] = count;
                 return count;
             }
             private bool IsValid(int index, int size, int pad) {
