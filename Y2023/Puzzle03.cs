@@ -84,11 +84,9 @@ namespace AdventOfCode.Y2023 {
                 if (line[i] == '*') {
                     if (gears.TryGetValue((i, y), out Gear value)) {
                         value.Parts.Add(part);
-                        part.Gears.Add(value);
                     } else {
                         Gear gear = new Gear() { X = i, Y = y };
                         gear.Parts.Add(part);
-                        part.Gears.Add(gear);
                         gears.Add((i, y), gear);
                     }
                 }
@@ -96,10 +94,9 @@ namespace AdventOfCode.Y2023 {
         }
         private class Part {
             public int Value;
-            public List<Gear> Gears = new List<Gear>();
             public bool Symbols = false;
             public override string ToString() {
-                return $"{Value}={Symbols},{Gears.Count}";
+                return $"{Value}={Symbols}";
             }
         }
         private class Gear {
