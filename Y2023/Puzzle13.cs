@@ -1,6 +1,7 @@
 using AdventOfCode.Core;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Numerics;
 namespace AdventOfCode.Y2023 {
     [Description("Point of Incidence")]
     public class Puzzle13 : ASolver {
@@ -26,8 +27,7 @@ namespace AdventOfCode.Y2023 {
         public override string SolvePart1() {
             int total = 0;
             for (int i = 0; i < patterns.Count; i++) {
-                Pattern pattern = patterns[i];
-                total += pattern.GetReflectionValue();
+                total += patterns[i].GetReflectionValue();
             }
             return $"{total}";
         }
@@ -36,79 +36,96 @@ namespace AdventOfCode.Y2023 {
         public override string SolvePart2() {
             int total = 0;
             for (int i = 0; i < patterns.Count; i++) {
-                Pattern pattern = patterns[i];
-                total += pattern.Get2ndReflection();
+                total += patterns[i].Get2ndReflection();
             }
             return $"{total}";
         }
 
         private class Pattern {
-            public bool[] Values;
+            public int[] RowValues, ColValues;
             public int Width, Height;
             private int RX = -1, RY = -1;
             public Pattern(List<string> lines) {
                 Width = lines[0].Length;
                 Height = lines.Count;
-                Values = new bool[lines.Count * lines[0].Length];
-                int index = 0;
+                RowValues = new int[Height];
+                ColValues = new int[Width];
+
                 for (int i = 0; i < lines.Count; i++) {
                     string line = lines[i];
+                    int value = 0;
                     for (int j = 0; j < line.Length; j++) {
-                        Values[index++] = line[j] == '#';
+                        value <<= 1;
+                        int bit = line[j] == '#' ? 1 : 0;
+                        value |= bit;
+                        ColValues[j] = (ColValues[j] << 1) | bit;
                     }
+                    RowValues[i] = value;
                 }
             }
 
             public int Get2ndReflection() {
-                for (int i = 0; i < Values.Length; i++) {
-                    Values[i] = !Values[i];
-                    int value = GetReflectionValue();
-                    if(value != 0) {
-                        return value;
-                    }
-                    Values[i] = !Values[i];
-                }
+                int value = CheckReflection(ColValues, Width, RX);
+                if (value > 0) { return value; }
+
+                value = CheckReflection(RowValues, Height, RY);
+                if (value > 0) { return value * 100; }
+                
                 return 0;
             }
             public int GetReflectionValue() {
-                for (int i = 0; i < Width - 1; i++) {
-                    if (i == RX) { continue; }
-
-                    bool found = true;
-                    int minIndex = i + i - Width + 2;
-                    if (minIndex < 0) { minIndex = 0; }
-                    for (int k = i; k >= minIndex && found; k--) {
-                        for (int j = 0; j < Values.Length; j += Width) {
-                            if (Values[j + k] != Values[j + i + i - k + 1]) {
-                                found = false;
-                                break;
-                            }
-                        }
-                    }
-                    if (found) {
-                        RX = i;
-                        return i + 1;
-                    }
+                int value = CheckReflection(ColValues, Width);
+                if (value > 0) {
+                    RX = value - 1;
+                    return value;
                 }
 
-                for (int i = 0; i < Height - 1; i++) {
-                    if (i == RY) { continue; }
+                value = CheckReflection(RowValues, Height);
+                if (value > 0) {
+                    RY = value - 1;
+                    return value * 100;
+                }
+
+                return 0;
+            }
+            private int CheckReflection(int[] values, int max) {
+                for (int i = 0; i < max - 1; i++) {
+                    bool found = true;
+                    int minIndex = i + i - max + 2;
+                    if (minIndex < 0) { minIndex = 0; }
+
+                    for (int k = i, j = i + 1; k >= minIndex; k--, j++) {
+                        int diff = values[k] ^ values[j];
+                        if (diff != 0) { found = false; break; }
+                    }
+
+                    if (found) { return i + 1; }
+                }
+
+                return 0;
+            }
+            private int CheckReflection(int[] values, int max, int ignoreIndex) {
+                for (int i = 0; i < max - 1; i++) {
+                    if (i == ignoreIndex) { continue; }
 
                     bool found = true;
-                    int minIndex = i - Height + i + 2;
+                    bool firstDiff = false;
+                    int minIndex = i + i - max + 2;
                     if (minIndex < 0) { minIndex = 0; }
-                    for (int k = i; k >= minIndex && found; k--) {
-                        for (int j = 0; j < Width; j++) {
-                            if (Values[k * Width + j] != Values[(i + i - k + 1) * Width + j]) {
-                                found = false;
-                                break;
+
+                    for (int k = i, j = i + 1; k >= minIndex; k--, j++) {
+                        int diff = values[k] ^ values[j];
+                        if (diff != 0) {
+                            if (!firstDiff && BitOperations.PopCount((uint)diff) == 1) {
+                                firstDiff = true;
+                                continue;
                             }
+                            found = false;
+                            break;
                         }
                     }
-                    if (found) {
-                        RY = i;
-                        return (i + 1) * 100;
-                    }
+
+                    if (found) { return i + 1; }
                 }
 
                 return 0;
