@@ -1,5 +1,4 @@
 using AdventOfCode.Core;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 namespace AdventOfCode.Y2023 {
@@ -66,90 +65,76 @@ namespace AdventOfCode.Y2023 {
             return (-1, 0);
         }
         private void TiltNorth() {
-            int[] minIndexes = new int[width];
-            for (int y = 0; y < height; y++) {
-                for (int x = 0; x < width; x++) {
+            for (int x = 0; x < width; x++) {
+                int minIndex = 0;
+                for (int y = 0; y < height; y++) {
                     char c = grid[y, x];
                     if (c != 'O') {
-                        if (c == '#') { minIndexes[x] = y + 1; }
+                        if (c == '#') { minIndex = y + 1; }
                         continue;
                     }
 
-                    int ny = minIndexes[x];
-                    if (y > ny) {
-                        grid[ny, x] = 'O';
+                    if (y > minIndex) {
+                        grid[minIndex, x] = 'O';
                         grid[y, x] = '.';
-                        load += y - ny;
-                        minIndexes[x] = ny + 1;
-                    } else {
-                        minIndexes[x] = y + 1;
+                        load += y - minIndex;
                     }
+                    minIndex++;
                 }
             }
         }
         private void TiltWest() {
-            int[] minIndexes = new int[height];
-            for (int x = 0; x < width; x++) {
-                for (int y = 0; y < height; y++) {
+            for (int y = 0; y < height; y++) {
+                int minIndex = 0;
+                for (int x = 0; x < width; x++) {
                     char c = grid[y, x];
                     if (c != 'O') {
-                        if (c == '#') { minIndexes[y] = x + 1; }
+                        if (c == '#') { minIndex = x + 1; }
                         continue;
                     }
 
-                    int nx = minIndexes[y];
-                    if (x > nx) {
-                        grid[y, nx] = 'O';
+                    if (x > minIndex) {
+                        grid[y, minIndex] = 'O';
                         grid[y, x] = '.';
-                        minIndexes[y] = nx + 1;
-                    } else {
-                        minIndexes[y] = x + 1;
                     }
+                    minIndex++;
                 }
             }
         }
         private void TiltSouth() {
-            int[] minIndexes = new int[width];
-            Array.Fill(minIndexes, height - 1);
-            for (int y = height - 1; y >= 0; y--) {
-                for (int x = 0; x < width; x++) {
+            for (int x = 0; x < width; x++) {
+                int maxIndex = height - 1;
+                for (int y = height - 1; y >= 0; y--) {
                     char c = grid[y, x];
                     if (c != 'O') {
-                        if (c == '#') { minIndexes[x] = y - 1; }
+                        if (c == '#') { maxIndex = y - 1; }
                         continue;
                     }
 
-                    int ny = minIndexes[x];
-                    if (y < ny) {
-                        grid[ny, x] = 'O';
+                    if (y < maxIndex) {
+                        grid[maxIndex, x] = 'O';
                         grid[y, x] = '.';
-                        load += y - ny;
-                        minIndexes[x] = ny - 1;
-                    } else {
-                        minIndexes[x] = y - 1;
+                        load += y - maxIndex;
                     }
+                    maxIndex--;
                 }
             }
         }
         private void TiltEast() {
-            int[] minIndexes = new int[height];
-            Array.Fill(minIndexes, width - 1);
-            for (int x = width - 1; x >= 0; x--) {
-                for (int y = 0; y < height; y++) {
+            for (int y = 0; y < height; y++) {
+                int maxIndex = width - 1;
+                for (int x = width - 1; x >= 0; x--) {
                     char c = grid[y, x];
                     if (c != 'O') {
-                        if (c == '#') { minIndexes[y] = x - 1; }
+                        if (c == '#') { maxIndex = x - 1; }
                         continue;
                     }
 
-                    int nx = minIndexes[y];
-                    if (x < nx) {
-                        grid[y, nx] = 'O';
+                    if (x < maxIndex) {
+                        grid[y, maxIndex] = 'O';
                         grid[y, x] = '.';
-                        minIndexes[y] = nx - 1;
-                    } else {
-                        minIndexes[y] = x - 1;
                     }
+                    maxIndex--;
                 }
             }
         }
