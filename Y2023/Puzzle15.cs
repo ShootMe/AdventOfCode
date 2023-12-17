@@ -68,10 +68,12 @@ namespace AdventOfCode.Y2023 {
             public int Lens;
             public bool Add;
             public Label(string sequence) {
-                int index = sequence.IndexOfAny(['-', '=']);
-                Add = sequence.IndexOf('-') < 0;
+                int index = sequence.IndexOf('=');
+                Add = index > 0;
                 if (Add) {
                     Lens = sequence.Substring(index + 1).ToInt();
+                } else {
+                    index = sequence.Length - 1;
                 }
                 Name = sequence.Substring(0, index);
                 Hash = CalculateHash(Name);
