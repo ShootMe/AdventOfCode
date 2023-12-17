@@ -48,14 +48,10 @@ namespace AdventOfCode.Y2023 {
             open.Enqueue(new Crucible() { X = (short)xs, Y = (short)ys, DX = 1, DY = 0, Straight = 0 });
             open.Enqueue(new Crucible() { X = (short)xs, Y = (short)ys, DX = 0, DY = 1, Straight = 0 });
 
-            int min = int.MaxValue;
             while (open.Count > 0) {
                 Crucible crucible = open.Dequeue();
                 if (crucible.X == width - 1 && crucible.Y == height - 1) {
-                    if (min > crucible.Loss) {
-                        min = crucible.Loss;
-                    }
-                    continue;
+                    return crucible.Loss;
                 }
 
                 if (crucible.Straight < 3 || (ultra && crucible.Straight < 10)) {
@@ -72,7 +68,7 @@ namespace AdventOfCode.Y2023 {
                 }
             }
 
-            return min;
+            return 0;
         }
         private class Crucible : IEquatable<Crucible>, IComparable<Crucible> {
             public short X, Y, DX, DY, Straight, Loss;
