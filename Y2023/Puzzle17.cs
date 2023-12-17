@@ -1,3 +1,4 @@
+using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
 using System.Collections.Generic;
@@ -32,8 +33,18 @@ namespace AdventOfCode.Y2023 {
         }
 
         private int FindLowestHeatLost(int xs, int ys, bool ultra) {
-            Queue<Crucible> open = new();
-            HashSet<Crucible> closed = new(height * width * 2);
+            Heap<Crucible> open = new(height * width);
+            HashSet<Crucible> closed = new(height * width * 50);
+
+            void TryAdd(Crucible next) {
+                if (next.IsValid(width, height)) {
+                    next.Loss += grid[next.Y, next.X];
+                    if (closed.Add(next)) {
+                        open.Enqueue(next);
+                    }
+                }
+            }
+
             open.Enqueue(new Crucible() { X = (short)xs, Y = (short)ys, DX = 1, DY = 0, Straight = 0 });
             open.Enqueue(new Crucible() { X = (short)xs, Y = (short)ys, DX = 0, DY = 1, Straight = 0 });
 
@@ -47,39 +58,24 @@ namespace AdventOfCode.Y2023 {
                     continue;
                 }
 
-                if ((ultra && crucible.Straight < 10) || (!ultra && crucible.Straight < 3)) {
+                if (crucible.Straight < 3 || (ultra && crucible.Straight < 10)) {
                     Crucible next = crucible.NextStraight;
-                    TryAdd(next, open, closed);
+                    TryAdd(next);
                 }
 
                 if (!ultra || crucible.Straight >= 4) {
                     Crucible nextRight = crucible.NextRight;
-                    TryAdd(nextRight, open, closed);
+                    TryAdd(nextRight);
 
                     Crucible nextLeft = crucible.NextLeft;
-                    TryAdd(nextLeft, open, closed);
+                    TryAdd(nextLeft);
                 }
             }
 
             return min;
         }
-        private void TryAdd(Crucible next, Queue<Crucible> open, HashSet<Crucible> closed) {
-            if (next.IsValid(width, height)) {
-                next.Loss += grid[next.Y, next.X];
-                if (!closed.TryGetValue(next, out Crucible existing) || existing.Loss > next.Loss) {
-                    if (existing != null) {
-                        existing.Loss = next.Loss;
-                    } else {
-                        closed.Add(next);
-                    }
-                    open.Enqueue(next);
-                }
-            }
-        }
-
-        private class Crucible : IEquatable<Crucible> {
-            public short X, Y, DX, DY, Straight;
-            public int Loss;
+        private class Crucible : IEquatable<Crucible>, IComparable<Crucible> {
+            public short X, Y, DX, DY, Straight, Loss;
             public bool IsValid(int width, int height) {
                 return X >= 0 && Y >= 0 && X < width && Y < height;
             }
@@ -106,6 +102,9 @@ namespace AdventOfCode.Y2023 {
             }
             public override string ToString() {
                 return $"{X},{Y},{DX},{DY},{Straight},{Loss}";
+            }
+            public int CompareTo(Crucible other) {
+                return Loss.CompareTo(other.Loss);
             }
         }
     }
