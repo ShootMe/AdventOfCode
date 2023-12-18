@@ -16,7 +16,7 @@ namespace AdventOfCode.Y2023 {
             }
         }
 
-        [Description("The Elves are concerned the lagoon won't be large enough; if they follow their dig plan, how many cubic meters of lava could it hold?")]
+        [Description("How many cubic meters of lava could it hold?")]
         public override string SolvePart1() {
             int[] DirX = { 1, 0, -1, 0 };
             int[] DirY = { 0, 1, 0, -1 };
@@ -35,7 +35,7 @@ namespace AdventOfCode.Y2023 {
             return $"{(Math.Abs(sum) - perimeter) / 2 + 1 + perimeter}";
         }
 
-        [Description("Convert the hexadecimal color codes into the correct instructions; if the Elves follow this new dig plan, how many cubic meters of lava could the lagoon hold?")]
+        [Description("How many cubic meters of lava could the lagoon hold?")]
         public override string SolvePart2() {
             int[] DirX = { 1, 0, -1, 0 };
             int[] DirY = { 0, 1, 0, -1 };
