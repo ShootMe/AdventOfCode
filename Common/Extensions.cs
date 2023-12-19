@@ -218,15 +218,15 @@ internal static class Extensions {
     //█  █ █  █ █    █  █ █    █    █ ██ █  █   █     █ █ █  █    █  █ ███  █  █ ███   ██    █  █  █   █    █   █
     //█  █ █  █ █  █ █  █ █    █    █  █ █  █   █  █  █ █ █  █    █  █ █     ██  █ █     █   █  █  █  █ █   █  █
     //█  █ ███   ██  ███  ████ █     ██  █  █  ███  ██  █  █ ████  ██  █       █ █  █ ███    █   ██  █   █  █  ████
-    public static string FindStringInGrid(bool[,] grid, int charWidth) {
+    public static string FindStringInGrid(bool[,] grid) {
         int height = grid.GetLength(0);
         int width = grid.GetLength(1);
-        Dictionary<int, char> charMap = new Dictionary<int, char>() { { 210, 'A' }, { 169, 'B' }, { 112, 'C' }, { 175, 'D' }, { 137, 'E' }, { 53, 'F' }, { 160, 'G' }, { 207, 'H' }, { 154, 'I' }, { 165, 'J' }, { 127, 'K' }, { 105, 'L' }, { 168, 'O' }, { 91, 'P' }, { 159, 'R' }, { 125, 'S' }, { 95, 'T' }, { 55, 'T' }, { 171, 'U' }, { 73, 'Y' }, { 146, 'Z' } };
-        char[] characters = new char[(width + charWidth - 1) / (charWidth + 1)];
+        Dictionary<int, char> charMap = new Dictionary<int, char>() { { 210, 'A' }, { 169, 'B' }, { 112, 'C' }, { 175, 'D' }, { 137, 'E' }, { 53, 'F' }, { 160, 'G' }, { 207, 'H' }, { 154, 'I' }, { 165, 'J' }, { 127, 'K' }, { 105, 'L' }, { 168, 'O' }, { 91, 'P' }, { 159, 'R' }, { 125, 'S' }, { 95, 'T' }, { 55, 'T' }, { 171, 'U' }, { 93, 'Y' }, { 146, 'Z' } };
+        char[] characters = new char[(width + 3) / 5];
         for (int i = 0; i < characters.Length; i++) {
             int charSum = 0;
-            int startX = i * (charWidth + 1);
-            int endX = (i + 1) * (charWidth + 1) - 1;
+            int startX = i * 5;
+            int endX = (i + 1) * 5 - 1;
             for (int y = 0; y < height; y++) {
                 int rowSum = 0;
                 for (int x = startX; x < endX; x++) {

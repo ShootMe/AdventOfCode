@@ -53,7 +53,7 @@ namespace AdventOfCode.Y2022 {
                 }
             }
 
-            return Extensions.FindStringInGrid(crt, 4);
+            return Extensions.FindStringInGrid(crt);
         }
     }
 }

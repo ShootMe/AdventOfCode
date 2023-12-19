@@ -62,22 +62,17 @@ namespace AdventOfCode.Y2018 {
             Point max = minMax.Item2;
             int width = max.X - min.X + 1;
             int height = max.Y - min.Y + 1;
-            bool[] grid = new bool[width * height];
+            bool[,] grid = new bool[height, width];
 
             for (int i = 0; i < points.Length; i++) {
                 Point point = points[i];
-                grid[(point.X - min.X) + width * (point.Y - min.Y)] = true;
+                grid[point.Y - min.Y, point.X - min.X] = true;
             }
-            for (int i = 0, j = 0; i < grid.Length; i++) {
-                if (grid[i]) {
-                    Console.Write('X');
-                } else {
-                    Console.Write(' ');
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    Console.Write(grid[y, x] ? '#' : ' ');
                 }
-                if (++j == width) {
-                    Console.WriteLine();
-                    j = 0;
-                }
+                Console.WriteLine();
             }
         }
         private Tuple<Point, Point> StepForward() {

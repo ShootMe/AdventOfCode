@@ -61,7 +61,7 @@ namespace AdventOfCode.Y2021 {
                 grid[y - minY, x - minX] = true;
             }
 
-            return Extensions.FindStringInGrid(grid, 4);
+            return Extensions.FindStringInGrid(grid);
         }
 
         private void Fold(int fold) {
