@@ -65,13 +65,14 @@ namespace AdventOfCode.Y2023 {
             }
 
             int totalHigh = 0; int totalLow = 0;
-            Queue<(Module, Module, bool)> pulses = new();
+            Module broadcaster = modules["broadcaster"];
+            Queue<(Module, Module)> pulses = new();
             for (int i = 0; i < 1000; i++) {
-                pulses.Enqueue((null, modules["broadcaster"], false));
+                pulses.Enqueue((broadcaster, broadcaster));
                 while (pulses.Count > 0) {
-                    (Module sender, Module current, bool pulse) = pulses.Dequeue();
-                    if (pulse) { totalHigh++; } else { totalLow++; }
-                    current.Pulse(pulses, sender, pulse);
+                    (Module sender, Module current) = pulses.Dequeue();
+                    if (sender.LastOutput) { totalHigh++; } else { totalLow++; }
+                    current.Pulse(pulses, sender);
                 }
             }
             return $"{totalHigh * totalLow}";
@@ -83,7 +84,7 @@ namespace AdventOfCode.Y2023 {
                 module.Reset();
             }
 
-            Queue<(Module, Module, bool)> pulses = new();
+            Queue<(Module, Module)> pulses = new();
             int presses = 0;
             Module rxIns = modules["rx"].Inputs[0];
             Dictionary<Module, int> states = new();
@@ -91,13 +92,14 @@ namespace AdventOfCode.Y2023 {
                 states[rxIns.Inputs[i]] = 0;
             }
 
+            Module broadcaster = modules["broadcaster"];
             while (true) {
                 presses++;
-                pulses.Enqueue((null, modules["broadcaster"], false));
+                pulses.Enqueue((broadcaster, broadcaster));
                 while (pulses.Count > 0) {
-                    (Module sender, Module current, bool pulse) = pulses.Dequeue();
+                    (Module sender, Module current) = pulses.Dequeue();
 
-                    if (pulse && states.TryGetValue(sender, out int lastPress) && presses > lastPress) {
+                    if (sender.LastOutput && states.TryGetValue(sender, out int lastPress) && presses > lastPress) {
                         states[sender] = presses - lastPress;
 
                         long total = 1;
@@ -107,7 +109,7 @@ namespace AdventOfCode.Y2023 {
 
                         if (total > 0) { return $"{total}"; }
                     }
-                    current.Pulse(pulses, sender, pulse);
+                    current.Pulse(pulses, sender);
                 }
             }
         }
@@ -116,59 +118,47 @@ namespace AdventOfCode.Y2023 {
             private static int idCounter = 0;
             public int ID;
             public string Name;
+            public bool LastOutput;
             public List<Module> Inputs = new();
             public List<Module> Outputs = new();
             public Module(string name) { Name = name; ID = ++idCounter; }
-            public virtual void Pulse(Queue<(Module, Module, bool)> pulses, Module sender, bool pulse) {
+            public virtual void Pulse(Queue<(Module, Module)> pulses, Module sender) {
                 for (int i = 0; i < Outputs.Count; i++) {
-                    pulses.Enqueue((this, Outputs[i], pulse));
+                    pulses.Enqueue((this, Outputs[i]));
                 }
             }
-            public virtual void Reset() { }
+            public virtual void Reset() { LastOutput = false; }
             public bool Equals(Module other) { return ID == other.ID; }
             public override int GetHashCode() { return ID; }
             public override string ToString() { return $"{Name}"; }
         }
         private class FlipFlop : Module {
-            private bool state;
-            private bool wasChanged;
             public FlipFlop(string name) : base(name) { }
-            public override void Pulse(Queue<(Module, Module, bool)> pulses, Module sender, bool pulse) {
-                wasChanged = !pulse;
-                if (wasChanged) {
-                    state = !state;
-                }
+            public override void Pulse(Queue<(Module, Module)> pulses, Module sender) {
+                if (sender.LastOutput) { return; }
 
-                if (wasChanged) {
-                    for (int i = 0; i < Outputs.Count; i++) {
-                        pulses.Enqueue((this, Outputs[i], state));
-                    }
+                for (int i = 0; i < Outputs.Count; i++) {
+                    pulses.Enqueue((this, Outputs[i]));
                 }
+                LastOutput = !LastOutput;
             }
-            public override void Reset() { state = false; wasChanged = false; }
-            public override string ToString() { return $"%{Name}({state})"; }
+            public override string ToString() { return $"%{Name}({LastOutput})"; }
         }
         private class Conjunction : Module {
-            private Dictionary<Module, bool> states = new();
             public Conjunction(string name) : base(name) { }
-            public override void Pulse(Queue<(Module, Module, bool)> pulses, Module sender, bool pulse) {
-                states[sender] = pulse;
+            public override void Pulse(Queue<(Module, Module)> pulses, Module sender) {
                 bool state = true;
-                foreach (bool value in states.Values) {
-                    state &= value;
+                for (int i = 0; i < Inputs.Count && state; i++) {
+                    state &= Inputs[i].LastOutput;
                 }
 
                 for (int i = 0; i < Outputs.Count; i++) {
-                    pulses.Enqueue((this, Outputs[i], !state));
+                    pulses.Enqueue((this, Outputs[i]));
                 }
-            }
-            public override void Reset() {
-                for (int i = 0; i < Inputs.Count; i++) {
-                    states[Inputs[i]] = false;
-                }
+                LastOutput = !state;
             }
             public override string ToString() {
-                return $"&{Name}({Inputs.Count})";
+                return $"&{Name}({LastOutput})";
             }
         }
     }
