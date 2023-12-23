@@ -11,7 +11,7 @@ namespace AdventOfCode.Y2023 {
         public override void Setup() {
             string[] lines = Input.Split('\n');
             for (int i = 0; i < lines.Length; i++) {
-                bricks.Add(new Brick(lines[i]));
+                bricks.Add(new Brick(lines[i], i));
             }
 
             bricks.Sort();
@@ -78,7 +78,7 @@ namespace AdventOfCode.Y2023 {
             Queue<Brick> bricksLeft = new();
             bricksLeft.Enqueue(brick);
             int total = 0;
-            bool[] removed = new bool[bricks.Count + 1];
+            bool[] removed = new bool[bricks.Count];
             removed[brick.ID] = true;
 
             while (bricksLeft.Count > 0) {
@@ -105,14 +105,13 @@ namespace AdventOfCode.Y2023 {
             return total;
         }
         private class Brick : IComparable<Brick>, IEquatable<Brick> {
-            private static int idCounter;
             public int ID;
             public (int x, int y, int z) End1, End2;
             public HashSet<Brick> Below = new();
             public HashSet<Brick> Above = new();
 
-            public Brick(string line) {
-                ID = ++idCounter;
+            public Brick(string line, int id) {
+                ID = id;
                 string[] splits = line.SplitOn(",", ",", "~", ",", ",");
                 End1 = (splits[0].ToInt(), splits[1].ToInt(), splits[2].ToInt());
                 End2 = (splits[3].ToInt(), splits[4].ToInt(), splits[5].ToInt());
