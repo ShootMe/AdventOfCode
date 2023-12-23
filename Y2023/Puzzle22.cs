@@ -13,20 +13,44 @@ namespace AdventOfCode.Y2023 {
             for (int i = 0; i < lines.Length; i++) {
                 bricks.Add(new Brick(lines[i]));
             }
+
             bricks.Sort();
+            Brick[,] zMax = new Brick[10, 10];
+            for (int i = 0; i < bricks.Count; i++) {
+                MoveBrickDown(zMax, bricks[i]);
+            }
+            bricks.Sort();
+        }
+        private void MoveBrickDown(Brick[,] zMax, Brick brick) {
+            int maxZ = 0;
+            for (int y = brick.End1.y; y <= brick.End2.y; y++) {
+                for (int x = brick.End1.x; x <= brick.End2.x; x++) {
+                    Brick max = zMax[y, x];
+                    if (max != null && max.End2.z > maxZ) { maxZ = max.End2.z; }
+                }
+            }
+
+            for (int y = brick.End1.y; y <= brick.End2.y; y++) {
+                for (int x = brick.End1.x; x <= brick.End2.x; x++) {
+                    Brick max = zMax[y, x];
+                    zMax[y, x] = brick;
+                    if (max != null && max.End2.z == maxZ) {
+                        brick.Below.Add(max);
+                        max.Above.Add(brick);
+                    }
+                }
+            }
+
+            int diff = brick.End1.z - maxZ - 1;
+            brick.End1.z -= diff;
+            brick.End2.z -= diff;
         }
 
         [Description("How many bricks could be safely chosen as the one to get disintegrated?")]
         public override string SolvePart1() {
-            for (int i = 0; i < bricks.Count; i++) {
-                Brick brick = bricks[i];
-                while (MoveBrickDown(i, brick)) { }
-                brick.SaveState();
-            }
-
             int total = 0;
             for (int i = 0; i < bricks.Count; i++) {
-                if (BricksToFall(bricks[i]) == 0) { total++; }
+                if (CanRemoveBrick(bricks[i])) { total++; }
             }
             return $"{total}";
         }
@@ -35,65 +59,63 @@ namespace AdventOfCode.Y2023 {
         public override string SolvePart2() {
             int total = 0;
             for (int i = 0; i < bricks.Count; i++) {
-                total += BricksToFall(bricks[i]);
+                total += BricksToFallWhenRemoved(bricks[i]);
             }
             return $"{total}";
         }
-        private int BricksToFall(Brick brick) {
-            brick.Disabled = true;
 
-            int count = 0;
-            for (int i = 0; i < bricks.Count; i++) {
-                Brick test = bricks[i];
-                if (test.Disabled) { continue; }
-                if (MoveBrickDown(i, test)) { count++; }
-            }
+        private bool CanRemoveBrick(Brick brick) {
+            if (brick.Above.Count == 0) { return true; }
 
-            for (int i = 0; i < bricks.Count; i++) {
-                bricks[i].RestoreState();
-            }
-            brick.Disabled = false;
-            return count;
-        }
-        private bool MoveBrickDown(int index, Brick brick) {
-            if (brick.End1.z <= 1 || brick.End2.z <= 1) { return false; }
-
-            brick.End1.z--;
-            brick.End2.z--;
-            for (int i = index - 1; i >= 0; i--) {
-                Brick other = bricks[i];
-                if (other.Intersects(brick)) {
-                    brick.End1.z++;
-                    brick.End2.z++;
-                    return false;
-                }
+            foreach (Brick above in brick.Above) {
+                if (above.Below.Count == 1) { return false; }
             }
             return true;
         }
-        private class Brick : IComparable<Brick> {
+        private int BricksToFallWhenRemoved(Brick brick) {
+            if (brick.Above.Count == 0) { return 0; }
+
+            Queue<Brick> bricksLeft = new();
+            bricksLeft.Enqueue(brick);
+            int total = 0;
+            bool[] removed = new bool[bricks.Count + 1];
+            removed[brick.ID] = true;
+
+            while (bricksLeft.Count > 0) {
+                Brick current = bricksLeft.Dequeue();
+                foreach (Brick above in current.Above) {
+                    if (removed[above.ID]) { continue; }
+
+                    bool willFall = true;
+                    foreach (Brick below in above.Below) {
+                        if (!removed[below.ID]) {
+                            willFall = false;
+                            break;
+                        }
+                    }
+
+                    if (willFall) {
+                        removed[above.ID] = true;
+                        bricksLeft.Enqueue(above);
+                        total++;
+                    }
+                }
+            }
+
+            return total;
+        }
+        private class Brick : IComparable<Brick>, IEquatable<Brick> {
+            private static int idCounter;
+            public int ID;
             public (int x, int y, int z) End1, End2;
-            private (int x, int y, int z) End1Save, End2Save;
-            public bool Disabled;
+            public HashSet<Brick> Below = new();
+            public HashSet<Brick> Above = new();
+
             public Brick(string line) {
+                ID = ++idCounter;
                 string[] splits = line.SplitOn(",", ",", "~", ",", ",");
                 End1 = (splits[0].ToInt(), splits[1].ToInt(), splits[2].ToInt());
                 End2 = (splits[3].ToInt(), splits[4].ToInt(), splits[5].ToInt());
-                End1Save = End1;
-                End2Save = End2;
-            }
-            public void SaveState() {
-                End1Save = End1;
-                End2Save = End2;
-            }
-            public void RestoreState() {
-                End1 = End1Save;
-                End2 = End2Save;
-            }
-            public bool Intersects(Brick other) {
-                return !Disabled && !other.Disabled &&
-                    (End2.z >= other.End1.z && End1.z <= other.End2.z) &&
-                    (End2.x >= other.End1.x && End1.x <= other.End2.x) &&
-                    (End2.y >= other.End1.y && End1.y <= other.End2.y);
             }
             public int CompareTo(Brick other) {
                 int comp = End1.z.CompareTo(other.End1.z);
@@ -102,9 +124,9 @@ namespace AdventOfCode.Y2023 {
                 if (comp != 0) { return comp; }
                 return End1.y.CompareTo(other.End1.y);
             }
-            public override string ToString() {
-                return $"{End1} - {End2}";
-            }
+            public override string ToString() { return $"{End1} - {End2}"; }
+            public bool Equals(Brick other) { return ID == other.ID; }
+            public override int GetHashCode() { return ID; }
         }
     }
 }
