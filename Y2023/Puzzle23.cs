@@ -36,11 +36,9 @@ namespace AdventOfCode.Y2023 {
             Node start = new Node(0, 1, 0);
             nodes.TryGetValue(start, out start);
 
-            bool[] used = new bool[nodes.Count + 1];
-            used[start.ID] = true;
-
             int[] dirD = { 0, 1, 0, -1, 0 };
             char[] dirC = { '>', 'v', '<', '^' };
+            long used = 1L << start.ID;
             Stack<(Node, int)> open = new();
 
             for (int i = 0; i < 4; i++) {
@@ -54,7 +52,7 @@ namespace AdventOfCode.Y2023 {
                 (start, int total) = open.Pop();
 
                 if (total >= 0) {
-                    used[start.ID] = true;
+                    used |= 1L << start.ID;
                     open.Push((start, -1));
 
                     for (int i = 0; i < 4; i++) {
@@ -64,7 +62,7 @@ namespace AdventOfCode.Y2023 {
                         }
 
                         (Node node, int length) = start.Connections[i];
-                        if (node == null || used[node.ID]) { continue; }
+                        if (node == null || (used & (1L << node.ID)) != 0) { continue; }
                         if (node.Y == height - 1) {
                             if (total + length > max) { max = total + length; }
                             continue;
@@ -72,7 +70,7 @@ namespace AdventOfCode.Y2023 {
                         open.Push((node, total + length));
                     }
                 } else {
-                    used[start.ID] = false;
+                    used ^= 1L << start.ID;
                 }
             }
             return max;
