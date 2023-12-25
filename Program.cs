@@ -9,7 +9,7 @@ namespace AdventOfCode {
             //Runner.AdventYear();
 
             //Run code for a specific year
-            //Runner.AdventYear(2022);
+            //Runner.AdventYear(2023);
 
             //Run code for a specific day in the year
             //Class is auto generated if it doesn't exist and
