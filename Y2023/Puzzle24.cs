@@ -1,6 +1,5 @@
 using AdventOfCode.Common;
 using AdventOfCode.Core;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 namespace AdventOfCode.Y2023 {
@@ -66,7 +65,7 @@ namespace AdventOfCode.Y2023 {
             }
             return string.Empty;
         }
-        private class Snowball : IComparable<Snowball>, IEquatable<Snowball> {
+        private class Snowball {
             public int ID;
             public (long x, long y, long z) Position, Velocity;
 
@@ -75,11 +74,6 @@ namespace AdventOfCode.Y2023 {
                 string[] splits = line.SplitOn(", ", ", ", " @ ", ", ", ", ");
                 Position = (splits[0].ToLong(), splits[1].ToLong(), splits[2].ToLong());
                 Velocity = (splits[3].ToLong(), splits[4].ToLong(), splits[5].ToLong());
-            }
-            public Snowball(Snowball copy) {
-                ID = copy.ID;
-                Position = copy.Position;
-                Velocity = copy.Velocity;
             }
             public (bool Intersects, (long X, long Y) Position, long Time1, long Time2) IntersectsXY(Snowball s2) {
                 double d = (double)Velocity.y * s2.Velocity.x - Velocity.x * s2.Velocity.y;
@@ -95,16 +89,7 @@ namespace AdventOfCode.Y2023 {
             public long ZAt(double time, int offset) {
                 return (long)(Position.z + (Velocity.z + offset) * time);
             }
-            public int CompareTo(Snowball other) {
-                int comp = Position.x.CompareTo(other.Position.x);
-                if (comp != 0) { return comp; }
-                comp = Position.y.CompareTo(other.Position.y);
-                if (comp != 0) { return comp; }
-                return Position.z.CompareTo(other.Position.z);
-            }
             public override string ToString() { return $"{Position} - {Velocity}"; }
-            public bool Equals(Snowball other) { return ID == other.ID; }
-            public override int GetHashCode() { return ID; }
         }
     }
 }
