@@ -47,18 +47,16 @@ namespace AdventOfCode.Y2023 {
         [Description("What do you get if you multiply the sizes of these two groups together?")]
         public override string SolvePart1() {
             HashSet<Wire> used = new();
-            for (int i = 0; i < nodes.Count; i++) {
-                Node node1 = nodes[i];
-                for (int j = i + 1; j < nodes.Count; j++) {
-                    Node node2 = nodes[j];
-                    used.Clear();
-                    int size;
-                    if (FindPath(node1, node2, used) == 0 &&
-                        FindPath(node1, node2, used) == 0 &&
-                        FindPath(node1, node2, used) == 0 &&
-                        (size = FindPath(node1, node2, used)) > 0) {
-                        return $"{size * (nodes.Count - size)}";
-                    }
+            Node node1 = nodes[0];
+            for (int i = 1; i < nodes.Count; i++) {
+                Node node2 = nodes[i];
+                used.Clear();
+                int size;
+                if (FindPath(node1, node2, used) == 0 &&
+                    FindPath(node1, node2, used) == 0 &&
+                    FindPath(node1, node2, used) == 0 &&
+                    (size = FindPath(node1, node2, used)) > 0) {
+                    return $"{size * (nodes.Count - size)}";
                 }
             }
             return string.Empty;
