@@ -1,29 +1,33 @@
 using AdventOfCode.Common;
 using AdventOfCode.Core;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 namespace AdventOfCode.Y2024 {
     [Description("Historian Hysteria")]
     public class Puzzle01 : ASolver {
-        private List<int> left = new();
-        private List<int> right = new();
+        private int[] left, right, counts;
 
         public override void Setup() {
             string[] lines = Input.Split('\n');
-            foreach (string line in lines) {
-                string[] nums = line.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-                left.Add(nums[0].ToInt());
-                right.Add(nums[1].ToInt());
+            left = new int[lines.Length];
+            right = new int[lines.Length];
+            counts = new int[100000];
+            for (int i = 0; i < lines.Length; i++) {
+                string line = lines[i];
+                int index = line.IndexOf(' ');
+                left[i] = line[0..index].ToInt();
+                int rightNum = line[index..].ToInt();
+                right[i] = rightNum;
+                counts[rightNum]++;
             }
-            left.Sort();
-            right.Sort();
+            Array.Sort(left);
+            Array.Sort(right);
         }
 
         [Description("Your actual left and right lists contain many location IDs. What is the total distance between your lists?")]
         public override string SolvePart1() {
             int total = 0;
-            for (int i = 0; i < left.Count; i++) {
+            for (int i = 0; i < left.Length; i++) {
                 total += Math.Abs(left[i] - right[i]);
             }
             return $"{total}";
@@ -32,20 +36,9 @@ namespace AdventOfCode.Y2024 {
         [Description("Once again consider your left and right lists. What is their similarity score?")]
         public override string SolvePart2() {
             int total = 0;
-            Dictionary<int, int> rightCount = new();
-            for (int i = 0; i < left.Count; i++) {
-                int count = 0;
-                if (rightCount.TryGetValue(right[i], out count)) {
-                    rightCount[right[i]]++;
-                } else {
-                    rightCount[right[i]] = 1;
-                }
-            }
-            for (int i = 0; i < left.Count; i++) {
-                int count = 0;
-                if (rightCount.TryGetValue(left[i], out count)) {
-                    total += left[i] * count;
-                }
+            for (int i = 0; i < left.Length; i++) {
+                int count = counts[left[i]];
+                total += left[i] * count;
             }
             return $"{total}";
         }
