@@ -24,7 +24,7 @@ namespace AdventOfCode.Y2024 {
             Array.Sort(right);
         }
 
-        [Description("Your actual left and right lists contain many location IDs. What is the total distance between your lists?")]
+        [Description("What is the total distance between your lists?")]
         public override string SolvePart1() {
             int total = 0;
             for (int i = 0; i < left.Length; i++) {
@@ -33,7 +33,7 @@ namespace AdventOfCode.Y2024 {
             return $"{total}";
         }
 
-        [Description("Once again consider your left and right lists. What is their similarity score?")]
+        [Description("What is their similarity score?")]
         public override string SolvePart2() {
             int total = 0;
             for (int i = 0; i < left.Length; i++) {
