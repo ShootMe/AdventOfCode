@@ -45,6 +45,9 @@ namespace AdventOfCode.Y2024 {
                 if (newX < 0 || newX >= width || newY < 0 || newY >= height) {
                     return false;
                 } else if (grid[newY, newX] == '#') {
+                    if (!seenDir.Add((x, y, dirX, dirY))) {
+                        return true;
+                    }
                     int tempDir = dirX;
                     dirX = -dirY;
                     dirY = tempDir;
@@ -53,16 +56,13 @@ namespace AdventOfCode.Y2024 {
 
                 x = newX; y = newY;
                 newLocation?.Invoke(x, y, dirX, dirY);
-
-                if (!seenDir.Add((x, y, dirX, dirY))) {
-                    return true;
-                }
             }
         }
 
         [Description("How many different positions could you choose for this obstruction?")]
         public override string SolvePart2() {
             int total = 0;
+            seenArea.Remove((startX, startY));
             foreach (KeyValuePair<(int x, int y), (int dirX, int dirY)> pair in seenArea) {
                 grid[pair.Key.y, pair.Key.x] = '#';
                 int x = pair.Key.x - pair.Value.dirX;
