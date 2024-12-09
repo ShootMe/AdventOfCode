@@ -65,14 +65,16 @@ namespace AdventOfCode.Y2024 {
         [Description("What is the resulting filesystem checksum?")]
         public override string SolvePart2() {
             int fileID = blocksList[^1].ID;
+            int[] lastFree = new int[10];
             for (int j = blocksList.Count - 1; j > 0; j--) {
                 Block block = blocksList[j];
                 if (block.ID != fileID) { continue; }
                 fileID--;
 
-                for (int i = 0; i < j; i++) {
+                for (int i = lastFree[block.Size]; i < j; i++) {
                     Block freeBlock = blocksList[i];
                     if (freeBlock.ID != 0 || block.Size > freeBlock.Size) { continue; }
+                    lastFree[block.Size] = i;
 
                     blocksList[i] = block;
                     blocksList[j] = freeBlock;
@@ -105,7 +107,6 @@ namespace AdventOfCode.Y2024 {
 
             return $"{total}";
         }
-
         private class Block {
             public int ID, Size;
             public override string ToString() {
