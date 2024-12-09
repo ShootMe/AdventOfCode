@@ -56,8 +56,7 @@ namespace AdventOfCode.Y2024 {
                         return Value;
                     }
                     if (use3) {
-                        long mult = (long)Math.Pow(10, (long)Math.Log10(operand) + 1);
-                        if (TryNext(index + 1, value * mult + operand, use3) == Value) {
+                        if (TryNext(index + 1, value * GetBase10(operand) + operand, use3) == Value) {
                             return Value;
                         }
                     }
@@ -65,6 +64,13 @@ namespace AdventOfCode.Y2024 {
                     return value;
                 }
                 return -value;
+            }
+            private static long GetBase10(long num) {
+                int i = 1;
+                while (i <= num) {
+                    i *= 10;
+                }
+                return i;
             }
         }
     }
