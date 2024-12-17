@@ -88,13 +88,14 @@ namespace AdventOfCode.Y2024 {
                 }
 
                 if (map[y, x] == '#' || !seen.TryGetValue((x, y), out int prevScore) || prevScore > score) { return; }
-                bestPath.Add((x, y));
+
                 open.Enqueue((x, y, dir, score));
             }
 
             while (open.Count > 0) {
                 (int x, int y, int dir, int score) = open.Dequeue();
-                bestPath.Add((x, y));
+                if (!bestPath.Add((x, y))) { continue; }
+
                 CheckPrevious(x, y, dir, score - 1);
                 CheckPrevious(x, y, dir + 1, score - 1001);
                 CheckPrevious(x, y, dir - 1, score - 1001);
