@@ -23,8 +23,7 @@ namespace AdventOfCode.Y2024 {
         public override string SolvePart1() {
             int total = 0;
             for (int i = 2; i < designs.Length; i++) {
-                string design = designs[i];
-                total += IsPossible(design) > 0 ? 1 : 0;
+                total += IsPossible(designs[i]) > 0 ? 1 : 0;
             }
             return $"{total}";
         }
@@ -33,8 +32,7 @@ namespace AdventOfCode.Y2024 {
         public override string SolvePart2() {
             long total = 0;
             for (int i = 2; i < designs.Length; i++) {
-                string design = designs[i];
-                total += IsPossible(design);
+                total += IsPossible(designs[i]);
             }
             return $"{total}";
         }
@@ -46,9 +44,8 @@ namespace AdventOfCode.Y2024 {
 
             for (int i = 0; i < patterns.Length; i++) {
                 string pattern = patterns[i];
-                int index = design.IndexOf(pattern);
-                if (index == 0) {
-                    count += IsPossible(design.Remove(index, pattern.Length));
+                if (design.IndexOf(pattern) == 0) {
+                    count += IsPossible(design.Remove(0, pattern.Length));
                 }
             }
 
