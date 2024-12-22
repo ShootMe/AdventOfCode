@@ -1,13 +1,13 @@
 using AdventOfCode.Common;
 using AdventOfCode.Core;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 namespace AdventOfCode.Y2024 {
     [Description("Monkey Market")]
     public class Puzzle22 : ASolver {
         private List<int> secrets = new();
-        private Dictionary<int, byte[]> sets = new();
+        private bool[] sets = new bool[1 << 20];
+        private int[] totals = new int[1 << 20];
 
         public override void Setup() {
             foreach (string line in Input.Split('\n')) {
@@ -23,28 +23,29 @@ namespace AdventOfCode.Y2024 {
                 return (number ^ (number << 11)) & 0xffffff;
             }
 
+            List<int> seen = new();
             long total = 0;
             for (int i = 0; i < secrets.Count; i++) {
-                int number = secrets[i];
-                int difference = 0;
+                int secret = secrets[i];
+                int sequence = 0;
                 for (int j = 0; j < 2000; j++) {
-                    int newNumber = Generate(number);
-                    int price = newNumber % 10;
-                    difference = (difference << 8) | (price - (number % 10) + 0x30);
-                    number = newNumber;
-                    if (j >= 3) {
-                        if (!sets.TryGetValue(difference, out byte[] prices)) {
-                            prices = new byte[secrets.Count];
-                            Array.Fill(prices, (byte)0xff);
-                            sets[difference] = prices;
-                        }
-                        if (prices[i] == 0xff) {
-                            prices[i] = (byte)price;
-                        }
+                    int newSecret = Generate(secret);
+                    int price = newSecret % 10;
+                    sequence = ((sequence << 5) | (price - (secret % 10) + 9)) & 0xfffff;
+                    secret = newSecret;
+                    if (j >= 3 && !sets[sequence]) {
+                        seen.Add(sequence);
+                        sets[sequence] = true;
+                        totals[sequence] += price;
                     }
                 }
 
-                total += number;
+                for (int j = 0; j < seen.Count; j++) {
+                    sets[seen[j]] = false;
+                }
+                seen.Clear();
+
+                total += secret;
             }
             return $"{total}";
         }
@@ -52,13 +53,9 @@ namespace AdventOfCode.Y2024 {
         [Description("What is the most bananas you can get?")]
         public override string SolvePart2() {
             int best = 0;
-            foreach (byte[] prices in sets.Values) {
-                int count = 0;
-                for (int i = 0; i < prices.Length; i++) {
-                    count += prices[i] < 10 ? prices[i] : 0;
-                }
-                if (count > best) {
-                    best = count;
+            for (int i = 0; i < totals.Length; i++) {
+                if (totals[i] > best) {
+                    best = totals[i];
                 }
             }
             return $"{best}";
