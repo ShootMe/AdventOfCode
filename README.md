@@ -26,7 +26,7 @@ https://adventofcode.com/
  18 | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: |
  19 | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: |
  20 | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: |
- 21 | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | |
+ 21 | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: |
  22 | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: |
  23 | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | |
  24 | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | :star: :star: | |
