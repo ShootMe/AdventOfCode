@@ -6,7 +6,7 @@ using System.Text;
 namespace AdventOfCode.Y2024 {
     [Description("LAN Party")]
     public class Puzzle23 : ASolver {
-        private List<HashSet<Node>> cliques = new();
+        private HashSet<Node> maxClique = new();
         private List<Node> nodes = new();
         public override void Setup() {
             Dictionary<string, Node> nodesByName = new();
@@ -33,11 +33,6 @@ namespace AdventOfCode.Y2024 {
                 otherNode.Connections.Add(node);
             }
             nodes.Sort();
-
-            for (int i = 0; i < nodes.Count; i++) {
-                Node node = nodes[i];
-                Find(cliques, node, new(), new());
-            }
         }
 
         [Description("How many contain at least one computer with a name that starts with t?")]
@@ -72,14 +67,9 @@ namespace AdventOfCode.Y2024 {
 
         [Description("What is the password to get into the LAN party?")]
         public override string SolvePart2() {
-            int best = 0;
-            HashSet<Node> maxClique = null;
-            for (int i = 0; i < cliques.Count; i++) {
-                HashSet<Node> clique = cliques[i];
-                if (clique.Count > best) {
-                    best = clique.Count;
-                    maxClique = clique;
-                }
+            for (int i = 0; i < nodes.Count; i++) {
+                Node node = nodes[i];
+                Find(node, new(), new());
             }
 
             List<Node> list = new(maxClique);
@@ -92,7 +82,7 @@ namespace AdventOfCode.Y2024 {
 
             return sb.ToString();
         }
-        private void Find(List<HashSet<Node>> cliques, Node node, HashSet<Node> set, HashSet<Node> exc) {
+        private void Find(Node node, HashSet<Node> set, HashSet<Node> exc) {
             List<Node> connections = node.Connections;
             int count = 0;
             for (int i = 0; i < connections.Count && count < set.Count; i++) {
@@ -103,12 +93,12 @@ namespace AdventOfCode.Y2024 {
             if (count == set.Count) {
                 set.Add(node);
                 exc.Add(node);
-                if (set.Count > 2) { cliques.Add(new(set)); }
+                if (set.Count > maxClique.Count) { maxClique.Clear(); maxClique.UnionWith(set); }
 
                 for (int i = 0; i < connections.Count; i++) {
                     Node connection = connections[i];
                     if (!exc.Contains(connection)) {
-                        Find(cliques, connection, set, exc);
+                        Find(connection, set, exc);
                     }
                 }
                 set.Remove(node);
