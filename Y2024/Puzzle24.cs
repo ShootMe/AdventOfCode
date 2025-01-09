@@ -65,7 +65,7 @@ namespace AdventOfCode.Y2024 {
             //ctg <-> rpb
             //z31 <-> dmh
             //z38 <-> dvq
-
+            //Print();
             List<ICircuit> fix = new();
             Gate gate1 = circuits["z11"] as Gate;
             Gate gate2 = circuits["rpv"] as Gate;
@@ -73,7 +73,7 @@ namespace AdventOfCode.Y2024 {
             Extensions.Swap(ref gate1.LeftInput, ref gate2.LeftInput);
             Extensions.Swap(ref gate1.RightInput, ref gate2.RightInput);
             Extensions.Swap(ref gate1.Op, ref gate2.Op);
-            //Console.WriteLine(IsValid(62));
+            //Console.WriteLine(IsValid());
 
             gate1 = circuits["ctg"] as Gate;
             gate2 = circuits["rpb"] as Gate;
@@ -81,7 +81,7 @@ namespace AdventOfCode.Y2024 {
             Extensions.Swap(ref gate1.LeftInput, ref gate2.LeftInput);
             Extensions.Swap(ref gate1.RightInput, ref gate2.RightInput);
             Extensions.Swap(ref gate1.Op, ref gate2.Op);
-            //Console.WriteLine(IsValid(62));
+            //Console.WriteLine(IsValid());
 
             gate1 = circuits["z31"] as Gate;
             gate2 = circuits["dmh"] as Gate;
@@ -89,7 +89,7 @@ namespace AdventOfCode.Y2024 {
             Extensions.Swap(ref gate1.LeftInput, ref gate2.LeftInput);
             Extensions.Swap(ref gate1.RightInput, ref gate2.RightInput);
             Extensions.Swap(ref gate1.Op, ref gate2.Op);
-            //Console.WriteLine(IsValid(62));
+            //Console.WriteLine(IsValid());
 
             gate1 = circuits["z38"] as Gate;
             gate2 = circuits["dvq"] as Gate;
@@ -97,43 +97,7 @@ namespace AdventOfCode.Y2024 {
             Extensions.Swap(ref gate1.LeftInput, ref gate2.LeftInput);
             Extensions.Swap(ref gate1.RightInput, ref gate2.RightInput);
             Extensions.Swap(ref gate1.Op, ref gate2.Op);
-            //Console.WriteLine(IsValid(62));
-
-            //List<ICircuit> all = new(circuits.Values);
-            //all.Sort();
-            //Doesn't quite work
-            //HashSet<ICircuit> fixSet = new();
-            //while (fixSet.Count < 8) {
-            //    int currentDiff = IsValid(62);
-
-            //    for (int i = 0; i < all.Count; i++) {
-            //        Gate gate1 = all[i] as Gate;
-            //        if (gate1 == null || fixSet.Contains(gate1)) { continue; }
-
-            //        int j = i + 1;
-            //        for (; j < all.Count; j++) {
-            //            Gate gate2 = all[j] as Gate;
-            //            if (gate2 == null || fixSet.Contains(gate2) || gate1.IsCircular(gate2) || gate2.IsCircular(gate1)) { continue; }
-
-            //            Extensions.Swap(ref gate1.LeftInput, ref gate2.LeftInput);
-            //            Extensions.Swap(ref gate1.RightInput, ref gate2.RightInput);
-            //            Extensions.Swap(ref gate1.Op, ref gate2.Op);
-
-            //            int diff = IsValid(62);
-            //            if (diff > currentDiff + 1) {
-            //                currentDiff = diff;
-            //                fixSet.Add(gate1); fixSet.Add(gate2);
-            //                Console.WriteLine($"{diff} = {gate1.Name} <-> {gate2.Name}");
-            //                break;
-            //            }
-
-            //            Extensions.Swap(ref gate1.LeftInput, ref gate2.LeftInput);
-            //            Extensions.Swap(ref gate1.RightInput, ref gate2.RightInput);
-            //            Extensions.Swap(ref gate1.Op, ref gate2.Op);
-            //        }
-            //        if (j != all.Count) { break; }
-            //    }
-            //}
+            //Console.WriteLine(IsValid());
 
             fix.Sort((left, right) => left.Name.CompareTo(right.Name));
 
@@ -165,24 +129,20 @@ namespace AdventOfCode.Y2024 {
                 Console.WriteLine(outs[j]);
             }
         }
-        private int IsValid(int bits) {
-            int count = 0;
-            Random rnd = new();
-            while (bits-- > 0) {
-                long mask = (1L << (count + 1)) - 1;
+        private int IsValid() {
+            int bits = 0;
+            while (56 > bits) {
+                long mask = (1L << (bits + 1)) - 1L;
 
-                for (int i = 0; i < 30; i++) {
-                    Gate.ClearCache();
-                    long val = rnd.NextInt64() & mask;
-                    SetValue('y', val);
-                    SetValue('x', val);
-                    long z = GetValue('z');
+                Gate.ClearCache();
+                SetValue('y', 0x555555555555555);
+                SetValue('x', 0xAAAAAAAAAAAAAAB);
+                long z = GetValue('z');
 
-                    if ((z & mask) != ((val + val) & mask)) { return count; }
-                }
-                count++;
+                if ((z & mask) != 0) { return bits; }
+                bits++;
             }
-            return count;
+            return bits;
         }
         private long GetValue(char v) {
             long value = 0;
