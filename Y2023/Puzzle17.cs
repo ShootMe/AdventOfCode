@@ -22,12 +22,12 @@ namespace AdventOfCode.Y2023 {
             }
         }
 
-        [Description("Directing the crucible from the lava pool to the machine parts factory, but not moving more than three consecutive blocks in the same direction, what is the least heat loss it can incur?")]
+        [Description("What is the least heat loss it can incur?")]
         public override string SolvePart1() {
             return $"{FindLowestHeatLost(0, 0, false)}";
         }
 
-        [Description("Directing the ultra crucible from the lava pool to the machine parts factory, what is the least heat loss it can incur?")]
+        [Description("What is the least heat loss it can incur?")]
         public override string SolvePart2() {
             return $"{FindLowestHeatLost(0, 0, true)}";
         }

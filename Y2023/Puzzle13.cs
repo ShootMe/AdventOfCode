@@ -23,7 +23,7 @@ namespace AdventOfCode.Y2023 {
             patterns.Add(new Pattern(pattern));
         }
 
-        [Description("Find the line of reflection in each of the patterns in your notes. What number do you get after summarizing all of your notes?")]
+        [Description("What number do you get after summarizing all of your notes?")]
         public override string SolvePart1() {
             int total = 0;
             for (int i = 0; i < patterns.Count; i++) {
@@ -32,7 +32,7 @@ namespace AdventOfCode.Y2023 {
             return $"{total}";
         }
 
-        [Description("In each pattern, fix the smudge and find the different line of reflection. What number do you get after summarizing the new reflection line in each pattern in your notes?")]
+        [Description("What number do you get after summarizing the new reflection line in each pattern in your notes?")]
         public override string SolvePart2() {
             int total = 0;
             for (int i = 0; i < patterns.Count; i++) {
