@@ -35,13 +35,20 @@ namespace AdventOfCode.Y2025 {
             int password = 0;
             for (int i = 0; i < rotations.Count; i++) {
                 int num = rotations[i];
-                int add = num < 0 ? -1 : 1;
-                while (num != 0) {
-                    position += add;
-                    if (position < 0) { position += 100; }
-                    if (position == 100) { position -= 100; }
-                    if (position == 0) { password++; }
-                    num -= add;
+                int div = num / 100;
+                num %= 100;
+                password += div < 0 ? -div : div;
+
+                int startingPosition = position;
+                position += num;
+                if (position >= 100) {
+                    position -= 100;
+                    password++;
+                } else if (position < 0) {
+                    position += 100;
+                    if (startingPosition != 0) { password++; }
+                } else if (position == 0) {
+                    password++;
                 }
             }
             return $"{password}";
