@@ -16,7 +16,7 @@ https://adventofcode.com/
  2022 | 50 / 50 :star: |
  2023 | 50 / 50 :star: |
  2024 | 50 / 50 :star: |
- 2025 | 2 / 24 :star: |
+ 2025 | 4 / 24 :star: |
  
 ### Template Files
 To auto generate a template for a day, you will need to have the SESSION variable filled with the correct value, which can be grabbed by looking at the cookies for the advent of code website after being signed in.
