@@ -7,7 +7,7 @@ namespace AdventOfCode.Y2025 {
     [Description("Playground")]
     public class Puzzle08 : ASolver {
         private List<Box> boxes = new();
-        List<(Box box1, Box box2, long dist)> distances = new();
+        private Heap<BoxPair> distances = new();
 
         public override void Setup() {
             string[] lines = Input.Split('\n');
@@ -16,6 +16,7 @@ namespace AdventOfCode.Y2025 {
                 boxes.Add(new Box(splits[0].ToInt(), splits[1].ToInt(), splits[2].ToInt(), boxes.Count));
             }
 
+            Heap<BoxPair> heap = new();
             for (int i = 0; i < boxes.Count; i++) {
                 Box box1 = boxes[i];
 
@@ -23,10 +24,9 @@ namespace AdventOfCode.Y2025 {
                     Box box2 = boxes[j];
 
                     long dist = box1.Dist(box2);
-                    distances.Add((box1, box2, dist));
+                    distances.Enqueue(new BoxPair(box1, box2, dist));
                 }
             }
-            distances.Sort((left, right) => left.dist.CompareTo(right.dist));
         }
 
         [Description("What do you get if you multiply together the sizes of the three largest circuits?")]
@@ -35,12 +35,13 @@ namespace AdventOfCode.Y2025 {
             Array.Fill(counts, 1);
             int amountToConnect = boxes.Count < 40 ? 10 : 1000;
             for (int i = 0; i < amountToConnect; i++) {
-                (Box box1, Box box2, long dist) = distances[i];
+                BoxPair pair = distances.Dequeue();
+                Box box1 = pair.Box1; Box box2 = pair.Box2;
                 if (box1.Circuit == box2.Circuit) { continue; }
 
                 int cMove = box2.Circuit;
-                counts[box1.Circuit] += counts[box2.Circuit];
-                counts[box2.Circuit] = 0;
+                counts[box1.Circuit] += counts[cMove];
+                counts[cMove] = 0;
                 for (int j = 0; j < boxes.Count; j++) {
                     Box box = boxes[j];
                     if (box.Circuit == cMove) {
@@ -65,9 +66,9 @@ namespace AdventOfCode.Y2025 {
                 counts[boxes[i].Circuit]++;
             }
 
-            int last = boxes.Count < 40 ? 10 : 1000;
             while (true) {
-                (Box box1, Box box2, long dist) = distances[last++];
+                BoxPair pair = distances.Dequeue();
+                Box box1 = pair.Box1; Box box2 = pair.Box2;
                 if (box1.Circuit == box2.Circuit) { continue; }
 
                 int cMove = box2.Circuit;
@@ -84,7 +85,16 @@ namespace AdventOfCode.Y2025 {
                 }
             }
         }
-
+        private struct BoxPair : IComparable<BoxPair> {
+            public Box Box1, Box2;
+            public long Dist;
+            public BoxPair(Box box1, Box box2, long dist) {
+                Box1 = box1; Box2 = box2; Dist = dist;
+            }
+            public int CompareTo(BoxPair other) {
+                return Dist.CompareTo(other.Dist);
+            }
+        }
         private class Box {
             public int X, Y, Z, Circuit;
             public Box(int x, int y, int z, int c) {
